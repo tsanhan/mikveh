@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "mikveh-app": {
+      "hosting": {
+        "app": [
+          "mikveh-app"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "mikveh-app"
+  }
+}
