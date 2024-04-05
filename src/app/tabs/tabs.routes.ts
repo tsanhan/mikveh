@@ -19,6 +19,7 @@ export const routes: Routes = [
             (m) => m.Tab1ChabadPage
           ),
       },
+
       {
         path: 'tab2-ashkenaz',
         loadComponent: () =>
@@ -26,16 +27,19 @@ export const routes: Routes = [
             (m) => m.Tab2AshkenazPage
           ),
       },
+
       {
         path: 'tab3-sfard',
         loadComponent: () =>
           import('./tab3-sfard/tab3-sfard.page').then((m) => m.Tab3SfardPage),
       },
+
       {
         path: '',
         redirectTo: '/tabs/home-tab',
         pathMatch: 'full',
       },
+
     ],
   },
   {
@@ -43,4 +47,5 @@ export const routes: Routes = [
     redirectTo: '/tabs/home-tab',
     pathMatch: 'full',
   },
+
 ];

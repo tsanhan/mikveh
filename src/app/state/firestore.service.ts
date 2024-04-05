@@ -15,26 +15,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class FirestoreService {
   firestore: Firestore = inject(Firestore);
-  activatedRoute = inject(ActivatedRoute);
-  approach =toSignal( this.activatedRoute.paramMap.pipe(
-    map((params) => params.get('id'))
-  ));
-
   #approaches=  signal<any>({...approachesJson});
   approaches = computed(this.#approaches)
 
-  hasLoaded = false;
   constructor() {
     console.log(this.approaches());
   }
-  init = effect(() => {
-    this.loadApproaches();
-  });
 
-  async loadApproaches() {
-    // const initialApproaches = await firstValueFrom(collectionData(collection(this.firestore, 'approaches'), { idField: 'id' }));
-    // this.#approaches.set(initialApproaches);
-    this.hasLoaded = true;
-  }
+
 
 }
