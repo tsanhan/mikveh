@@ -1,0 +1,137 @@
+{
+  "chabad": {
+    "name": "חב\"ד",
+    "topics": [
+      {
+        "id": "hefsek-taharah",
+        "name": "הפסק טהרה"
+      },
+      {
+        "name": "שבעה נקיים",
+        "id": "shiva-nekyim"
+      },
+      {
+        "id": "dinei-hafifa",
+        "name": "דיני חפיפה"
+      },
+      {
+        "name": "דיני חציצה",
+        "id": "dinei-chatsitsa"
+      },
+      {
+        "name": "הלכות טבילה",
+        "id": "hilchot-tvila"
+      },
+      {
+        "name": "פרישה סמוך לווסת",
+        "id": "prisha-samuch-leveset"
+      },
+      {
+        "name": "הרחקות",
+        "id": "harchakot"
+      },
+      {
+        "id": "dinei-kala",
+        "name": "דיני כלה"
+      },
+      {
+        "id": "dinei-yoldot",
+        "name": "דיני יולדות ומפולת"
+      },
+      {
+        "name": "סיפורים מהמקווה",
+        "id": "sipurim"
+      }
+    ]
+  },
+  "ashkenaz": {
+    "name": "אשכנז",
+    "topics": [
+      {
+        "id": "hefsek-taharah",
+        "name": "הפסק טהרה"
+      },
+      {
+        "name": "שבעה נקיים",
+        "id": "shiva-nekyim"
+      },
+      {
+        "id": "dinei-hafifa",
+        "name": "דיני חפיפה"
+      },
+      {
+        "name": "דיני חציצה",
+        "id": "dinei-chatsitsa"
+      },
+      {
+        "name": "הלכות טבילה",
+        "id": "hilchot-tvila"
+      },
+      {
+        "name": "פרישה סמוך לווסת",
+        "id": "prisha-samuch-leveset"
+      },
+      {
+        "name": "הרחקות",
+        "id": "harchakot"
+      },
+      {
+        "id": "dinei-kala",
+        "name": "דיני כלה"
+      },
+      {
+        "id": "dinei-yoldot",
+        "name": "דיני יולדות ומפולת"
+      },
+      {
+        "name": "סיפורים מהמקווה",
+        "id": "sipurim"
+      }
+    ]
+  },
+  "sfard": {
+    "name": "ספרד",
+    "topics": [
+      {
+        "id": "hefsek-taharah",
+        "name": "הפסק טהרה"
+      },
+      {
+        "name": "שבעה נקיים",
+        "id": "shiva-nekyim"
+      },
+      {
+        "id": "dinei-hafifa",
+        "name": "דיני חפיפה"
+      },
+      {
+        "name": "דיני חציצה",
+        "id": "dinei-chatsitsa"
+      },
+      {
+        "name": "הלכות טבילה",
+        "id": "hilchot-tvila"
+      },
+      {
+        "name": "פרישה סמוך לווסת",
+        "id": "prisha-samuch-leveset"
+      },
+      {
+        "name": "הרחקות",
+        "id": "harchakot"
+      },
+      {
+        "id": "dinei-kala",
+        "name": "דיני כלה"
+      },
+      {
+        "id": "dinei-yoldot",
+        "name": "דיני יולדות ומפולת"
+      },
+      {
+        "name": "סיפורים מהמקווה",
+        "id": "sipurim"
+      }
+    ]
+  }
+}
