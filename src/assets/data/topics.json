@@ -1,0 +1,42 @@
+{
+  "hefsek-taharah":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "הפסק טהרה"
+  },
+  "shiva-nekyim":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "שבעה נקיים"
+  },
+  "dinei-hafifa":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "דיני חפיפה"
+  },
+  "dinei-chatsitsa":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "דיני חציצה"
+  },
+  "hilchot-tvila":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "הלכות טבילה"
+  },
+  "prisha-samuch-leveset":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "פרישה סמוך לווסת"
+  },
+  "harchakot":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "הרחקות"
+  },
+  "dinei-kala":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "דיני כלה"
+  },
+  "dinei-yoldot":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "דיני יולדות ומפולת"
+  },
+  "sipurim":{
+    "src": "/assets/images/purity_testing.jpg",
+    "name": "סיפורים מהמקווה"
+  }
+}

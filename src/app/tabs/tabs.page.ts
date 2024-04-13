@@ -11,6 +11,7 @@ import { triangle, ellipse, square, homeOutline } from 'ionicons/icons';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { jamCrown } from '@ng-icons/jam-icons';
 import { faSolidScrollTorah, faSolidBookTanakh } from '@ng-icons/font-awesome/solid'
+import { FirestoreService } from '../state/firestore.service';
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
@@ -24,7 +25,8 @@ import { faSolidScrollTorah, faSolidBookTanakh } from '@ng-icons/font-awesome/so
     IonLabel,
     NgIconComponent,
   ],
-  providers:[provideIcons({jamCrown, faSolidScrollTorah, faSolidBookTanakh})]
+
+  providers:[FirestoreService,provideIcons({jamCrown, faSolidScrollTorah, faSolidBookTanakh})]
 })
 export class ApproachTabsPage {
   public jamCrown = jamCrown;

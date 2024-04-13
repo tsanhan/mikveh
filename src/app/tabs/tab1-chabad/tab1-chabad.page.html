@@ -1,14 +1,12 @@
-<ion-header [translucent]="true">
+<ion-header >
   <ion-toolbar>
-    <ion-title>tab1Chabad</ion-title>
+    <ion-buttons slot="end">
+      <ion-back-button defaultHref="/tabs/home-tab"></ion-back-button>
+    </ion-buttons>
+    <ion-title>שיטת חב"ד</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tab1Chabad</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <app-approaches></app-approaches>
+<ion-content [fullscreen]="true" >
+  <app-topics></app-topics>
 </ion-content>

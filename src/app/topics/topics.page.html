@@ -1,0 +1,7 @@
+<ion-grid [fixed]="true">
+  <ion-row >
+    <ion-col *ngFor="let topic of topics(); let i=index" [size]="6">
+      <app-topic [topic]="topic"></app-topic>
+    </ion-col>
+  </ion-row>
+</ion-grid>
