@@ -13,25 +13,29 @@ export const routes: Routes = [
       },
 
       {
-        path: 'tab1-chabad',
+        path: 'chabad',
         loadComponent: () =>
-          import('./tab1-chabad/tab1-chabad.page').then(
-            (m) => m.Tab1ChabadPage
+          import('./approaches/approaches.page').then(
+            (m) => m.ApproachesPage
           ),
-      },
+        data: { approach: 'chabad' },
 
+      },
       {
-        path: 'tab2-ashkenaz',
+        path: 'ashkenaz',
         loadComponent: () =>
-          import('./tab2-ashkenaz/tab2-ashkenaz.page').then(
-            (m) => m.Tab2AshkenazPage
+          import('./approaches/approaches.page').then(
+            (m) => m.ApproachesPage
           ),
+          data: { approach: 'ashkenaz' },
       },
-
       {
-        path: 'tab3-sfard',
+        path: 'sfard',
         loadComponent: () =>
-          import('./tab3-sfard/tab3-sfard.page').then((m) => m.Tab3SfardPage),
+          import('./approaches/approaches.page').then(
+            (m) => m.ApproachesPage
+          ),
+        data: { approach: 'sfard' },
       },
 
       {

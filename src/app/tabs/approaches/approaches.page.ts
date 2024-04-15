@@ -6,14 +6,14 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar, IonButtons, IonBackButton } from '@ionic/angular/standalone';
-import { ApproachesPage } from 'src/app/topics/topics.page';
+import { TopicsPage } from 'src/app/topics/topics.page';
 import { FirestoreService } from 'src/app/state/firestore.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-tab1-chabad',
-  templateUrl: './tab1-chabad.page.html',
-  styleUrls: ['./tab1-chabad.page.scss'],
+  selector: 'app-approaches',
+  templateUrl: './approaches.page.html',
+  styleUrls: ['./approaches.page.scss'],
   standalone: true,
   providers: [FirestoreService],
   imports: [IonBackButton, IonButtons,
@@ -23,15 +23,18 @@ import { ActivatedRoute } from '@angular/router';
     IonToolbar,
     CommonModule,
     FormsModule,
-    ApproachesPage
+    TopicsPage
   ],
 })
-export class Tab1ChabadPage implements OnInit {
+export class ApproachesPage implements OnInit {
   firestore = inject(FirestoreService);
   activatedRoute = inject(ActivatedRoute);
   constructor() {
 
-    console.log(this.activatedRoute.snapshot);
+    this.activatedRoute.data.subscribe
+    ((data) => {
+      console.log(data);
+    });
     this.activatedRoute.paramMap.subscribe((params) => {
       console.log(params.get('id'));
     });

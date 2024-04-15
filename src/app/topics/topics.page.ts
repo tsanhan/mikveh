@@ -14,7 +14,7 @@ import { TopicComponent } from './topic/topic.component';
   standalone: true,
   imports: [IonCol, IonRow, IonGrid, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, TopicComponent]
 })
-export class ApproachesPage implements OnInit {
+export class TopicsPage implements OnInit {
   firestore = inject(FirestoreService);
   topicsState: Signal<Topics> = this.firestore.topics
   topics = computed(() => Object.entries(this.topicsState()));
