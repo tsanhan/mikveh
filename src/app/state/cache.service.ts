@@ -18,7 +18,7 @@ export class CacheService {
   //#endregion
 
   //#region Approach
-  private approaches: Signal<Approaches> = signal<Approaches>({...approaches});
+  public approaches: Signal<Approaches> = signal<Approaches>({...approaches});
   private _approach: WritableSignal<Approach> = signal<Approach>(this.approaches()['chabad']);
   public approach = computed(() => this._approach());
   //#endregion
@@ -49,7 +49,8 @@ export class CacheService {
     this._storage.set('location', location);
   }
 
-  public setApproach(approach: Approach) {
+  public setApproach(hebName: string) {
+    const approach = this.approaches()[hebName];
     this._approach.set(approach);
     this._storage.set('approach', approach);
   }

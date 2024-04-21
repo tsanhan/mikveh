@@ -1,9 +1,11 @@
-
 <ion-header [translucent]="true" collapse="fade">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button [routerLink]="['/']">
         <ion-icon slot="icon-only" name="home-outline"></ion-icon>
+      </ion-button>
+      <ion-button id="popover-button">
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
       </ion-button>
       <!-- <ion-button [routerLink]="['tabs','home-tab']">
         <ion-icon slot="icon-only" name="home-outline"></ion-icon>
@@ -30,3 +32,30 @@
 <ion-content>
   <ion-router-outlet></ion-router-outlet>
 </ion-content>
+
+<ion-popover [animated]="true" trigger="popover-button" >
+  <ng-template>
+    <ion-content>
+      <ion-segment value="all" (ionChange)="onSelectionChanged($event)">
+
+        <ion-segment-button  [value]="approaches()['ashkenaz'].name"
+          [ngClass]="{'segment-button-checked': approaches()['ashkenaz']['name'] === approach().name}">
+          <ion-label>{{approaches()['ashkenaz'].nameHeb}}</ion-label>
+          <ng-icon size="1.5rem" name="{{approaches()['ashkenaz'].svg}}"></ng-icon>
+        </ion-segment-button>
+        <ion-segment-button  [value]="approaches()['chabad'].name"
+          [ngClass]="{'segment-button-checked': approaches()['chabad']['name'] === approach().name}">
+          <ion-label>{{approaches()['chabad'].nameHeb}}</ion-label>
+          <ng-icon size="1.5rem" name="{{approaches()['chabad'].svg}}"></ng-icon>
+        </ion-segment-button>
+        <ion-segment-button  [value]="approaches()['sfarad'].name"
+          [ngClass]="{'segment-button-checked': approaches()['sfarad']['name'] === approach().name}">
+          <ion-label>{{approaches()['sfarad'].nameHeb}}</ion-label>
+          <ng-icon size="1.5rem" name="{{approaches()['sfarad'].svg}}"></ng-icon>
+        </ion-segment-button>
+      </ion-segment>
+
+      <ion-input type="text" placeholder="Awesome Input"></ion-input>
+    </ion-content>
+  </ng-template>
+</ion-popover>

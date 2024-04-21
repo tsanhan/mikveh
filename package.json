@@ -34,6 +34,8 @@
     "@ionic/storage": "^4.0.0",
     "@ionic/storage-angular": "^4.0.0",
     "@ng-icons/core": "^27.2.0",
+    "@ng-icons/font-awesome": "^27.3.1",
+    "@ng-icons/jam-icons": "^27.3.1",
     "@ng-icons/tdesign-icons": "^27.3.1",
     "ionicons": "^7.2.1",
     "rxjs": "~7.8.0",

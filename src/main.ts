@@ -9,8 +9,8 @@ import {
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, indexedDBLocalPersistence, initializeAuth, provideAuth } from '@angular/fire/auth';
 import {
   getAnalytics,
   provideAnalytics,
@@ -36,6 +36,7 @@ import {
 
 import { registerLocaleData } from '@angular/common';
 import localeDeAt from '@angular/common/locales/he';
+import { Capacitor } from '@capacitor/core';
 
 registerLocaleData(localeDeAt, 'he');
 
@@ -49,11 +50,20 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     importProvidersFrom(
+
       provideFirebaseApp(() =>
         initializeApp(environment.firebase)
       )
     ),
-    importProvidersFrom(provideAuth(() => getAuth())),
+    importProvidersFrom(provideAuth(() => {
+      if (Capacitor.isNativePlatform()) {
+        return initializeAuth(getApp(), {
+          persistence: indexedDBLocalPersistence
+        });
+      } else {
+        return getAuth()
+      }
+    })),
     importProvidersFrom(provideAnalytics(() => getAnalytics())),
     ScreenTrackingService,
     UserTrackingService,
@@ -72,5 +82,6 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(provideStorage(() => getStorage())),
     importProvidersFrom(provideRemoteConfig(() => getRemoteConfig())),
     importProvidersFrom(IonicStorageModule.forRoot()),
+
   ],
 });
