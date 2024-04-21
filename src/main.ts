@@ -28,10 +28,16 @@ import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { getPerformance, providePerformance } from '@angular/fire/performance';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { IonicStorageModule } from '@ionic/storage-angular';
 import {
   getRemoteConfig,
   provideRemoteConfig,
 } from '@angular/fire/remote-config';
+
+import { registerLocaleData } from '@angular/common';
+import localeDeAt from '@angular/common/locales/he';
+
+registerLocaleData(localeDeAt, 'he');
 
 if (environment.production) {
   enableProdMode();
@@ -65,5 +71,6 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(providePerformance(() => getPerformance())),
     importProvidersFrom(provideStorage(() => getStorage())),
     importProvidersFrom(provideRemoteConfig(() => getRemoteConfig())),
+    importProvidersFrom(IonicStorageModule.forRoot()),
   ],
 });

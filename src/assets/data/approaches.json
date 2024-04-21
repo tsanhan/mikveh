@@ -1,0 +1,17 @@
+{
+  "chabad": {
+    "nameHeb": "חב\"ד",
+    "name": "chabad",
+    "svg": "jamCrown"
+  },
+  "ashkenaz": {
+    "nameHeb": "הרמ\"א",
+    "name": "ashkenaz",
+    "svg": "faSolidScrollTorah"
+  },
+  "sfarad": {
+    "nameHeb": "ספרד",
+    "name": "sfarad",
+    "svg": "faSolidBookTanakh"
+  }
+}

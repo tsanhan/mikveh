@@ -11,9 +11,9 @@ import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent }
   imports: [IonCardContent, IonCardSubtitle, IonCardTitle, IonCard, IonCardHeader]
 })
 export class TopicComponent implements OnInit {
-  topic = input.required<[string, Topic]>();
-  id = computed(() => this.topic()[0]);
-  topicObj = computed(() => this.topic()[1]);
+  // topic = input.required<[string, Topic]>();
+  // id = computed(() => this.topic()[0]);
+  // topicObj = computed(() => this.topic()[1]);
 
   constructor() { }
 

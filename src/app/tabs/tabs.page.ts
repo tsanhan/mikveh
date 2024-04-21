@@ -9,8 +9,8 @@ import {
 import { addIcons } from 'ionicons';
 import { triangle, ellipse, square, homeOutline } from 'ionicons/icons';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { jamCrown } from '@ng-icons/jam-icons';
-import { faSolidScrollTorah, faSolidBookTanakh } from '@ng-icons/font-awesome/solid'
+// import { jamCrown } from '@ng-icons/jam-icons';
+// import { faSolidScrollTorah, faSolidBookTanakh } from '@ng-icons/font-awesome/solid'
 import { FirestoreService } from '../state/firestore.service';
 @Component({
   selector: 'app-tabs',
@@ -26,12 +26,14 @@ import { FirestoreService } from '../state/firestore.service';
     NgIconComponent,
   ],
 
-  providers:[FirestoreService,provideIcons({jamCrown, faSolidScrollTorah, faSolidBookTanakh})]
+  providers:[FirestoreService,provideIcons({
+    // jamCrown, faSolidScrollTorah, faSolidBookTanakh
+  })]
 })
 export class ApproachTabsPage {
-  public jamCrown = jamCrown;
-  public faSolidScrollTorah = faSolidScrollTorah;
-  public faSolidBookTanakh = faSolidBookTanakh;
+  // public jamCrown = jamCrown;
+  // public faSolidScrollTorah = faSolidScrollTorah;
+  // public faSolidBookTanakh = faSolidBookTanakh;
   public environmentInjector = inject(EnvironmentInjector);
 
   constructor() {

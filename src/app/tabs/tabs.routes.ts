@@ -3,7 +3,7 @@ import { ApproachTabsPage } from './tabs.page';
 
 export const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: ApproachTabsPage,
     children: [
       {

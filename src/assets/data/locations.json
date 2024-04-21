@@ -1,0 +1,9 @@
+{
+  "Jerusalem":{
+    "name": "Jerusalem",
+    "latitude": 31.7683,
+    "longitude": 35.217018,
+    "elevation": 800,
+    "timeZoneId": "Asia/Jerusalem"
+  }
+}

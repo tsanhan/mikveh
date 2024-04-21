@@ -1,0 +1,61 @@
+import { inject, Injectable, signal, Signal, computed, WritableSignal } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
+import * as locations from '../../assets/data/locations.json';
+import * as approaches from '../../assets/data/approaches.json';
+import { Locations, Location } from './locations';
+import { Approach, Approaches } from './approaches';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CacheService {
+  private _storage: Storage = new Storage();
+
+  //#region Location
+  private locations: Signal<Locations> = signal({...locations});
+  private _location:  WritableSignal<Location> = signal<Location>(this.locations()['Jerusalem']);
+  public location = computed(() => this._location());
+  //#endregion
+
+  //#region Approach
+  private approaches: Signal<Approaches> = signal<Approaches>({...approaches});
+  private _approach: WritableSignal<Approach> = signal<Approach>(this.approaches()['chabad']);
+  public approach = computed(() => this._approach());
+  //#endregion
+
+  constructor() {
+    this.init();
+  }
+
+  private async init() {
+    this._storage = await inject(Storage).create();
+    const loc = await this._storage.get('location');
+    if(!loc) {
+      await this._storage.set('location', {...this._location()});
+    } else {
+      this._location.set(loc);
+    }
+
+    const app = await this._storage.get('approach');
+    if(!app) {
+      await this._storage.set('approach', {...this._approach()});
+    } else {
+      this._approach.set(app);
+    }
+  }
+
+  public setLocation(location: Location) {
+    this._location.set(location);
+    this._storage.set('location', location);
+  }
+
+  public setApproach(approach: Approach) {
+    this._approach.set(approach);
+    this._storage.set('approach', approach);
+  }
+
+
+
+
+
+}
