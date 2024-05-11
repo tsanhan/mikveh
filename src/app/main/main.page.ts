@@ -18,7 +18,7 @@ import {
   IonList,
   IonSegment,
   IonSegmentButton,
-  IonLabel, IonInput } from '@ionic/angular/standalone';
+  IonLabel, IonInput, IonToggle } from '@ionic/angular/standalone';
 import { TopicComponent } from '../topics/topic/topic.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { tdesignSunFall, tdesignSunRising } from '@ng-icons/tdesign-icons';
@@ -40,7 +40,7 @@ import { SegmentCustomEvent } from '@ionic/core';
   styleUrls: ['./main.page.scss'],
   standalone: true,
   providers: [CacheService],
-  imports: [IonInput,
+  imports: [IonToggle, IonInput,
     IonLabel,
     IonSegmentButton,
     IonSegment,
@@ -92,16 +92,18 @@ export class MainPage {
 
   approach = this.cache.approach;
   approaches =  this.cache.approaches;
+  darkMode = this.cache.darkMode;
 
   constructor() {
     addIcons({ homeOutline, settingsOutline });
-    // console.log(this.sunrize());
-    // console.log(this.sunset());
-    // console.log(this.debDate());
   }
 
   onSelectionChanged({detail:{value}}:SegmentCustomEvent) {
     console.log(value);
     this.cache.setApproach(value!.toString());
+  }
+
+  onToggleChangeDarkMode($event: CustomEvent) {
+    this.cache.setDarkMode($event.detail.checked);
   }
 }

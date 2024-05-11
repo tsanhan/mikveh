@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package io.mikvech.starter;
 
 import com.getcapacitor.BridgeActivity;
 

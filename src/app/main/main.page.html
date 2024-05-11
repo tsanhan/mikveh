@@ -1,4 +1,4 @@
-<ion-header [translucent]="true" collapse="fade">
+<ion-header [translucent]="true" collapse="fade" class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button [routerLink]="['/']">
@@ -33,43 +33,31 @@
   <ion-router-outlet></ion-router-outlet>
 </ion-content>
 
-<ion-popover [animated]="true" trigger="popover-button" >
+<ion-popover [animated]="true" trigger="popover-button">
   <ng-template>
     <ion-content>
       <ion-segment value="all" (ionChange)="onSelectionChanged($event)">
 
-        <ion-segment-button  [value]="approaches()['ashkenaz'].name"
+        <ion-segment-button [value]="approaches()['ashkenaz'].name"
           [ngClass]="{'segment-button-checked': approaches()['ashkenaz']['name'] === approach().name}">
-          <ion-label>{{approaches()['ashkenaz'].nameHeb}}</ion-label>
           <ng-icon size="1.5rem" name="{{approaches()['ashkenaz'].svg}}"></ng-icon>
+          <ion-label>{{approaches()['ashkenaz'].nameHeb}}</ion-label>
         </ion-segment-button>
-        <ion-segment-button  [value]="approaches()['chabad'].name"
+        <ion-segment-button [value]="approaches()['chabad'].name"
           [ngClass]="{'segment-button-checked': approaches()['chabad']['name'] === approach().name}">
-          <ion-label>{{approaches()['chabad'].nameHeb}}</ion-label>
           <ng-icon size="1.5rem" name="{{approaches()['chabad'].svg}}"></ng-icon>
+          <ion-label>{{approaches()['chabad'].nameHeb}}</ion-label>
         </ion-segment-button>
-        <ion-segment-button  [value]="approaches()['sfarad'].name"
+        <ion-segment-button [value]="approaches()['sfarad'].name"
           [ngClass]="{'segment-button-checked': approaches()['sfarad']['name'] === approach().name}">
-          <ion-label>{{approaches()['sfarad'].nameHeb}}</ion-label>
           <ng-icon size="1.5rem" name="{{approaches()['sfarad'].svg}}"></ng-icon>
+          <ion-label>{{approaches()['sfarad'].nameHeb}}</ion-label>
         </ion-segment-button>
       </ion-segment>
 
       <ion-list>
         <ion-item>
-          <ion-input label="Default label" placeholder="Enter text"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input label="Fixed label" labelPlacement="fixed" placeholder="Enter text"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input label="Stacked label" labelPlacement="stacked" placeholder="Enter text"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input label="Floating label" labelPlacement="floating" placeholder="Enter text"></ion-input>
+          <ion-toggle [checked]="darkMode()" (ionChange)="onToggleChangeDarkMode($event)" justify="space-between">גלישה במצב כהה</ion-toggle>
         </ion-item>
       </ion-list>
     </ion-content>

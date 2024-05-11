@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, Signal, computed, WritableSignal } from '@angular/core';
+import { inject, Injectable, signal, Signal, computed, WritableSignal, effect } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import * as locations from '../../assets/data/locations.json';
 import * as approaches from '../../assets/data/approaches.json';
@@ -23,6 +23,11 @@ export class CacheService {
   public approach = computed(() => this._approach());
   //#endregion
 
+  //#region DarkMode
+  private _darkMode: WritableSignal<boolean> = signal<boolean>(false);
+  public darkMode = computed(() => this._darkMode());
+  //#endregion
+
   constructor() {
     this.init();
   }
@@ -42,6 +47,15 @@ export class CacheService {
     } else {
       this._approach.set(app);
     }
+
+    const dm = await this._storage.get('darkMode');
+    if(dm !== null) {
+      this.setDarkMode(dm);
+    }else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+      this.setDarkMode(prefersDark.matches);
+    }
+
   }
 
   public setLocation(location: Location) {
@@ -55,8 +69,10 @@ export class CacheService {
     this._storage.set('approach', approach);
   }
 
-
-
-
+  public setDarkMode(darkMode: boolean) {
+    this._darkMode.set(darkMode);
+    this._storage.set('darkMode', darkMode);
+    document.body.classList[darkMode ? 'add':'remove']('dark');
+  }
 
 }

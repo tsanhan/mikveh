@@ -1,0 +1,83 @@
+ion-avatar {
+  border: black 1px solid;
+  margin: 0 auto;
+}
+
+.header {
+  grid-area: header;
+
+  & h1 {
+    text-align: center;
+    font-family: 'Frank Ruhl Libre';
+    font-weight: 400;
+  }
+
+  & h5 {
+    text-align: center;
+    font-family: 'NarkisBlockMF-Regular';
+    font-weight: 400;
+  }
+}
+
+.main {
+
+  grid-area: main;
+  justify-self: center;
+  align-self: center;
+  overflow: scroll;
+  height: -webkit-fill-available;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  & div {
+    margin: 1rem auto;
+  }
+}
+
+.links {
+  grid-area: links;
+  justify-self: center;
+  align-self: center;
+  display: grid;
+
+  width: 100%;
+  grid-template-areas:
+  'halakhot-avatar whatsapp-avatar'
+  'halakhot-text whatsapp-text';
+  grid-template-columns: 1fr 1fr;
+
+  & .halakhot-avatar{
+    grid-area: halakhot-avatar;
+  }
+  & .whatsapp-avatar{
+    grid-area: whatsapp-avatar;
+  }
+  & .halakhot-text{
+    grid-area: halakhot-text;
+    justify-self: center;
+  }
+  & .whatsapp-text{
+    grid-area: whatsapp-text;
+    justify-self: center;
+  }
+}
+
+.grid-container {
+  display: grid;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-areas:
+    'header'
+    'main'
+    'links';
+  grid-template-rows: 1fr 3fr 1fr;
+  grid-gap: 10px;
+
+}
