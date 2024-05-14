@@ -9,11 +9,6 @@ import {
   doc
 } from '@angular/fire/firestore';
 
-import * as topicsJson from '../../assets/data/topics.json';
-import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Topics } from './topics';
 
 @Injectable({
   providedIn: 'root',
@@ -21,17 +16,16 @@ import { Topics } from './topics';
 export class FirestoreService {
   firestore: Firestore = inject(Firestore);
 
-  #topics=  signal<Topics>({...topicsJson});
-  topics = computed(() => {
-    const topics = this.#topics();
-    delete topics['default'];
-    return topics;
-  })
+  // topics = computed(() => {
+  //   const topics = this.#topics();
+  //   delete topics['default'];
+  //   return topics;
+  // })
 
 
 
   constructor() {
-    console.log(this.topics());
+    // console.log(this.topics());
 
     // const itemCollection = collection(this.firestore, 'approaches');
     // const h = doc(this.firestore, 'approaches', 'chabad');
@@ -58,9 +52,5 @@ export class FirestoreService {
     //   });
     //   }
     }
-
-
-
-
 
 }

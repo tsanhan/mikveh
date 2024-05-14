@@ -1,10 +1,15 @@
 export interface Topic {
-  name: string;
+  id: string;
+  title: string;
   src: string;
+  content: TopicContent[];
+  subtitle: string;
 }
 
-export interface Topics {
-  [key: string]: Topic;
+export type TopicContent = {
+  type: 'text' | 'img';
+  data: string;
 }
+
 
 

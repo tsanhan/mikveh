@@ -2,8 +2,10 @@ import { inject, Injectable, signal, Signal, computed, WritableSignal, effect } 
 import { Storage } from '@ionic/storage-angular';
 import * as locations from '../../assets/data/locations.json';
 import * as approaches from '../../assets/data/approaches.json';
+import * as topicsJson from '../../assets/data/topics.json';
 import { Locations, Location } from './locations';
 import { Approach, Approaches } from './approaches';
+import { Topic } from './topics';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +19,11 @@ export class CacheService {
   public location = computed(() => this._location());
   //#endregion
 
+  //#region Topics
+  private _topics: Signal<Topic[]> = signal<any[]>(Array.from({...topicsJson}));
+  public topics: Signal<Topic[]> = computed(() => this._topics());
+  //#endregion
+
   //#region Approach
   public approaches: Signal<Approaches> = signal<Approaches>({...approaches});
   private _approach: WritableSignal<Approach> = signal<Approach>(this.approaches()['chabad']);
@@ -28,7 +35,14 @@ export class CacheService {
   public darkMode = computed(() => this._darkMode());
   //#endregion
 
+  //#region topics-data
+  private _topicsData: WritableSignal<any> = signal<any>([]);
+  public topicsData = computed(() => this._topicsData());
+  //#endregion
+
   constructor() {
+    console.log(this.topics());
+
     this.init();
   }
 

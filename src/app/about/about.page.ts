@@ -20,9 +20,9 @@ import {
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-main-menu',
-  templateUrl: './main-menu.page.html',
-  styleUrls: ['./main-menu.page.scss'],
+  selector: 'app-about',
+  templateUrl: './about.page.html',
+  styleUrls: ['./about.page.scss'],
   standalone: true,
   imports: [
     IonIcon,

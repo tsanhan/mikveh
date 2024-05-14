@@ -35,9 +35,9 @@ import { jamCrown } from '@ng-icons/jam-icons';
 import { SegmentCustomEvent } from '@ionic/core';
 
 @Component({
-  selector: 'app-main',
-  templateUrl: './main.page.html',
-  styleUrls: ['./main.page.scss'],
+  selector: 'app-layout',
+  templateUrl: './layout.html',
+  styleUrls: ['./layout.scss'],
   standalone: true,
   providers: [CacheService],
   imports: [IonToggle, IonInput,

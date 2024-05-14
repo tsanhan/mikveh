@@ -1,13 +1,13 @@
 import { Routes } from "@angular/router";
-import { MainPage } from "./main.page";
-import { MainMenuPage } from "../main-menu/main-menu.page";
+import { MainPage } from "./layout";
+import { MainMenuPage } from "../about/about.page";
 import { TopicsPage } from "../topics/topics.page";
 
 export const routes: Routes = [
 
   {
     path: "",
-    redirectTo: "/main-menu",
+    redirectTo: "/about",
     pathMatch: "full"
   },
   {
@@ -15,14 +15,14 @@ export const routes: Routes = [
     component: MainPage,
     children: [
       {
-        path: 'main-menu',
+        path: 'about',
         component: MainMenuPage
-        // loadComponent: () => import('../main-menu/main-menu.page').then( m => m.MainMenuPage)
+        // loadComponent: () => import('../about/about.page').then( m => m.MainMenuPage)
       },
       {
         path: 'topics',
         component: TopicsPage
-        // loadComponent: () => import('../main-menu/main-menu.page').then( m => m.MainMenuPage)
+        // loadComponent: () => import('../about/about.page').then( m => m.MainMenuPage)
       }
 
     ]
