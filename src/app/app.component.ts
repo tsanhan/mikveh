@@ -29,7 +29,12 @@ export class AppComponent {
   cache = inject(CacheService);
   topics = this.cache.topics;
   activeIndex: WritableSignal<number> = signal(0);
-  title = computed(() => this.topics()[this.activeIndex()]['title']);
+  title = computed(() => {
+    const topics = this.topics();
+    const index = this.activeIndex();
+    const topic = topics[index];
+    return topic['title'];
+  });
   subtitle = computed(() => this.topics()[this.activeIndex()]['subtitle']);
 
 
@@ -39,12 +44,12 @@ export class AppComponent {
   approaches =  this.cache.approaches;
   darkMode = this.cache.darkMode;
 
-  onSlideChange({detail}: any) {
-    const swiper: Swiper = detail[0];
-    if (!swiper.destroyed) {
-      this.activeIndex.set(swiper.activeIndex);
-    }
-  }
+  // onSlideChange({detail}: any) {
+  //   const swiper: Swiper = detail[0];
+  //   if (!swiper.destroyed) {
+  //     this.activeIndex.set(swiper.activeIndex);
+  //   }
+  // }
 
   constructor() {
     addIcons({document, chevronForwardCircle,colorPalette, globe });

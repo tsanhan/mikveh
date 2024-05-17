@@ -63,8 +63,10 @@ ion-fab-button {
     margin: 0;
   }
 
+
+
   & .list,.button  {
-    transform: translateY(-8vh);
+    transform: translateY(0vh);
 
     -webkit-transition: all .5s ease-in-out;
     -moz-transition: all .5s ease-in-out;
@@ -72,9 +74,10 @@ ion-fab-button {
     transition: all .5s ease-in-out;
   }
 
-
   & .open {
-    transform: translateY(0vh);
+    transform: translateY(-8vh);
   }
+
+
 
 }
