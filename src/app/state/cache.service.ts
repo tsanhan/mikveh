@@ -62,13 +62,13 @@ export class CacheService {
       this._approach.set(app);
     }
 
-    const dm = await this._storage.get('darkMode');
-    if(dm !== null) {
-      this.setDarkMode(dm);
-    }else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-      this.setDarkMode(prefersDark.matches);
-    }
+    // const dm = await this._storage.get('darkMode');
+    // if(dm !== null) {
+    //   this.setDarkMode(dm);
+    // }else {
+    //   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    //   this.setDarkMode(prefersDark.matches);
+    // }
 
   }
 

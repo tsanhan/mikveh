@@ -1,16 +1,64 @@
-import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal, WritableSignal } from '@angular/core';
 import { CacheService } from './state/cache.service';
 import { register } from 'swiper/element/bundle';
-import { Locale } from '@hebcal/core';
-Locale.hebrewStripNikkud('he');
+import { SegmentCustomEvent } from '@ionic/core';
+import { addIcons } from 'ionicons';
+import { chevronForwardCircle, colorPalette, document, globe } from 'ionicons/icons';
+
+import Swiper from 'swiper';
+import { DayTimesComponent } from './components/day-times/day-times.component';
+import { TopButtonsComponent } from './components/top-buttons/top-buttons.component';
+
 register();
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss'],
   standalone: true,
   providers: [CacheService],
-  imports: [IonApp, IonRouterOutlet],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [
+
+    DayTimesComponent,
+    TopButtonsComponent
+  ],
+
 })
-export class AppComponent {}
+export class AppComponent {
+  cache = inject(CacheService);
+  topics = this.cache.topics;
+  activeIndex: WritableSignal<number> = signal(0);
+  title = computed(() => this.topics()[this.activeIndex()]['title']);
+  subtitle = computed(() => this.topics()[this.activeIndex()]['subtitle']);
+
+
+
+
+  approach = this.cache.approach;
+  approaches =  this.cache.approaches;
+  darkMode = this.cache.darkMode;
+
+  onSlideChange({detail}: any) {
+    const swiper: Swiper = detail[0];
+    if (!swiper.destroyed) {
+      this.activeIndex.set(swiper.activeIndex);
+    }
+  }
+
+  constructor() {
+    addIcons({document, chevronForwardCircle,colorPalette, globe });
+
+
+  }
+
+
+  onSelectionChanged({detail:{value}}:SegmentCustomEvent) {
+    console.log(value);
+    this.cache.setApproach(value!.toString());
+  }
+
+  onToggleChangeDarkMode($event: CustomEvent) {
+    this.cache.setDarkMode($event.detail.checked);
+  }
+}
