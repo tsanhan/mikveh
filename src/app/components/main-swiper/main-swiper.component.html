@@ -27,7 +27,10 @@
         <div class="subtitle">{{subtitle()}}</div>
       </ion-text>
     </div>
-    <div>
+    <div class="slide-body">
+
+
+    <div >
       @for(contentObj of topic.content; track contentObj; let i = $index){
       <div>
         @if(contentObj.type === 'img') {
@@ -39,6 +42,7 @@
       </div>
       }
     </div>
+  </div>
   </swiper-slide>
   }
 

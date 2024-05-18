@@ -35,6 +35,7 @@ swiper-container {
 swiper-slide {
   background-size: cover;
   background-position: center;
+  max-height: 72vh;
 }
 
 .main-swiper {
@@ -64,6 +65,20 @@ ion-avatar {
 
 
 
+.slide-body {
+  overflow: scroll;
+  height: -webkit-fill-available;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
+  /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  & div:not(:first-child) {
+    margin: 1rem auto;
+  }
+}
 
 
