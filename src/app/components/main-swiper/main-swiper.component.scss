@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+
+
+.swiper-wrapper {
+  display: inherit;
+}
+
+swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: fit-content;
+}
+
+swiper-slide img {
+  // width: 100%;
+  // height: 100%;
+  object-fit: cover;
+}
+
+swiper-container {
+  width: 100%;
+  // height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: inherit;
+}
+
+swiper-slide {
+  background-size: cover;
+  background-position: center;
+}
+
+.main-swiper {
+  // height: 100%;
+  width: 100%;
+}
+
+.header {
+  & .title {
+    text-align: center;
+    font-family: 'Frank Ruhl Libre';
+    font-weight: 400;
+  }
+
+  & .subtitle {
+    text-align: center;
+    font-family: 'NarkisBlockMF-Regular';
+    font-weight: 400;
+  }
+}
+
+ion-avatar {
+  border: black 1px solid;
+  margin: 0 auto;
+}

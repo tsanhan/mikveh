@@ -1,0 +1,30 @@
+<swiper-container style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="main-swiper"
+      thumbs-swiper=".footer-swiper" space-between="10">
+      @for(topic of topics(); track topic) {
+      <swiper-slide>
+        <div class="header">
+          <ion-avatar>
+          </ion-avatar>
+          <ion-text>
+            <div class="title">{{title()}}</div>
+          </ion-text>
+          <ion-text>
+            <div class="subtitle">{{subtitle()}}</div>
+          </ion-text>
+        </div>
+        <div>
+          @for(contentObj of topic.content; track contentObj; let i = $index){
+          <div>
+            @if(contentObj.type === 'img') {
+            <img [src]="contentObj.data" />
+            }
+            @else {
+            {{contentObj.data}}
+            }
+          </div>
+          }
+        </div>
+      </swiper-slide>
+      }
+
+    </swiper-container>

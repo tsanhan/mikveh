@@ -8,6 +8,8 @@ import { chevronForwardCircle, colorPalette, document, globe } from 'ionicons/ic
 import Swiper from 'swiper';
 import { DayTimesComponent } from './components/day-times/day-times.component';
 import { TopButtonsComponent } from './components/top-buttons/top-buttons.component';
+import { FooterSwiperComponent } from './components/footer-swiper/footer-swiper.component';
+import { MainSwiperComponent } from './components/main-swiper/main-swiper.component';
 
 register();
 
@@ -19,7 +21,8 @@ register();
   providers: [CacheService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
-
+    MainSwiperComponent,
+    FooterSwiperComponent,
     DayTimesComponent,
     TopButtonsComponent
   ],
@@ -28,14 +31,6 @@ register();
 export class AppComponent {
   cache = inject(CacheService);
   topics = this.cache.topics;
-  activeIndex: WritableSignal<number> = signal(0);
-  title = computed(() => {
-    const topics = this.topics();
-    const index = this.activeIndex();
-    const topic = topics[index];
-    return topic['title'];
-  });
-  subtitle = computed(() => this.topics()[this.activeIndex()]['subtitle']);
 
 
 

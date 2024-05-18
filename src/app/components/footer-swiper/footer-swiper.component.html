@@ -1,0 +1,16 @@
+
+  <swiper-container class="footer-swiper" space-between="10" slides-per-view="4" free-mode="true"
+      watch-slides-progress="true">
+      @for(topic of topics(); track topic) {
+      <swiper-slide>
+        <div class="topic-slide-link">
+          <ion-avatar>
+            <img [alt]="topic.title" [src]="topic.src" />
+          </ion-avatar>
+          <ion-text>
+            {{topic.title}}
+          </ion-text>
+        </div>
+      </swiper-slide>
+      }
+    </swiper-container>

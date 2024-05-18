@@ -7,57 +7,9 @@
   </ion-header>
   <ion-content class="ion-padding">
     <app-top-buttons></app-top-buttons>
-    <div class="grid-container">
-      <div class="header">
-        <ion-avatar>
-        </ion-avatar>
-        <ion-text>
-          <div class="title">{{title()}}</div>
-        </ion-text>
-        <ion-text>
-          <div class="subtitle">{{subtitle()}}</div>
-        </ion-text>
-      </div>
-      <div class="main">
-        <swiper-container
-          style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="mySwiper"
-          thumbs-swiper=".mySwiper2" loop="true" space-between="10">
-          @for(topic of topics(); track topic) {
-          <swiper-slide>
-            <div>
-              @for(contentObj of topic.content; track contentObj; let i = $index){
-              <div >
-                @if(contentObj.type === 'img') {
-                <img [src]="contentObj.data" />
-                }
-                @else {
-                {{contentObj.data}}
-                }
-              </div>
-              }
-            </div>
-          </swiper-slide>
-          }
-
-        </swiper-container>
-      </div>
-      <div class="links">
-        <swiper-container #mySwiper2 class="mySwiper2" space-between="10" slides-per-view="5">
-          @for(topic of topics(); track topic) {
-          <swiper-slide >
-            <div class="topic-slide-link">
-              <ion-avatar>
-                <img [alt]="topic.title" [src]="topic.src" />
-              </ion-avatar>
-              <ion-text>
-                {{topic.title}}
-              </ion-text>
-            </div>
-          </swiper-slide>
-          }
-        </swiper-container>
-      </div>
-    </div>
+    <app-main-swiper></app-main-swiper>
   </ion-content>
+  <ion-footer>
+    <app-footer-swiper></app-footer-swiper>
+  </ion-footer>
 </ion-app>
-
