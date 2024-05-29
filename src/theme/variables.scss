@@ -1,8 +1,33 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+@font-face {
+  font-family: 'Frank Ruhl Libre';
+  src: url('../assets/fonts/FrankRuhlLibre/FrankRuhlLibre-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Narkis Block MF Medium A';
+  src: url('../assets/fonts/NarkisBlock/Narkis\ Block\ MF\ Medium\ A.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Narkis Block MF Regular A';
+  src: url('../assets/fonts/NarkisBlock/Narkis\ Block\ MF\ Regular\ A.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'AmaticSC-Bold';
+  src: url('../assets/fonts/Amatic_SC/AmaticSC-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'AmaticSC-Regular';
+  src: url('../assets/fonts/Amatic_SC/AmaticSC-Regular.ttf') format('truetype');
+}
+
+
 /** Ionic CSS Variables **/
 :root {
+
   /** primary **/
   --ion-color-primary: #3880ff;
   --ion-color-primary-rgb: 56, 128, 255;
@@ -241,55 +266,8 @@ html {
    * https://ionicframework.com/docs/layout/dynamic-font-scaling
    */
   --ion-dynamic-font: var(--ion-default-dynamic-font);
+
 }
 
 
-@font-face {
-  font-family: 'Frank Ruhl Libre';
-  font-style: normal;
-  font-weight: 900;
-  src: url('../assets/fonts/FrankRuhlLibre/FrankRuhlLibre-Black.ttf');
-}
-@font-face {
-  font-family: 'Frank Ruhl Libre';
-  font-style: normal;
-  font-weight: 700;
-  src: url('../assets/fonts/FrankRuhlLibre/FrankRuhlLibre-Bold.ttf');
-}
-@font-face {
-  font-family: 'Frank Ruhl Libre';
-  font-style: normal;
-  font-weight: 800;
-  src: url('../assets/fonts/FrankRuhlLibre/FrankRuhlLibre-ExtraBold.ttf');
-}
-@font-face {
-  font-family: 'Frank Ruhl Libre';
-  font-style: normal;
-  font-weight: 300;
-  src: url('../assets/fonts/FrankRuhlLibre/FrankRuhlLibre-Light.ttf');
-}
-@font-face {
-  font-family: 'Frank Ruhl Libre';
-  font-style: normal;
-  font-weight: 500;
-  src: url('../assets/fonts/FrankRuhlLibre/FrankRuhlLibre-Medium.ttf');
-}
-@font-face {
-  font-family: 'Frank Ruhl Libre';
-  font-style: normal;
-  font-weight: 400;
-  src: url('../assets/fonts/FrankRuhlLibre/FrankRuhlLibre-Regular.ttf');
-}
-@font-face {
-  font-family: 'Frank Ruhl Libre';
-  font-style: normal;
-  font-weight: 600;
-  src: url('../assets/fonts/FrankRuhlLibre/FrankRuhlLibre-SemiBold.ttf');
-}
 
-@font-face {
-  font-family: 'NarkisBlockMF-Regular';
-  font-style: normal;
-  font-weight: 400;
-  src: url('../assets/fonts/NarkisBlock/Narkis\ Block\ MF\ Regular\ A.ttf');
-}

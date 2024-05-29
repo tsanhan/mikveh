@@ -4,22 +4,30 @@
   </ion-button>
 </div> -->
 
-  <ion-fab class="list-wrapper" slot="fixed" vertical="top" horizontal="start" (click)="toggle()">
-    <ul class="list" [ngClass]="{'open':toggleApproaches() }">
-      <li>No Lines</li>
-      <li>No Lines</li>
-      <li>No Lines</li>
-    </ul>
-
-    <ion-fab-button class="button" color="transparent" size="small"  [ngClass]="{'open':toggleApproaches() }">
+<ion-fab [activated]="toggleApproaches()" (close)="onclose()" class="list-wrapper" slot="fixed" vertical="top" horizontal="start" (click)="toggle()">
+  <ion-fab-button class="button" color="transparent" size="small">
+    <ion-icon name="chevron-forward-circle"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="bottom">
+    <ion-fab-button class="button" color="transparent" size="small">
       <ion-icon name="chevron-forward-circle"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
-  <ion-fab slot="fixed" vertical="top" horizontal="end">
-    <ion-fab-button class="whatsapp" color="transparent" [href]="url" target="_blank" size="small">
-      <ion-icon name="logo-whatsapp"></ion-icon>
+    <ion-fab-button class="button" color="transparent" size="small">
+      <ion-icon name="chevron-forward-circle"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+    <ion-fab-button class="button" color="transparent" size="small">
+      <ion-icon name="chevron-forward-circle"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+  <!-- <ul class="list" [ngClass]="{'open':toggleApproaches() }">
+      <li >🔯</li>
+      <li >🔯</li>
+      <li >🔯</li>
+    </ul> -->
+</ion-fab>
 
-
-
+<ion-fab slot="fixed" vertical="top" horizontal="end">
+  <ion-fab-button class="whatsapp" color="transparent" [href]="url" target="_blank" size="small">
+    <ion-icon name="logo-whatsapp"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
