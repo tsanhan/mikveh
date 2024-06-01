@@ -1,33 +1,44 @@
-<!-- <div >
-  <ion-button fill="clear" (click)="whatsapp()">
-    <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
-  </ion-button>
-</div> -->
-
-<ion-fab [activated]="toggleApproaches()" (close)="onclose()" class="list-wrapper" slot="fixed" vertical="top" horizontal="start" (click)="toggle()">
-  <ion-fab-button class="button" color="transparent" size="small">
-    <ion-icon name="chevron-forward-circle"></ion-icon>
+<ion-fab [activated]="isShowApproaches()" [ngClass]="{'shita-main': true, open: isShowApproaches()}" slot="fixed"
+  vertical="top" horizontal="start" (click)="toggle('main')">
+  <ion-fab-button color="transparent" size="small">
+    <ion-img src="assets/icon/shita.png"></ion-img>
   </ion-fab-button>
   <ion-fab-list side="bottom">
-    <ion-fab-button class="button" color="transparent" size="small">
-      <ion-icon name="chevron-forward-circle"></ion-icon>
+    <ion-fab-button class="active">
+      <ion-text>
+        אשכנז
+      </ion-text>
     </ion-fab-button>
-    <ion-fab-button class="button" color="transparent" size="small">
-      <ion-icon name="chevron-forward-circle"></ion-icon>
+    <ion-fab-button>
+      <ion-text>
+        חב"ד
+      </ion-text>
     </ion-fab-button>
-    <ion-fab-button class="button" color="transparent" size="small">
-      <ion-icon name="chevron-forward-circle"></ion-icon>
+    <ion-fab-button>
+      <ion-text style="height: -webkit-fill-available;">
+        עדות מזרח
+      </ion-text>
     </ion-fab-button>
   </ion-fab-list>
-  <!-- <ul class="list" [ngClass]="{'open':toggleApproaches() }">
-      <li >🔯</li>
-      <li >🔯</li>
-      <li >🔯</li>
-    </ul> -->
 </ion-fab>
 
-<ion-fab slot="fixed" vertical="top" horizontal="end">
-  <ion-fab-button class="whatsapp" color="transparent" [href]="url" target="_blank" size="small">
-    <ion-icon name="logo-whatsapp"></ion-icon>
+<ion-fab *ngIf="isShowApproaches()" class="shita-alt" slot="fixed" vertical="top" horizontal="start"
+  (click)="toggle('alt')">
+  <ion-fab-button color="transparent" size="small">
+    <ion-img src="assets/icon/ahita bachur.png"></ion-img>
+  </ion-fab-button>
+</ion-fab>
+
+<!-- <ul class="list" [ngClass]="{'open':toggleApproaches() }">
+    <li>🔯</li>
+    <li>🔯</li>
+    <li>🔯</li>
+  </ul> -->
+
+
+
+<ion-fab class="whatsapp" slot="fixed" vertical="top" horizontal="end">
+  <ion-fab-button color="transparent" [href]="url" target="_blank" size="small">
+    <ion-img src="assets/icon/watsapp.png"></ion-img>
   </ion-fab-button>
 </ion-fab>

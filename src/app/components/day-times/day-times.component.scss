@@ -1,0 +1,19 @@
+ion-img {
+  display: inline-flex;
+}
+
+.time{
+  font-family: "Varela";
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.text{
+  font-family: "VarelaRound";
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-evenly;
+}

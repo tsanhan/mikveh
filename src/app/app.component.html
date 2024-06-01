@@ -1,18 +1,22 @@
 <ion-app>
 
-  <ion-header class="ion-no-border"  [translucent]="true" collapse="fade" class="ion-no-border">
+  <!-- <ion-header class="ion-no-border"  [translucent]="true" collapse="fade" class="ion-no-border">
     <ion-toolbar>
       <app-day-times></app-day-times>
+
     </ion-toolbar>
-  </ion-header>
+  </ion-header> -->
   <ion-content  class="ion-padding">
-    <app-top-buttons></app-top-buttons>
+    <div class="top-buttons">
+      <app-top-buttons></app-top-buttons>
+    </div>
+    <app-day-times></app-day-times>
     <app-main-swiper></app-main-swiper>
 
 
 
   </ion-content>
-  <ion-footer>
+  <ion-footer class="ion-no-border">
     <app-footer-swiper></app-footer-swiper>
   </ion-footer>
 </ion-app>

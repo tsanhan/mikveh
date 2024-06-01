@@ -1,6 +1,14 @@
 
 ion-content::part(background) {
   // background: linear-gradient(0turn, #EAA7A7, #ffffff);
-  background: blue;
+  background: #F4D1CD;
 
+}
+
+ion-footer::part(background) {
+  background: #F4D1CD;
+}
+
+.top-buttons {
+  height: 8vh;
 }

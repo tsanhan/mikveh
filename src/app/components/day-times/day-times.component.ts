@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
+import { IonGrid, IonCol, IonRow, IonImg, IonSkeletonText, IonText } from '@ionic/angular/standalone';
 import { GeoLocation, HDate, Locale, Zmanim } from '@hebcal/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { CacheService } from 'src/app/state/cache.service';
@@ -11,7 +11,7 @@ import { tdesignSunFall, tdesignSunRising } from '@ng-icons/tdesign-icons';
   templateUrl: './day-times.component.html',
   styleUrls: ['./day-times.component.scss'],
   standalone: true,
-  imports: [IonGrid, IonCol, IonRow, NgIconComponent, DatePipe],
+  imports: [IonText, IonSkeletonText, IonImg, IonGrid, IonCol, IonRow, NgIconComponent, DatePipe],
   viewProviders: [
     provideIcons({
       tdesignSunRising,

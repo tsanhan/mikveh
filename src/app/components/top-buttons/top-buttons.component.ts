@@ -1,6 +1,5 @@
-
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, signal, ViewChild, ViewEncapsulation } from '@angular/core';
 import {
   IonButtons,
   IonButton,
@@ -13,14 +12,13 @@ import {
   IonThumbnail,
   IonList,
   IonItem,
-  IonLabel,
-} from '@ionic/angular/standalone';
+  IonLabel, IonImg } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { logoWhatsapp } from 'ionicons/icons';
 @Component({
   selector: 'app-top-buttons',
   standalone: true,
-  imports: [
+  imports: [IonImg,
     IonLabel,
     IonItem,
     IonList,
@@ -34,13 +32,16 @@ import { logoWhatsapp } from 'ionicons/icons';
     IonButtons,
     CommonModule,
     IonThumbnail,
+    IonImg
   ],
   templateUrl: './top-buttons.component.html',
   styleUrl: './top-buttons.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TopButtonsComponent {
-  toggleApproaches = signal(false);
+export class TopButtonsComponent implements AfterViewInit{
+  // view child
+  @ViewChild('shita', {read: ElementRef}) img: ElementRef;
+  isShowApproaches = signal(false);
   countryCode: string = '972';
   wsNumber: string = '584298770';
   url: string =
@@ -51,10 +52,21 @@ export class TopButtonsComponent {
 
   constructor() {
     addIcons({ logoWhatsapp });
+
   }
 
-  toggle() {
-    this.toggleApproaches.update((prev) => !prev);
+  ngAfterViewInit(): void {
+    // const shadowRoot = this.img.nativeElement.attachShadow({ mode: 'open' });
+    // const sheet = new CSSStyleSheet;
+    // sheet.replaceSync( `input { display: none; }`);
+    // shadowRoot.adoptedStyleSheets = [ sheet ];
+
+  }
+
+  toggle(source: string) {
+    console.log('source', source);
+
+    this.isShowApproaches.update((prev) => !prev);
   }
 
   protected onclose() {

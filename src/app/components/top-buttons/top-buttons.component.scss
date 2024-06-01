@@ -1,51 +1,88 @@
-:host {
-   display: flex;
-   justify-content: space-between;
-}
 
-img {
-  height: 5vh;
-  width: 5vh;
-  object-fit: cover;
-  border-radius: 50%;
-}
+
+
+
+// :host {
+//    display: flex;
+//    justify-content: space-between;
+// }
+
+// img {
+//   height: 5vh;
+//   width: 5vh;
+//   object-fit: cover;
+//   border-radius: 50%;
+// }
 
 ion-fab-button {
   --box-shadow: none;
   margin: 0;
 }
 
-.list-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-
-  & .list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-  }
-
-  & .list, .button   {
-    transform: translateY(0vh);
-    -webkit-transition: all .5s ease-in-out;
-    -moz-transition: all .5s ease-in-out;
-    -o-transition: all .5s ease-in-out;
-    transition: all .5s ease-in-out;
-
-
-  }
-
-  & .open {
-    transform: translateY(-8vh) !important;
-
-
-
-  }
-
-
-
+ion-fab-button::part(close-icon) {
+  display: none;
+  // background:url("/src/assets/icon/ahita\ bachur.png");
 }
+
+ion-fab-list {
+  align-items: baseline;
+  margin-top: 3rem;
+  transform: translateX(0.5rem);
+
+  ion-fab-button::part(native) {
+    border-radius: 0;
+    text-wrap: wrap;
+    background: #E89F9F;
+    font-family: 'Heebo-Regular';
+    font-size: 0.6rem;
+    color: #FFFFFF;
+    padding: 0 0.5rem;
+    width: 3.5rem;
+
+
+  }
+  ion-fab-button.active::part(native) {
+    color: #000000;
+  }
+
+  ion-fab-button:last-child::part(native){
+    border-radius: 100% 0% 50% 50% / 0% 0% 100% 100%;
+    position: relative;
+    padding: 0rem 0.5rem 0.5rem 0.5rem;
+    height: 2rem;
+    & ion-text{
+      height: -webkit-fill-available;
+    }
+  }
+
+  ion-text{
+    text-align: center;
+    padding: 0 0.5rem;
+  }
+}
+
+ion-fab.shita-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F4D1CD;
+  margin: 1.0rem 1rem 0;
+  padding: 0.5rem;
+}
+
+
+ion-fab.shita-alt {
+  background: #E89F9F;
+  margin: 1.0rem 1rem 0;
+  padding: 0.5rem;
+  border-radius: 50% 50% 0 0;
+}
+
+ion-fab.whatsapp {
+  margin: 1rem 1rem 0;
+  padding: 0.5rem;
+}
+
+
+
+
