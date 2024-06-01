@@ -4,19 +4,22 @@
     <ion-img src="assets/icon/shita.png"></ion-img>
   </ion-fab-button>
   <ion-fab-list side="bottom">
-    <ion-fab-button class="active">
+    <ion-fab-button [ngClass]="{active: selectedApproach().name === 'ashkenaz'}"
+      (click)="chooseApproach('ashkenaz')">
       <ion-text>
-        אשכנז
+        {{this.approaches()['ashkenaz'].nameHeb}}
       </ion-text>
     </ion-fab-button>
-    <ion-fab-button>
-      <ion-text>
-        חב"ד
+    <ion-fab-button [ngClass]="{active: selectedApproach().name === 'chabad'}"
+      (click)="chooseApproach('chabad')">
+      <ion-text style="padding-bottom: 0.5rem;">
+        {{this.approaches()['chabad'].nameHeb}}
       </ion-text>
     </ion-fab-button>
-    <ion-fab-button>
+    <ion-fab-button [ngClass]="{active: selectedApproach().name === 'sfarad'}"
+      (click)="chooseApproach('sfarad')">
       <ion-text style="height: -webkit-fill-available;">
-        עדות מזרח
+        {{this.approaches()['sfarad'].nameHeb}}
       </ion-text>
     </ion-fab-button>
   </ion-fab-list>

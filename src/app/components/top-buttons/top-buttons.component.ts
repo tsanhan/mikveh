@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, signal, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import {
   IonButtons,
   IonButton,
@@ -15,6 +15,7 @@ import {
   IonLabel, IonImg } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { logoWhatsapp } from 'ionicons/icons';
+import { CacheService } from 'src/app/state/cache.service';
 @Component({
   selector: 'app-top-buttons',
   standalone: true,
@@ -39,7 +40,10 @@ import { logoWhatsapp } from 'ionicons/icons';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TopButtonsComponent implements AfterViewInit{
-  // view child
+  cache = inject(CacheService);
+  approaches = this.cache.approaches;
+  selectedApproach = this.cache.approach;
+
   @ViewChild('shita', {read: ElementRef}) img: ElementRef;
   isShowApproaches = signal(false);
   countryCode: string = '972';
@@ -63,14 +67,20 @@ export class TopButtonsComponent implements AfterViewInit{
 
   }
 
-  toggle(source: string) {
-    console.log('source', source);
+  protected toggle(source: string) {
+    // console.log('source', source);
 
     this.isShowApproaches.update((prev) => !prev);
+
+
   }
 
   protected onclose() {
     console.log('closed');
+  }
 
+  chooseApproach(approach: string) {
+    this.cache.setApproach(approach);
+    // this.isShowApproaches.set(false);
   }
 }

@@ -77,8 +77,8 @@ export class CacheService {
     this._storage.set('location', location);
   }
 
-  public setApproach(hebName: string) {
-    const approach = this.approaches()[hebName];
+  public setApproach(key: string) {
+    const approach = this.approaches()[key];
     this._approach.set(approach);
     this._storage.set('approach', approach);
   }
