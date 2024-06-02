@@ -2,7 +2,7 @@
   {
     "id": "hefsek-taharah",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "הפסק טהרה",
+    "title": "טהרה",
     "content": [
       {
         "type": "text",
@@ -34,7 +34,7 @@
   {
     "id": "shiva-nekyim",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "שבעה נקיים",
+    "title": "ש.נקיים",
     "content": [
       {
         "type": "text",
@@ -58,7 +58,7 @@
   {
     "id": "dinei-hafifa",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "דיני חפיפה",
+    "title": "חפיפה",
     "content": [
       {
         "type": "text",
@@ -82,7 +82,7 @@
   {
     "id": "dinei-chatsitsa",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "דיני חציצה",
+    "title": "חציצה",
     "content": [
       {
         "type": "text",
@@ -106,7 +106,7 @@
   {
     "id": "hilchot-tvila",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "הלכות טבילה",
+    "title": "טבילה",
     "content": [
       {
         "type": "text",
@@ -130,7 +130,7 @@
   {
     "id": "prisha-samuch-leveset",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "פרישה סמוך לווסת",
+    "title": "ווסתות",
     "content": [
       {
         "type": "text",
@@ -178,7 +178,7 @@
   {
     "id": "dinei-kala",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "דיני כלה",
+    "title": "כלה",
     "content": [
       {
         "type": "text",
@@ -202,7 +202,7 @@
   {
     "id": "dinei-yoldot",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "דיני יולדות ומפולת",
+    "title": "יולדות",
     "content": [
       {
         "type": "text",
@@ -222,7 +222,7 @@
   {
     "id": "sipurim",
     "src": "/assets/images/purity_testing.jpg",
-    "title": "סיפורים מהמקווה",
+    "title": "סיפורים",
     "content": [
       {
         "type": "text",

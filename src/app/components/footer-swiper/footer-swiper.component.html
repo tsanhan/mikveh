@@ -2,20 +2,16 @@
   watch-slides-progress="true">
   <swiper-slide>
     <div class="topic-slide-link">
-      <ion-avatar>
-        הלדות נידה
-      </ion-avatar>
+      <img alt="הלדות נידה" src="assets/images/categories/1.png" />
       <ion-text>
-        הלדות נידה
+        אודות
       </ion-text>
     </div>
   </swiper-slide>
-  @for(topic of topics(); track topic) {
+  @for(topic of topics(); track topic; let idx = $index ) {
   <swiper-slide>
     <div class="topic-slide-link">
-      <ion-avatar>
-        <img [alt]="topic.title" [src]="topic.src" />
-      </ion-avatar>
+      <img [src]="'assets/images/categories/'+(idx+2)+'.png'" />
       <ion-text>
         {{topic.title}}
       </ion-text>

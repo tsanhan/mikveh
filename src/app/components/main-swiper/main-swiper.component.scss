@@ -69,19 +69,30 @@ ion-card {
   margin: 0;
   box-shadow: 0 0 0 0 !important;
   -webkit-box-shadow: 0 0 0 0 !important;
-  & img {
-    object-fit: none !important;
-  }
+
 }
 
+ion-card-title {
+  font-family: 'VarelaRound';
+  text-align: center;
+  font-size: 2rem;
+}
 
-
+ion-card-subtitle{
+  font-family: 'VarelaRound';
+  text-align: center;
+  font-size: 0.75rem;
+  color: black;
+}
 ion-card-content {
   overflow: scroll;
   height: -webkit-fill-available;
   -ms-overflow-style: none;
   scrollbar-width: none;
   height: 38vh;
+  font-family: 'VarelaRound';
+  font-size: 1rem;
+  color: black;
 
   /* Firefox */
   &::-webkit-scrollbar {

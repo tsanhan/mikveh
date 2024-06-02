@@ -1,6 +1,8 @@
 :host {
   display: block;
   background: #FFFFFF;
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
 
 
@@ -32,6 +34,7 @@ swiper-slide {
 
 .footer-swiper .swiper-slide-thumb-active {
   opacity: 1;
+
 }
 
 .topic-slide-link {
@@ -40,7 +43,7 @@ swiper-slide {
   justify-content: space-between;
   align-items: center;
   align-content: space-between;
-  height: -webkit-fill-available;
+  height: 13vh;
 
   & ion-text {
     font-size: small;
@@ -53,6 +56,11 @@ ion-avatar {
   height: 15vw;
 }
 
+ion-text {
+  color: black;
+  font-family: 'VarelaRound';
+  font-size: 0.75rem;
+}
 
 
 
@@ -93,11 +101,13 @@ swiper-slide {
 
 .mySwiper2 .swiper-slide-thumb-active {
   opacity: 1;
+  -webkit-filter: drop-shadow(-1px 3px 3px #000000);
+  filter: drop-shadow(-1px 3px 3px #000000);
 }
 
 swiper-slide img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
