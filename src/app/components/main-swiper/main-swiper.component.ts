@@ -16,12 +16,12 @@ import {
   globe,
 } from 'ionicons/icons';
 import { CacheService } from 'src/app/state/cache.service';
-import { IonAvatar, IonText } from '@ionic/angular/standalone';
+import { IonAvatar, IonText, IonImg } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-main-swiper',
   standalone: true,
-  imports: [CommonModule, IonAvatar, IonText],
+  imports: [CommonModule, IonAvatar, IonText, IonImg],
   templateUrl: './main-swiper.component.html',
   styleUrl: './main-swiper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,7 +38,6 @@ export class MainSwiperComponent {
     return topic['title'];
   });
   subtitle = computed(() => this.topics()[this.activeIndex()]['subtitle']);
-
   constructor() {
     addIcons({ document, chevronForwardCircle, colorPalette, globe });
   }

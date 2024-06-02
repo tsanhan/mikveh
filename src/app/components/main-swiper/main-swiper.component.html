@@ -1,9 +1,8 @@
 <swiper-container style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="mySwiper"
     thumbs-swiper=".mySwiper2" space-between="10" >
   <swiper-slide>
-        <div class="header">
-          <ion-avatar>
-          </ion-avatar>
+        <!-- <div class="header">
+          <ion-img [src]="'assets/images/srips/1.png'"></ion-img>
           <ion-text>
             <div class="title">אודות</div>
           </ion-text>
@@ -13,36 +12,88 @@
         </div>
         <div>
           הלכות נידה
-        </div>
+        </div> -->
+        <ion-card>
+          <img class="img" alt="Silhouette of mountains" src="assets/images/srips/1.png" />
+          <ion-card-header>
+            <ion-card-title>אודות</ion-card-title>
+            <ion-card-subtitle>הלכות נידה</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+              <div>
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+              <div>
+
+                Here's a small text description for the card content. Nothing more, nothing less.
+              </div>
+
+          </ion-card-content>
+        </ion-card>
       </swiper-slide>
-  @for(topic of topics(); track topic) {
+  @for(topic of topics(); track topic; let idx = $index) {
   <swiper-slide>
-    <div class="header">
-      <ion-avatar>
-      </ion-avatar>
-      <ion-text>
-        <div class="title">{{title()}}</div>
-      </ion-text>
-      <ion-text>
-        <div class="subtitle">{{subtitle()}}</div>
-      </ion-text>
-    </div>
-    <div class="slide-body">
+    <ion-card>
+      <img class="img" alt="Silhouette of mountains" [src]="'assets/images/srips/'+(idx+2)+'.png'" />
+      <ion-card-header>
+        <ion-card-title>{{title()}}</ion-card-title>
+        <ion-card-subtitle>{{subtitle()}}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        @for(contentObj of topic.content; track contentObj; let i = $index){
+          <div>
+            @if(contentObj.type === 'img') {
+            <img [src]="contentObj.data" />
+            }
+            @else {
+            {{contentObj.data}}
+            }
+          </div>
+          }
+
+      </ion-card-content>
+    </ion-card>
 
 
-    <div >
-      @for(contentObj of topic.content; track contentObj; let i = $index){
-      <div>
-        @if(contentObj.type === 'img') {
-        <img [src]="contentObj.data" />
-        }
-        @else {
-        {{contentObj.data}}
-        }
-      </div>
-      }
-    </div>
-  </div>
   </swiper-slide>
   }
 

@@ -64,12 +64,24 @@ ion-avatar {
 
 
 
+ion-card {
+  --background: #f4d1cd;
+  margin: 0;
+  box-shadow: 0 0 0 0 !important;
+  -webkit-box-shadow: 0 0 0 0 !important;
+  & img {
+    object-fit: none !important;
+  }
+}
 
-.slide-body {
+
+
+ion-card-content {
   overflow: scroll;
   height: -webkit-fill-available;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  height: 38vh;
 
   /* Firefox */
   &::-webkit-scrollbar {
@@ -81,4 +93,6 @@ ion-avatar {
   }
 }
 
-
+ion-img::part(image) {
+  width: -webkit-fill-available;
+}
