@@ -5,10 +5,26 @@ ion-content::part(background) {
 
 }
 
+ion-content::part(scroll)::before{
+  // background: linear-gradient(0turn, #EAA7A7, #ffffff);
+  bottom: 1%;
+
+}
+
 ion-footer::part(background) {
   background: #F4D1CD;
 }
 
 .top-buttons {
   height: 10vh;
+}
+
+.wave{
+
+  // display: inline-block;
+  // position: relative;
+  // width: 100%;
+  // padding-bottom: 100%;
+  // vertical-align: middle;
+  // overflow: hidden;
 }

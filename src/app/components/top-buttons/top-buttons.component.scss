@@ -50,6 +50,7 @@ ion-fab-list {
     position: relative;
     padding: 0rem 0.5rem 0.5rem 0.5rem;
     height: 2rem;
+    transform: translateY(-1px);
     & ion-text{
       height: -webkit-fill-available;
     }
