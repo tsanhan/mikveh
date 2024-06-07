@@ -1,19 +1,33 @@
+:host {
+  background: #F4D1CD;
+
+}
+
 ion-img {
   display: inline-flex;
 }
 
-.time{
+.time {
   font-family: "Varela";
   font-size: 0.75rem;
   display: flex;
   flex-direction: row;
   align-items: center;
+  color: black;
+  & ion-text {
+    color: black;
+  }
 }
-.text{
+
+.text {
   font-family: "VarelaRound";
   font-size: 0.75rem;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-evenly;
+  color: black;
+  & ion-text {
+    color: black;
+  }
 }
