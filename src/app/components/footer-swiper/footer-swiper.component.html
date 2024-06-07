@@ -1,18 +1,18 @@
-<swiper-container class="mySwiper2" space-between="10" slides-per-view="4" free-mode="true"
+<swiper-container style="height: 100%;" class="mySwiper2" space-between="10" slides-per-view="4" free-mode="true"
   watch-slides-progress="true">
-  <swiper-slide>
+  <!-- <swiper-slide>
     <div class="topic-slide-link">
       <img src="assets/images/categories/1.png" />
-      <ion-text>
+      <ion-text style="margin-bottom: 1vh;">
         אודות
-      </ion-text>
+      </ion-text >
     </div>
-  </swiper-slide>
+  </swiper-slide> -->
   @for(topic of topics(); track topic; let idx = $index ) {
   <swiper-slide>
     <div class="topic-slide-link">
-      <img [src]="'assets/images/categories/'+(idx+2)+'.png'" />
-      <ion-text>
+      <img [src]="'assets/images/categories/'+(idx+1)+'.png'" />
+      <ion-text style="margin-bottom: 1vh;" >
         {{topic.title}}
       </ion-text>
     </div>

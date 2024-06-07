@@ -1,13 +1,21 @@
-<swiper-container style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="mySwiper"
+<swiper-container style="background: #F4D1CD; --swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="mySwiper"
   thumbs-swiper=".mySwiper2" space-between="10">
-  <swiper-slide>
-    <ion-card>
+  <!-- <swiper-slide style="background: #F4D1CD;">
+    <ion-card style="background: #F4D1CD;">
       <img class="img" src="assets/images/srips/1.png" />
-      <ion-card-header>
-        <ion-card-title>אודות</ion-card-title>
-        <ion-card-subtitle>הלכות נידה</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
+      <div class="card-header" >
+        <div [ngStyle]="{
+          fontFamily: 'VarelaRound',
+          textAlign: 'center',
+          color: 'black',
+          fontSize: '2rem'}"
+          class="card-title">אודות</div>
+        <div [ngStyle]="{fontFamily: 'VarelaRound',
+        textAlign: 'center',
+        fontSize: '0.75rem',
+        color: 'black'}" class="card-subtitle">הלכות נידה</div>
+      </div>
+      <div class="content" style="background: #F4D1CD;">
         <div>
           Here's a small text description for the card content. Nothing more, nothing less.
         </div>
@@ -55,18 +63,27 @@
           Here's a small text description for the card content. Nothing more, nothing less.
         </div>
 
-      </ion-card-content>
+      </div>
     </ion-card>
-  </swiper-slide>
+  </swiper-slide> -->
   @for(topic of topics(); track topic; let idx = $index) {
-  <swiper-slide>
-    <ion-card>
-      <img class="img" [src]="'assets/images/srips/'+(idx+2)+'.png'" />
-      <ion-card-header>
-        <ion-card-title>{{title()}}</ion-card-title>
-        <ion-card-subtitle>{{subtitle()}}</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
+  <swiper-slide style="background: #F4D1CD;">
+    <ion-card style="background: #F4D1CD;">
+      <img class="img" [src]="'assets/images/srips/'+(idx+1)+'.png'" />
+      <div class="card-header">
+        <div [ngStyle]="{
+          fontFamily: 'VarelaRound',
+          textAlign: 'center',
+          color: 'black',
+          fontSize: '2rem'}"
+          class="card-title">{{topic.title}}</div>
+        <div [ngStyle]="{fontFamily: 'VarelaRound',
+        textAlign: 'center',
+        fontSize: '0.75rem',
+        color: 'black'}" class="card-subtitle">{{topic.subtitle}}</div>
+      </div>
+
+      <div class="content" style="background: #F4D1CD;">
         @for(contentObj of topic.content; track contentObj; let i = $index){
         <div>
           @if(contentObj.type === 'img') {
@@ -78,9 +95,8 @@
         </div>
         }
 
-      </ion-card-content>
+      </div>
     </ion-card>
   </swiper-slide>
   }
 </swiper-container>
-
