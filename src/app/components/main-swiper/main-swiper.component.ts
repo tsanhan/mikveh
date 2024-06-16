@@ -30,6 +30,7 @@ import { IonAvatar, IonText, IonImg } from '@ionic/angular/standalone';
 export class MainSwiperComponent {
   cache = inject(CacheService);
   topics = this.cache.topics;
+  approach = this.cache.approach;
   activeIndex: WritableSignal<number> = signal(0);
   title = computed(() => {
     const topics = this.topics();
@@ -37,6 +38,7 @@ export class MainSwiperComponent {
     const topic = topics[index];
     return topic['title'];
   });
+  approachKey = computed(() => this.approach()['name']);
   subtitle = computed(() => this.topics()[this.activeIndex()]['subtitle']);
   constructor() {
     addIcons({ document, chevronForwardCircle, colorPalette, globe });

@@ -84,7 +84,7 @@
       </div>
 
       <div class="content" style="background: #F4D1CD;">
-        @for(contentObj of topic.content; track contentObj; let i = $index){
+        @for(contentObj of topic.content[this.approachKey()]; track contentObj; let i = $index){
         <div>
           @if(contentObj.type === 'img') {
           <img [src]="contentObj.data" />
