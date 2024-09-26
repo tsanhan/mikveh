@@ -6,7 +6,9 @@ ion-content::part(scroll)::before{
   bottom: 1%;
 
 }
-
+ion-content {
+  --background:#F4D1CD;
+}
 ion-footer::part(background) {
   background: #F4D1CD;
 }
