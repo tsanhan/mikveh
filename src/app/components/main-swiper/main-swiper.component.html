@@ -1,5 +1,5 @@
-<swiper-container style="background: #F4D1CD; --swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="mySwiper"
-  thumbs-swiper=".mySwiper2" space-between="10">
+<swiper-container style="background: #F4D1CD; --swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
+  class="mySwiper" thumbs-swiper=".mySwiper2" space-between="10">
   @for(topic of topics(); track topic; let idx = $index) {
   <swiper-slide style="background: #F4D1CD;">
     <ion-card style="background: #F4D1CD;">
@@ -9,8 +9,7 @@
           fontFamily: 'VarelaRound',
           textAlign: 'center',
           color: 'black',
-          fontSize: '2rem'}"
-          class="card-title">{{topic.title}}</div>
+          fontSize: '2rem'}" class="card-title">{{topic.title}}</div>
         <div [ngStyle]="{fontFamily: 'VarelaRound',
         textAlign: 'center',
         fontSize: '0.75rem',
@@ -20,12 +19,18 @@
       <div class="content" style="background: #F4D1CD;">
         @for(contentObj of topic.content[this.approachKey()]; track contentObj; let i = $index){
         <div>
-          @if(contentObj.type === 'img') {
-          <img [src]="contentObj.data" />
+          @switch (contentObj.type) {
+            @case ('img') {
+              <img [src]="contentObj.data" />
+            }
+            @case ('text') {
+               {{jsonEscape(contentObj.data)}}
+            }
+            @default {
+              {{contentObj.data}}
+            }
           }
-          @else {
-          {{contentObj.data}}
-          }
+
         </div>
         }
 

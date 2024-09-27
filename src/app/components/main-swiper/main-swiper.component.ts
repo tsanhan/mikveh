@@ -43,4 +43,11 @@ export class MainSwiperComponent {
   constructor() {
     addIcons({ document, chevronForwardCircle, colorPalette, globe });
   }
+
+  jsonEscape = (str: string) => {
+    return str
+      .replace(/\n/g, '\\\\n')
+      .replace(/\r/g, '\\\\r')
+      .replace(/\t/g, '\\\\t');
+  };
 }
