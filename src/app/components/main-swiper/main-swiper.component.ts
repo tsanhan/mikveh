@@ -16,12 +16,12 @@ import {
   globe,
 } from 'ionicons/icons';
 import { CacheService } from 'src/app/state/cache.service';
-import { IonAvatar, IonText, IonImg } from '@ionic/angular/standalone';
+import { IonAvatar, IonText, IonImg, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-main-swiper',
   standalone: true,
-  imports: [CommonModule, IonAvatar, IonText, IonImg],
+  imports: [CommonModule, IonAvatar, IonText, IonImg, IonGrid, IonCol, IonRow  ],
   templateUrl: './main-swiper.component.html',
   styleUrl: './main-swiper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

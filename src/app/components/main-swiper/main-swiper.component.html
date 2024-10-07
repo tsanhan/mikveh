@@ -26,6 +26,16 @@
             @case ('text') {
                {{jsonEscape(contentObj.data)}}
             }
+            @case ('table') {
+              <ion-grid>
+                <ion-row>
+                  <ion-col *ngFor="let header of contentObj.data[0]" style="background-color: #b15d54; color: #F4D1CD;">{{header}}</ion-col>
+                </ion-row>
+                <ion-row *ngFor="let row of contentObj.data.slice(1)">
+                  <ion-col *ngFor="let cell of row">{{cell}}</ion-col>
+                </ion-row>
+              </ion-grid>
+            }
             @default {
               {{contentObj.data}}
             }
