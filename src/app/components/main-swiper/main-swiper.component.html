@@ -26,6 +26,12 @@
             @case ('text') {
                {{jsonEscape(contentObj.data)}}
             }
+            @case ('bold') {
+               {{jsonEscape(contentObj.data)}}
+            }
+            @case ('headline') {
+               {{jsonEscape(contentObj.data)}}
+            }
             @case ('table') {
               <ion-grid>
                 <ion-row>

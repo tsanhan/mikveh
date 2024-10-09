@@ -9,6 +9,6 @@ export interface Topic {
 export type Content = { [approach: string]: TopicContent[] };
 
 export type TopicContent = {
-  type: 'text' | 'img' | 'table';
+  type: 'text' | 'img' | 'table' |'bold' | 'headline';
   data: string;
 };
