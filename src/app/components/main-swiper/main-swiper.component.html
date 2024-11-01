@@ -27,10 +27,17 @@
                {{jsonEscape(contentObj.data)}}
             }
             @case ('bold') {
-               {{jsonEscape(contentObj.data)}}
+              <!-- center the text -->
+              <div style="text-align: center;">
+                <b>{{jsonEscape(contentObj.data)}}</b>
+              </div>
             }
             @case ('headline') {
-               {{jsonEscape(contentObj.data)}}
+              <div style="text-align: center;">
+                <h2 style="text-align: center;">{{jsonEscape(contentObj.data)}}</h2>
+                <!-- svg image here -->
+                <img style="width: auto;" class="img" src="assets/icon/break.svg" />
+              </div>
             }
             @case ('table') {
               <ion-grid>
