@@ -1,6 +1,6 @@
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import { PreloadAllModules, provideRouter, RouteReuseStrategy, withPreloading } from '@angular/router';
 import {
   IonicRouteStrategy,
   provideIonicAngular,
@@ -36,6 +36,7 @@ import {
 import { registerLocaleData } from '@angular/common';
 import localeDeAt from '@angular/common/locales/he';
 import { Capacitor } from '@capacitor/core';
+import { routes } from './app/app.routes';
 
 registerLocaleData(localeDeAt, 'he');
 
@@ -80,6 +81,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(provideStorage(() => getStorage())),
     importProvidersFrom(provideRemoteConfig(() => getRemoteConfig())),
     importProvidersFrom(IonicStorageModule.forRoot()),
+    provideRouter(routes, withPreloading(PreloadAllModules)),
 
   ],
 });

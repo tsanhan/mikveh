@@ -57,7 +57,7 @@ ion-fab-list {
 
   ion-text{
     text-align: center;
-    padding: 0 0.5rem;
+    padding: 10px 0.5rem;
   }
 }
 
@@ -85,4 +85,11 @@ ion-fab.whatsapp {
 
 
 
+::ng-deep ion-button.routActive {
+  color: black;
+}
 
+::ng-deep ion-button {
+  color: #FFFFFF;
+
+}
