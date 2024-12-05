@@ -19,11 +19,16 @@
         {{this.approaches()['sfarad'].nameHeb}}
       </ion-text>
     </ion-fab-button>
-    <ion-fab-button [show]="true">
+    <!-- <ion-fab-button [show]="true">
       <ion-button [ngClass]="{routActive: (rootRoute$ | async)?.includes('/calendar')}" fill="clear" routerLink="/calendar" style="--padding-bottom: 10px;">
         <ion-icon  slot="icon-only" name="calendar-outline"></ion-icon>
       </ion-button>
     </ion-fab-button>
+    <ion-fab-button [show]="true">
+      <ion-button [ngClass]="{routActive: (rootRoute$ | async)?.includes('/map')}" fill="clear" routerLink="/map" style="--padding-bottom: 10px;">
+        <ion-icon  slot="icon-only" name="map-outline"></ion-icon>
+      </ion-button>
+    </ion-fab-button> -->
     <ion-fab-button [show]="true">
       <ion-button [ngClass]="{routActive: (rootRoute$ | async)?.includes('/approaches')}" fill="clear" routerLink="/approaches" style="--padding-bottom: 10px;">
         <ion-icon slot="icon-only" name="book-outline"></ion-icon>

@@ -9,7 +9,7 @@ import {
   IonFabList,
   IonImg, IonButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { bookOutline, calendarOutline, logoWhatsapp } from 'ionicons/icons';
+import { bookOutline, calendarOutline, logoWhatsapp, mapOutline } from 'ionicons/icons';
 import { filter, map, shareReplay, startWith, tap } from 'rxjs';
 import { CacheService } from 'src/app/state/cache.service';
 @Component({
@@ -59,7 +59,7 @@ export class TopButtonsComponent {
   )
 
   constructor() {
-    addIcons({ logoWhatsapp, calendarOutline, bookOutline });
+    addIcons({calendarOutline,mapOutline,bookOutline,logoWhatsapp});
   }
 
 

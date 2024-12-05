@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { ApproachesComponent } from './pages/approaches/approaches.component';
 import { CalendarComponent } from './pages/calendar/calendar.component';
+import { MapComponent } from './pages/map/map.component';
 
 export const routes: Routes = [
   {
@@ -10,6 +11,10 @@ export const routes: Routes = [
   {
     path: 'calendar',
     component: CalendarComponent
+  },
+  {
+    path: 'map',
+    component: MapComponent
   },
   {
     path: '**',
