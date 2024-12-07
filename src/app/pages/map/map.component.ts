@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { IonContent } from '@ionic/angular/standalone';
+import { IonContent, IonButton } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-map',
@@ -7,12 +7,14 @@ import { IonContent } from '@ionic/angular/standalone';
   styleUrls: ['./map.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonContent]
+  imports: [IonButton, IonContent]
 })
 export class MapComponent {
 
   constructor() { }
 
+  getCurrentLocation(){
 
+  }
 
 }
