@@ -1,6 +1,16 @@
 <ion-content>
-  <ion-button (click)="getCurrentLocation()" expand="block" fill="clear" >
-    Click me
-  </ion-button>
+  <div style="text-align: center;">
+
+    <ion-button (click)="getCurrentLocation()" >
+      Click me
+    </ion-button>
+  </div>
+  <div>
+    lat: {{lat()}}
+  </div>
+  <div>
+    lng: {{lng()}}
+  </div>
+
 </ion-content>
 

@@ -20,7 +20,7 @@ import { tdesignSunFall, tdesignSunRising } from '@ng-icons/tdesign-icons';
     }),
   ],
 })
-export class DayTimesComponent implements OnInit {
+export class DayTimesComponent {
   cache = inject(CacheService);
 
   gloc = computed(() => {
@@ -28,7 +28,7 @@ export class DayTimesComponent implements OnInit {
       this.cache.location();
     return new GeoLocation(name, latitude, longitude, elevation, timeZoneId);
   });
-  zmanim = computed(() => new Zmanim(this.gloc(), new Date()));
+  zmanim = computed(() => new Zmanim(this.gloc(), new Date(), false));
   sunrize = computed(() => this.zmanim().sunrise());
   sunset = computed(() => this.zmanim().sunset());
 
@@ -39,5 +39,4 @@ export class DayTimesComponent implements OnInit {
     Locale.hebrewStripNikkud('he');
   }
 
-  ngOnInit() {}
 }
