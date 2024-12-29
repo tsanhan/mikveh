@@ -4,7 +4,7 @@ service cloud.firestore {
     match /mikvehs/{document=**} {
       allow read: if true;
       // write if the email of the authorized person's email is in the list: [tsanhan@gmail.com]
-      allow write: if request.auth.token.email in ['tsanhan@gmail.com'];
+      allow write: if request.auth.token.email in ['tsanhan@gmail.com','770ganani@gmail.com'];
     }
   }
 }
