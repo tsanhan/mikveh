@@ -1,14 +1,15 @@
 {
+  "projects": {
+    "default": "mikveh-bo"
+  },
   "targets": {
-    "mikveh-app": {
+    "mikveh-bo": {
       "hosting": {
-        "app": [
-          "mikveh-app"
+        "mikveh4u": [
+          "mikveh4u"
         ]
       }
     }
   },
-  "projects": {
-    "default": "mikveh-app"
-  }
+  "etags": {}
 }
