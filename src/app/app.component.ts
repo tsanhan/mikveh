@@ -5,8 +5,11 @@ import { IonApp, IonRouterOutlet , IonButtons,
   IonMenu,
   IonMenuButton,
   IonTitle,
-  IonToolbar,} from '@ionic/angular/standalone';
+  IonToolbar, IonButton ,
+  IonMenuToggle, IonIcon } from '@ionic/angular/standalone';
 import { TopButtonsComponent } from "./components/top-buttons/top-buttons.component";
+import { addIcons } from 'ionicons';
+import { closeOutline } from 'ionicons/icons';
 
 
 @Component({
@@ -14,7 +17,7 @@ import { TopButtonsComponent } from "./components/top-buttons/top-buttons.compon
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  imports: [
+  imports: [IonIcon, IonButton,
     IonApp,
     IonRouterOutlet,
     TopButtonsComponent,
@@ -25,9 +28,17 @@ import { TopButtonsComponent } from "./components/top-buttons/top-buttons.compon
     IonMenuButton,
     IonTitle,
     IonToolbar,
+    IonMenuToggle,
+
 ],
 
 })
 export class AppComponent {
+  /**
+   *
+   */
+  constructor() {
+    addIcons({ closeOutline });
 
+  }
 }
