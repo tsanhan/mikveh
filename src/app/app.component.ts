@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet , IonButtons,
+  IonContent,
+  IonHeader,
+  IonMenu,
+  IonMenuButton,
+  IonTitle,
+  IonToolbar,} from '@ionic/angular/standalone';
 import { TopButtonsComponent } from "./components/top-buttons/top-buttons.component";
 
 
@@ -11,7 +17,14 @@ import { TopButtonsComponent } from "./components/top-buttons/top-buttons.compon
   imports: [
     IonApp,
     IonRouterOutlet,
-    TopButtonsComponent
+    TopButtonsComponent,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonMenu,
+    IonMenuButton,
+    IonTitle,
+    IonToolbar,
 ],
 
 })

@@ -25,7 +25,7 @@ import { CacheService } from 'src/app/state/cache.service';
     IonImg,
     RouterLink,
     RouterLinkActive,
-    AsyncPipe
+    AsyncPipe,
 
   ],
   templateUrl: './top-buttons.component.html',
