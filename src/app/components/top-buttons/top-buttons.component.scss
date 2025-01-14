@@ -83,7 +83,10 @@ ion-fab.whatsapp {
   padding: 0.5rem;
 }
 
-
+ion-menu-button {
+  margin: 1.5rem;
+  color: #d78788;
+}
 
 ::ng-deep ion-button.routActive {
   color: black;

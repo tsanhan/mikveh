@@ -3,3 +3,7 @@
   background: #f3d1ce;
   z-index: 9;
 }
+
+ion-menu::part(container) {
+  width: -webkit-fill-available;
+}

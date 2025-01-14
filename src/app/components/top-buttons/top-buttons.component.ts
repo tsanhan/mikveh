@@ -7,7 +7,7 @@ import {
   IonFab,
   IonFabButton,
   IonFabList,
-  IonImg, IonButton } from '@ionic/angular/standalone';
+  IonImg, IonButton ,  IonMenuButton, IonButtons } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { bookOutline, calendarOutline, logoWhatsapp, mapOutline } from 'ionicons/icons';
 import { filter, map, shareReplay, startWith, tap } from 'rxjs';
@@ -15,7 +15,7 @@ import { CacheService } from 'src/app/state/cache.service';
 @Component({
   selector: 'app-top-buttons',
   standalone: true,
-  imports: [IonButton, IonImg,
+  imports: [IonButtons, IonButton, IonImg,
     IonFabList,
     IonFabButton,
     IonFab,
@@ -26,6 +26,7 @@ import { CacheService } from 'src/app/state/cache.service';
     RouterLink,
     RouterLinkActive,
     AsyncPipe,
+    IonMenuButton,
 
   ],
   templateUrl: './top-buttons.component.html',
