@@ -7,3 +7,24 @@
 ion-menu::part(container) {
   width: -webkit-fill-available;
 }
+
+.close-button{
+  margin: 1.5rem;
+  color: black;
+}
+.close-icon{
+  color: black;
+}
+
+ion-header {
+  box-shadow: none;
+}
+ion-toolbar{
+  --background: #d37d7f;
+  --border-color: #d37d7f;
+  --color: black;
+}
+
+.ion-padding{
+  --background: #d37d7f;
+}
