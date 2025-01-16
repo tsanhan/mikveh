@@ -11,6 +11,16 @@
   margin: 1rem;
 }
 
-ng-icon{
+ion-button{
+  --background: rgb(242 209 206) !important;
+  --color: rgb(0 0 0);
+  --ion-color-base: rgb(242 209 206) !important;
+  &.active{
+    --ion-color-base: rgb(227 166 166) !important;
+  }
 
+}
+
+ion-icon{
+  color: rgb(0 0 0);
 }
