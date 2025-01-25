@@ -13,11 +13,15 @@
     flex-direction: column;
     gap: 0.5rem;
     align-items: center;
-    justify-content: center;
     max-width: 33%;
     width: -webkit-fill-available;
+    justify-content: flex-start;
     & .active{
       font-weight: bold;
+    }
+
+    & div {
+      text-align: center;
     }
   }
 }

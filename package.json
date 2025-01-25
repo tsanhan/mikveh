@@ -42,6 +42,7 @@
     "@ng-icons/tdesign-icons": "^27.3.1",
     "capacitor-native-settings": "^6.0.1",
     "ionicons": "^7.2.1",
+    "jewish-date": "^2.0.18",
     "rxjs": "~7.8.0",
     "swiper": "^11.1.1",
     "tslib": "^2.3.0",
