@@ -5,15 +5,15 @@ import { bootstrapClock } from '@ng-icons/bootstrap-icons';
 import { timeOutline, searchOutline, logoWhatsapp } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { CommonModule } from '@angular/common';
+import { DayTimesComponent } from '../day-times/day-times.component';
 @Component({
   selector: 'app-side-menu-content',
   templateUrl: './side-menu-content.component.html',
   styleUrls: ['./side-menu-content.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonText, IonImg, IonFabButton, IonFab, IonButton, IonSegmentButton, IonSegment, IonIcon,NgIcon ],
+  imports: [CommonModule, IonText, IonImg, IonFabButton, IonFab, IonButton, IonSegmentButton, IonSegment, IonIcon,NgIcon,DayTimesComponent ],
   viewProviders: [provideIcons({ bootstrapClock })],
   changeDetection: ChangeDetectionStrategy.OnPush
-
 
 })
 export class SideMenuContentComponent  implements OnInit {

@@ -57,7 +57,7 @@ export class MapComponent {
 
   }
 
-  openSettings(app = false){
+  openSettings(app = false) {
     return NativeSettings.open({
       optionAndroid: app ? AndroidSettings.ApplicationDetails : AndroidSettings.Location,
       optionIOS:  app ? IOSSettings.App : IOSSettings.LocationServices

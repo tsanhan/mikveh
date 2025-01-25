@@ -2,13 +2,13 @@ import { Component, ChangeDetectionStrategy, OnInit, CUSTOM_ELEMENTS_SCHEMA, inj
 import { CacheService } from 'src/app/state/cache.service';
 import { MainSwiperComponent } from '../../components/main-swiper/main-swiper.component';
 import { FooterSwiperComponent } from '../../components/footer-swiper/footer-swiper.component';
-import { DayTimesComponent } from '../../components/day-times/day-times.component';
 import { TopButtonsComponent } from '../../components/top-buttons/top-buttons.component';
 import { SegmentCustomEvent } from '@ionic/core';
 import { addIcons } from 'ionicons';
 import { chevronForwardCircle, colorPalette, document, globe } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 import { IonContent } from '@ionic/angular/standalone';
+import { DayTimesHeaderComponent } from 'src/app/components/day-times-header/day-times-header.component';
 
 register();
 
@@ -23,7 +23,7 @@ register();
   imports: [
     MainSwiperComponent,
     FooterSwiperComponent,
-    DayTimesComponent,
+    DayTimesHeaderComponent,
     TopButtonsComponent,
     IonContent
   ],
