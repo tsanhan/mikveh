@@ -7,9 +7,21 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 3rem;
   margin: 1rem;
+  & .button{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    max-width: 33%;
+    width: -webkit-fill-available;
+    & .active{
+      font-weight: bold;
+    }
+  }
 }
+
 
 ion-button{
   --background: rgb(242 209 206) !important;

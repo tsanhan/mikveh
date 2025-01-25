@@ -1,14 +1,44 @@
 <div class="contant">
   <div class="buttons">
-    <ion-button size="large" shape="round" color="light" (click)="page.set('time')" [ngClass]="{'active': page() === 'time'}" >
-      <ion-icon slot="icon-only" name="time-outline" />
-    </ion-button>
-    <ion-button size="large" shape="round" color="light" (click)="page.set('search')" [ngClass]="{'active': page() === 'search'}">
-      <ion-icon slot="icon-only" name="search-outline"></ion-icon>
-    </ion-button>
-    <ion-button size="large" shape="round" color="light" [href]="url" target="_blank">
-      <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
-    </ion-button>
+    <div class="button">
+      <ion-button
+        size="large"
+        shape="round"
+        color="light"
+        (click)="page.set('time')"
+        [ngClass]="{ active: page() === 'time' }"
+      >
+        <ion-icon slot="icon-only" name="time-outline" />
+      </ion-button>
+      <div [ngClass]="{ active: page() === 'time' }">זמני היום  </div>
+    </div>
+    <div class="button">
+      <ion-button
+        size="large"
+        shape="round"
+        color="light"
+        (click)="page.set('search')"
+        [ngClass]="{ active: page() === 'search' }"
+      >
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+      <div [ngClass]="{ active: page() === 'search' }">חיפוש מקווה
+         </div>
+
+    </div>
+    <div class="button">
+      <ion-button
+        size="large"
+        shape="round"
+        color="light"
+        [href]="url"
+        target="_blank"
+      >
+        <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
+      </ion-button>
+      <div>שאלה לרבנית/לרב
+      </div>
+    </div>
 
     <!-- <ion-fab class="whatsapp" slot="fixed" vertical="top" horizontal="end">
       <ion-fab-button color="transparent" [href]="url" target="_blank" size="small">
@@ -17,12 +47,12 @@
     </ion-fab>
      -->
   </div>
+
   <div class="data">
-    @switch (page()){
-      @case ('time') {
-      <app-day-times></app-day-times>
+    @switch (page()){ @case ('time') {
+    <app-day-times></app-day-times>
     } @case ('search') {
-      <h1>Search</h1>
+    <h1>Search</h1>
     } }
   </div>
 </div>
