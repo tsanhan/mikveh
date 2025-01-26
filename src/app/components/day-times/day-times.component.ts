@@ -35,15 +35,28 @@ export class DayTimesComponent  {
 
   today = this.zmanim.pipe(
     map((zmanim) => {
-
       const as = new HebrewDateEvent(zmanim);
-      const date = as.getDate();
-      const day =  date.getDay();
+      const day = as.getDate().getDay();
+
       const dateStr = `${this.days[day]}, ${as.render('he-x-NoNikud')}` ;
-      return dateStr
-      return formatJewishDateInHebrew(toJewishDate(new Date()));;
+      return dateStr;
     })
   );
+
+  sunrise = this.coordinates.pipe(
+    map(({ lat, lng }) => {
+      const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
+      return new Zmanim(loc,new Date(),true).sunrise;
+    })
+  );
+
+  sunset = this.coordinates.pipe(
+    map(({ lat, lng }) => {
+      const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
+      return new Zmanim(loc,new Date(),true).sunset;
+    })
+  );
+
 
 
 
