@@ -1,6 +1,6 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { CalOptions, GeoLocation, HebrewDateEvent, Location, Zmanim } from '@hebcal/core';
+import { CalOptions, GeoLocation, HebrewDateEvent, Location, parshiot, Sedra, Zmanim } from '@hebcal/core';
 import {HDate} from '@hebcal/hdate';
 
 import { map } from 'rxjs';
@@ -37,7 +37,6 @@ export class DayTimesComponent  {
     map((zmanim) => {
       const as = new HebrewDateEvent(zmanim);
       const day = as.getDate().getDay();
-
       const dateStr = `${this.days[day]}, ${as.render('he-x-NoNikud')}` ;
       return dateStr;
     })
@@ -54,6 +53,15 @@ export class DayTimesComponent  {
     map(({ lat, lng }) => {
       const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
       return new Zmanim(loc,new Date(),true).sunset;
+    })
+  );
+
+  parsha = this.zmanim.pipe(
+    map((zmanim) => {
+      const as = new HebrewDateEvent(zmanim);
+      const sedra = new Sedra(as.getDate().getFullYear(), true);
+      const sedraResult = sedra.lookup(zmanim);
+      return sedraResult.parsha;
     })
   );
 
