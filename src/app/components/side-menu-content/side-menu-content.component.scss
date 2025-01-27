@@ -13,9 +13,8 @@
     flex-direction: column;
     gap: 0.5rem;
     align-items: center;
-    max-width: 33%;
-    width: -webkit-fill-available;
     justify-content: flex-start;
+    flex: 1;
     & .active{
       font-weight: bold;
     }

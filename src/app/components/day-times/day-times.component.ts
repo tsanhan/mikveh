@@ -1,14 +1,23 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { CalOptions, GeoLocation, HebrewDateEvent, Location, parshiot, Sedra, Zmanim } from '@hebcal/core';
-import {HDate} from '@hebcal/hdate';
+import * as days from '../../../assets/data/days.json';
+import * as parashot from '../../../assets/data/parashot.json';
+
+import {
+  CalOptions,
+  GeoLocation,
+  HebrewDateEvent,
+  Location,
+  parshiot,
+  Sedra,
+  Zmanim,
+} from '@hebcal/core';
 
 import { map } from 'rxjs';
 import { LocationService } from 'src/app/services/location.service';
-import { IonList, IonItem, IonLabel, IonIcon } from "@ionic/angular/standalone";
+import { IonList, IonItem, IonLabel, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { calendarOutline } from 'ionicons/icons';
-import { formatJewishDateInHebrew, toJewishDate } from 'jewish-date';
+import { bookOutline, calendarOutline, moonOutline, sunnyOutline } from 'ionicons/icons';
 @Component({
   selector: 'app-day-times',
   templateUrl: './day-times.component.html',
@@ -16,18 +25,19 @@ import { formatJewishDateInHebrew, toJewishDate } from 'jewish-date';
   standalone: true,
   imports: [IonIcon, AsyncPipe, JsonPipe],
 })
-export class DayTimesComponent  {
+export class DayTimesComponent {
   constructor() {
-    addIcons({ calendarOutline });
+    addIcons({ calendarOutline, sunnyOutline, moonOutline, bookOutline });
   }
-  days = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"]
+  para:any = {...parashot}
+
   location = inject(LocationService);
 
   coordinates = this.location.coordinates;
   zmanim = this.coordinates.pipe(
     map(({ lat, lng }) => {
       const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
-      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc,new Date(),true);
+      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, new Date(), true);
 
       return zmanAwware;
     })
@@ -37,7 +47,7 @@ export class DayTimesComponent  {
     map((zmanim) => {
       const as = new HebrewDateEvent(zmanim);
       const day = as.getDate().getDay();
-      const dateStr = `${this.days[day]}, ${as.render('he-x-NoNikud')}` ;
+      const dateStr = `יום ${days[day]}, ${as.render('he-x-NoNikud')}`;
       return dateStr;
     })
   );
@@ -45,14 +55,22 @@ export class DayTimesComponent  {
   sunrise = this.coordinates.pipe(
     map(({ lat, lng }) => {
       const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
-      return new Zmanim(loc,new Date(),true).sunrise;
+      const sr = new Zmanim(loc, new Date(), true).sunrise();
+      const hour = sr.getHours(); // Get the hour
+      const minutes = sr.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
+      const formattedTime = `עלות השחר: ${hour}:${minutes}`;
+      return formattedTime;
     })
   );
 
   sunset = this.coordinates.pipe(
     map(({ lat, lng }) => {
       const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
-      return new Zmanim(loc,new Date(),true).sunset;
+      const ss = new Zmanim(loc, new Date(), true).sunset();
+      const hour = ss.getHours(); // Get the hour
+      const minutes = ss.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
+      const formattedTime = `שקיעה: ${hour}:${minutes}`;
+      return formattedTime;
     })
   );
 
@@ -61,12 +79,14 @@ export class DayTimesComponent  {
       const as = new HebrewDateEvent(zmanim);
       const sedra = new Sedra(as.getDate().getFullYear(), true);
       const sedraResult = sedra.lookup(zmanim);
-      return sedraResult.parsha;
+      const first = sedraResult.parsha[0];
+      if (sedraResult.parsha.length === 1) {
+        return `פרשת השבוע: פרשת ${this.para[first]}`;
+      }
+      const second = sedraResult.parsha[1];
+      return `פרשת השבוע: פרשת ${this.para[first]}-${this.para[second]}`
     })
   );
-
-
-
 
 
 }

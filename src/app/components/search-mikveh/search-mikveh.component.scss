@@ -1,0 +1,12 @@
+ion-searchbar {
+  --border-radius: 5rem;
+  margin: auto;
+  width: 79vw;
+  --background: #f3d1ce;
+  --box-shadow	: none;
+
+  & ::ng-deep .searchbar-input {
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+  }
+}
