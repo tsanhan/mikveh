@@ -1,5 +1,5 @@
 import { inject, Injectable, signal, Signal, computed, WritableSignal, effect } from '@angular/core';
-import { Storage } from '@ionic/storage-angular';
+import { Storage,  } from '@ionic/storage-angular';
 import * as locations from '../../assets/data/locations.json';
 import * as approaches from '../../assets/data/approaches.json';
 import * as topicsJson from '../../assets/data/topics.json';
@@ -12,6 +12,10 @@ import { Topic } from './topics';
 })
 export class CacheService {
   private _storage: Storage = new Storage();
+  private _mikvehStorage: Storage = new Storage();
+
+  //#region Mikveh
+
 
   //#region Location
   private locations: Signal<Locations> = signal({...locations});
@@ -48,6 +52,10 @@ export class CacheService {
 
   private async init() {
     this._storage = await inject(Storage).create();
+    this._mikvehStorage = await inject(Storage).create();
+
+
+
     const loc = await this._storage.get('location');
     if(!loc) {
       await this._storage.set('location', {...this._location()});
@@ -89,4 +97,7 @@ export class CacheService {
     document.body.classList[darkMode ? 'add':'remove']('dark');
   }
 
+  public storeMikvehResults(keyValue: string, value: any) {
+    this._mikvehStorage.set(keyValue, value);
+  }
 }

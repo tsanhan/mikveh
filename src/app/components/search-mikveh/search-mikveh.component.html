@@ -1,1 +1,21 @@
-<ion-searchbar [dir]="'rtl'" placeholder="חפשי כאן"></ion-searchbar>
+<ion-searchbar [dir]="'rtl'" placeholder="חפשי כאן" (ionInput)="search($event)" [debounce]="1000"></ion-searchbar>
+
+<div class="warpper">
+
+  <ion-list>
+    @for (item of items; track item; let index = $index) {
+      <ion-item>
+        <ion-avatar slot="start">
+          <img [src]="'https://picsum.photos/80/80?random=' + index" alt="avatar" />
+        </ion-avatar>
+        <ion-label>{{ item }}</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+
+</div>

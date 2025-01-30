@@ -51,9 +51,6 @@ bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
-
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-
     provideAuth(() => {
       if (Capacitor.isNativePlatform()) {
         return initializeAuth(getApp(), {
@@ -92,7 +89,5 @@ bootstrapApplication(AppComponent, {
         appId: "1:136996094637:web:c8c1b0acb8da9f89d9fc24"
       })
     ),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
   ],
 });
