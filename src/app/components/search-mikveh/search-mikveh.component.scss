@@ -1,17 +1,45 @@
 ion-searchbar {
   --border-radius: 5rem;
-  margin: auto;
-  width: 79vw;
+  // margin: auto;
+  align-self: center;
+  width: 79.5vw;
   --background: #f3d1ce;
-  --box-shadow	: none;
+  --box-shadow: none;
+  padding-top: 0;
 
-  & ::ng-deep .searchbar-input {
-    padding-top:0.5rem;
-    padding-bottom:0.5rem;
-  }
+  // & ::ng-deep {
+  //   & .searchbar-input {
+  //     padding-top: 0.8rem;
+  //     padding-bottom: 0.8rem;
+
+  //   }
+  //   & input.searchbar-input {
+  //     padding-inline-start: 2.875rem !important;
+
+  //   }
+
+  //   & ion-icon.searchbar-search-icon  {
+  //     padding-right: 0.5rem !important;
+
+  //   }
+
+  // }
+
+
 }
 
-.warpper{
-  height: 50vh;
+.warpper {
   overflow: overlay;
 }
+
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+google-map {
+  display: flex;
+  margin-top: auto;
+
+}
+

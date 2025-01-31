@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
   IonSearchbar,
   IonList,
@@ -46,6 +46,7 @@ import { LocationService } from 'src/app/services/location.service';
 export class SearchMikvehComponent implements OnInit {
   dal = inject(DalService);
   location = inject(LocationService);
+  @ViewChild('googleMap', { static: true }) map!: GoogleMap;
 
   items: string[] = ['asd', 'ddf', 'sdf'];
   center$: Observable<google.maps.LatLngLiteral> =
@@ -74,6 +75,11 @@ export class SearchMikvehComponent implements OnInit {
 
   constructor() {}
   ngOnInit(): void {
+    // const options: google.maps.MapOptions {
+
+    // }
+    this.map.options = {}
+
     this.generateItems();
   }
 

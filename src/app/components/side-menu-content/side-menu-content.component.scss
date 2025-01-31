@@ -1,13 +1,19 @@
-.contant{
+.content{
   display: flex;
   flex-direction: column;
+  height: -webkit-fill-available;
+  justify-content: space-between;
 }
-
+.data {
+  display: flex;
+  justify-content: center;
+  height: -webkit-fill-available;
+}
 .buttons{
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin: 1rem;
+  margin: 0 1rem 1rem;
   & .button{
     display: flex;
     flex-direction: column;
