@@ -11,6 +11,9 @@ import { Topic } from './topics';
   providedIn: 'root',
 })
 export class CacheService {
+  storage =  inject(Storage)
+  mikvehStorage = inject(Storage)
+
   private _storage: Storage = new Storage();
   private _mikvehStorage: Storage = new Storage();
 
@@ -51,8 +54,8 @@ export class CacheService {
   }
 
   private async init() {
-    this._storage = await inject(Storage).create();
-    this._mikvehStorage = await inject(Storage).create();
+    this._storage = await this.storage.create();
+    this._mikvehStorage = await this.mikvehStorage.create();
 
 
 
