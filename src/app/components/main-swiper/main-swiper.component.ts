@@ -15,8 +15,8 @@ import {
   document,
   globe,
 } from 'ionicons/icons';
-import { CacheService } from 'src/app/state/cache.service';
 import { IonAvatar, IonText, IonImg, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
+import { CacheService } from 'src/app/services/cache.service';
 
 @Component({
   selector: 'app-main-swiper',

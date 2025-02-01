@@ -3,9 +3,10 @@ import { Storage,  } from '@ionic/storage-angular';
 import * as locations from '../../assets/data/locations.json';
 import * as approaches from '../../assets/data/approaches.json';
 import * as topicsJson from '../../assets/data/topics.json';
-import { Locations, Location } from './locations';
-import { Approach, Approaches } from './approaches';
-import { Topic } from './topics';
+import { Locations, Location } from '../interfaces/locations';
+import { Topic } from '../interfaces/topics';
+import { Approach, Approaches } from '../interfaces/approaches';
+
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,6 @@ import { Topic } from './topics';
 export class CacheService {
   storage =  inject(Storage)
   mikvehStorage = inject(Storage)
-
   private _storage: Storage = new Storage();
   private _mikvehStorage: Storage = new Storage();
 
@@ -21,7 +21,7 @@ export class CacheService {
 
 
   //#region Location
-  private locations: Signal<Locations> = signal({...locations});
+  private locations: Signal<Locations> = signal(locations);
   private _location:  WritableSignal<Location> = signal<Location>(this.locations()['Jerusalem']);
   public location = computed(() => this._location());
   //#endregion
@@ -54,7 +54,6 @@ export class CacheService {
   }
 
   private async init() {
-    this._storage = await this.storage.create();
     this._mikvehStorage = await this.mikvehStorage.create();
 
 

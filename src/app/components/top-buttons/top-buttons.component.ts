@@ -11,7 +11,7 @@ import {
 import { addIcons } from 'ionicons';
 import { bookOutline, calendarOutline, logoWhatsapp, mapOutline } from 'ionicons/icons';
 import { filter, map, shareReplay, startWith, tap } from 'rxjs';
-import { CacheService } from 'src/app/state/cache.service';
+import { CacheService } from 'src/app/services/cache.service';
 @Component({
   selector: 'app-top-buttons',
   standalone: true,

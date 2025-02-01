@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy, OnInit, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
-import { CacheService } from 'src/app/state/cache.service';
 import { MainSwiperComponent } from '../../components/main-swiper/main-swiper.component';
 import { FooterSwiperComponent } from '../../components/footer-swiper/footer-swiper.component';
 import { TopButtonsComponent } from '../../components/top-buttons/top-buttons.component';
@@ -9,6 +8,7 @@ import { chevronForwardCircle, colorPalette, document, globe } from 'ionicons/ic
 import { register } from 'swiper/element/bundle';
 import { IonContent } from '@ionic/angular/standalone';
 import { DayTimesHeaderComponent } from 'src/app/components/day-times-header/day-times-header.component';
+import { CacheService } from 'src/app/services/cache.service';
 
 register();
 
