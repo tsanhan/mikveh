@@ -6,22 +6,10 @@
 ></ion-searchbar>
 
 <div class="warpper">
-  {{ results | async }}
-  asd
-  <!-- <ion-list>
-    @for (item of items; track item; let index = $index) {
-      <ion-item>
-        <ion-avatar slot="start">
-          <img [src]="'https://picsum.photos/80/80?random=' + index" alt="avatar" />
-        </ion-avatar>
-        <ion-label>{{ item }}</ion-label>
-      </ion-item>
-    }
-  </ion-list>
+  @for(mikveh of mikveh$ | async; track mikveh; let idx = $index ){ }
+  <div class="mikveh">
 
-  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll> -->
+  </div>
 </div>
 
 <google-map
@@ -39,5 +27,16 @@
   }"
 >
   <!-- <map-marker *ngIf="center$ | async as center" [position]="center" /> -->
-  <map-advanced-marker *ngIf="(center$ | async) as center" [position]="center"></map-advanced-marker>
+  <map-advanced-marker
+    *ngIf="center$ | async as center"
+    [position]="center"
+  ></map-advanced-marker>
+
+  @for(mikveh of mikvehs$ | async; track mikveh; let idx = $index ){
+  <map-marker
+    [position]="{ lat: mikveh.lat, lng: mikveh.lng }"
+    [label]="mikveh.name"
+    [title]="mikveh.name"
+  ></map-marker>
+  }
 </google-map>

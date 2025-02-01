@@ -13,7 +13,6 @@ export class DalService {
   constructor() { }
 
   getMikvehList() {
-
     const mikvehsRef = collection(this.afs, 'mikvehs');
     const mikvehs = collectionData(mikvehsRef, { idField: 'id' }) as Observable<IMikveh[]>;
     return mikvehs;

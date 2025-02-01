@@ -22,6 +22,7 @@ import {
 import { DalService } from 'src/app/services/dal.service';
 import { GoogleMap, MapMarker, MapAdvancedMarker } from '@angular/google-maps';
 import { LocationService } from 'src/app/services/location.service';
+import { IMikveh } from 'src/app/interfaces/mikveh.interface';
 @Component({
   selector: 'app-search-mikveh',
   templateUrl: './search-mikveh.component.html',
@@ -48,7 +49,6 @@ export class SearchMikvehComponent implements OnInit {
   location = inject(LocationService);
   @ViewChild('googleMap', { static: true }) map!: GoogleMap;
 
-  items: string[] = ['asd', 'ddf', 'sdf'];
   center$: Observable<google.maps.LatLngLiteral> =
     this.location.coordinates.pipe(
       map((coordinates) => {
@@ -60,16 +60,28 @@ export class SearchMikvehComponent implements OnInit {
       })
     );
 
-  keyStroke = new Subject<string>();
+  keyStroke = new BehaviorSubject<string>('');
 
-  results = combineLatest([this.dal.getMikvehList(), this.keyStroke]).pipe(
-    map(([results, key]) => {
+
+  mikvehs$ = combineLatest([this.dal.getMikvehList(), this.keyStroke, this.center$]).pipe(
+    map(([results, key, center]) => {
       const filtered = results.filter((result) => {
-        return result.name.toLowerCase().includes(key.toLowerCase());
+        return result.name.toLowerCase().includes(key.toLowerCase()) || result.address.toLowerCase().includes(key.toLowerCase());
       });
-      return filtered;
-    })
+      const ordered = filtered.sort((a:IMikveh, b:IMikveh) => {
+        const { lat:latC, lng:lngC } = center;
+        const { lat:latA, lng:lngA } = a;
+        const { lat:latB, lng:lngB } = b;
+        const dis0 = Math.sqrt(Math.abs( Math.abs(latC) - Math.abs(latA)) ** 2 + Math.abs(Math.abs(lngC) - Math.abs(lngA)) ** 2);
+        const dis1 = Math.sqrt(Math.abs( Math.abs(latC) - Math.abs(latB)) ** 2 + Math.abs(Math.abs(lngC) - Math.abs(lngB)) ** 2);
+        const dis = Math.abs(dis0 - dis1);
+        return dis;
+      });
+      return ordered;
+    }),
+
   );
+  mikveh$ = this.mikvehs$.pipe(map((mikvehs) => [mikvehs[0]]));
 
 
 
@@ -80,24 +92,21 @@ export class SearchMikvehComponent implements OnInit {
     // }
     this.map.options = {}
 
-    this.generateItems();
+    // this.generateItems();
   }
 
   search(event: any) {
     console.log(event.target.value);
   }
 
-  private generateItems() {
-    const count = this.items.length + 1;
-    for (let i = 0; i < 50; i++) {
-      this.items.push(`Item ${count + i}`);
-    }
-  }
 
-  onIonInfinite(event: InfiniteScrollCustomEvent) {
-    this.generateItems();
-    setTimeout(() => {
-      event.target.complete();
-    }, 500);
-  }
+
+  // onIonInfinite(event: InfiniteScrollCustomEvent) {
+  //   this.generateItems();
+  //   setTimeout(() => {
+  //     event.target.complete();
+  //   }, 500);
+  // }
+
+
 }
