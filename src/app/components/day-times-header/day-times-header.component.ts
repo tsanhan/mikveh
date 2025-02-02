@@ -1,10 +1,11 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { IonGrid, IonCol, IonRow, IonImg, IonSkeletonText, IonText } from '@ionic/angular/standalone';
-import { GeoLocation, HDate, Locale, Zmanim } from '@hebcal/core';
+import { GeoLocation, HDate, Locale, Zmanim, Location } from '@hebcal/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { DatePipe } from '@angular/common';
 import { tdesignSunFall, tdesignSunRising } from '@ng-icons/tdesign-icons';
 import { CacheService } from 'src/app/services/cache.service';
+import '@hebcal/cities';
 
 @Component({
   selector: 'app-day-times-header',
@@ -35,6 +36,8 @@ export class DayTimesHeaderComponent {
 
   constructor() {
     Locale.hebrewStripNikkud('he');
+
+
   }
 
 

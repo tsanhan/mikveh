@@ -55,6 +55,7 @@ export class DayTimesComponent {
   sunrise = this.coordinates.pipe(
     map(({ lat, lng }) => {
       const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
+
       const sr = new Zmanim(loc, new Date(), true).sunrise();
       const hour = sr.getHours(); // Get the hour
       const minutes = sr.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
