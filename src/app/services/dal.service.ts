@@ -1,21 +1,34 @@
 import { inject, Injectable } from '@angular/core';
 import { collection, collectionData, Firestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { from, Observable, of, switchMap, tap } from 'rxjs';
 import { IMikveh } from '../interfaces/mikveh.interface';
 import { query, limit, startAfter, getDocs } from '@angular/fire/firestore';
+import { CacheService } from './cache.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DalService {
   afs = inject(Firestore);
+  cache = inject(CacheService);
 
-  constructor() { }
+  constructor() {}
 
-  getMikvehList() {
-    const mikvehsRef = collection(this.afs, 'mikvehs');
-    const mikvehs = collectionData(mikvehsRef, { idField: 'id' }) as Observable<IMikveh[]>;
-    return mikvehs;
+  getMikvehList():Observable<IMikveh | IMikveh[]> {
+    return from(this.cache.getMikvehResults()).pipe(
+      switchMap((cachedMikvehs: IMikveh[]) => {
+        if (!!cachedMikvehs && cachedMikvehs.length) {
+          return of(cachedMikvehs);
+        }
+        const mikvehsRef = collection(this.afs, 'mikvehs');
+        const mikvehs = collectionData(mikvehsRef, {
+          idField: 'id',
+        }) as Observable<IMikveh[]>;
+        return mikvehs.pipe(
+          tap((mikvehs) => this.cache.storeMikvehResults(mikvehs))
+        );
+      })
+    );
   }
 
   // This method is used to get a paginated list of mikvehs from Firestore
@@ -24,21 +37,27 @@ export class DalService {
   // to get the next page of mikvehs
   // The method returns an array of IMikveh objects
 
-  async  getPaginatedMikvehList(pageSize: number, pageNumber: number) {
+  async getPaginatedMikvehList(pageSize: number, pageNumber: number) {
     const mikvehsRef = collection(this.afs, 'mikvehs'); // Get a reference to the mikvehs collection
     const offset = (pageNumber - 1) * pageSize; // Calculate the offset for the query to get the correct page of mikvehs from Firestore
     const firstPageQuery = query(mikvehsRef, startAfter(1), limit(pageSize)); // Create a query to get the first page of mikvehs
-    const mikvehs = collectionData(firstPageQuery, { idField: 'id' }) as Observable<IMikveh[]>;
+    const mikvehs = collectionData(firstPageQuery, {
+      idField: 'id',
+    }) as Observable<IMikveh[]>;
 
     const firstPageSnapshot = await getDocs(firstPageQuery); // Get the first page of mikvehs from Firestore
     let lastVisible = firstPageSnapshot.docs[offset - 1]; // Get the last visible document from the first page of mikvehs
 
     if (lastVisible) {
-      const paginatedQuery = query(mikvehsRef, startAfter(lastVisible), limit(pageSize));
+      const paginatedQuery = query(
+        mikvehsRef,
+        startAfter(lastVisible),
+        limit(pageSize)
+      );
       const paginatedSnapshot = await getDocs(paginatedQuery);
-      return paginatedSnapshot.docs.map(doc => doc.data() as IMikveh);
+      return paginatedSnapshot.docs.map((doc) => doc.data() as IMikveh);
     } else {
-      return firstPageSnapshot.docs.map(doc => doc.data() as IMikveh);
+      return firstPageSnapshot.docs.map((doc) => doc.data() as IMikveh);
     }
   }
 }

@@ -12,6 +12,7 @@ export interface IMikveh {
   motzaeiShabbatOrHagSummer: MotzaeiShabbatOrHag
   fridayOrErevHagWinter: FridayOrErevHag
   motzaeiShabbatOrHagWinter: MotzaeiShabbatOrHag
+  [key: string]: any
 }
 
 export interface MidWeekHours {

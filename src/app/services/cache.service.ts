@@ -6,6 +6,7 @@ import * as topicsJson from '../../assets/data/topics.json';
 import { Locations, Location } from '../interfaces/locations';
 import { Topic } from '../interfaces/topics';
 import { Approach, Approaches } from '../interfaces/approaches';
+import { IMikveh } from '../interfaces/mikveh.interface';
 
 
 @Injectable({
@@ -55,6 +56,7 @@ export class CacheService {
 
   private async init() {
     this._mikvehStorage = await this.mikvehStorage.create();
+    this._storage = await this.storage.create();
 
 
 
@@ -99,7 +101,10 @@ export class CacheService {
     document.body.classList[darkMode ? 'add':'remove']('dark');
   }
 
-  public storeMikvehResults(keyValue: string, value: any) {
-    this._mikvehStorage.set(keyValue, value);
+  public storeMikvehResults(data:IMikveh[]) {
+    this._mikvehStorage.set('mikvehs', data);
+  }
+  public getMikvehResults():Promise<IMikveh[]> {
+    return this._mikvehStorage.get('mikvehs');
   }
 }

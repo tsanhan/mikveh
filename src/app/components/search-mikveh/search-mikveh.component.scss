@@ -7,39 +7,144 @@ ion-searchbar {
   --box-shadow: none;
   padding-top: 0;
 
-  // & ::ng-deep {
-  //   & .searchbar-input {
-  //     padding-top: 0.8rem;
-  //     padding-bottom: 0.8rem;
+  & ::ng-deep {
+    & .searchbar-input {
+      padding-top: 0.8rem;
+      padding-bottom: 0.8rem;
+    }
+    & input.searchbar-input {
+      padding-inline-start: 2.875rem !important;
+      font-size: 0.75rem;
+    }
 
-  //   }
-  //   & input.searchbar-input {
-  //     padding-inline-start: 2.875rem !important;
-
-  //   }
-
-  //   & ion-icon.searchbar-search-icon  {
-  //     padding-right: 0.5rem !important;
-
-  //   }
-
-  // }
-
-
+    & ion-icon.searchbar-search-icon {
+      padding-right: 0.5rem !important;
+    }
+  }
 }
 
 .warpper {
-  overflow: overlay;
+  flex: 1 1 20vh;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  width: 73.5vw;
+  font-size: 0.75rem;
+  margin-bottom: 1rem;
+  & .mikveh {
+    display: flex;
+    background: #f2d1ce;
+    align-items: center;
+    border-radius: 1.5rem;
+    padding: 0.4rem 1rem;
+    margin-bottom: 0.5rem;
+    justify-content: space-between;
+
+    transition: all 0.3s ease-in-out;
+    height: min-content;
+    &.expanded {
+      // border-radius: 0.5rem;
+      height: fit-content;
+    }
+    & .details {
+      display: flex;
+      flex-direction: column;
+
+      & .name {
+        font-weight: bold;
+      }
+
+      & .expansion {
+        max-height: 0px;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+
+        &.show {
+          display: block;
+          overflow: visible;
+          max-height: fit-content;
+        }
+
+        & .title {
+          font-weight: bold;
+          font-size: 0.9rem;
+          margin-top: 0.5rem;
+        }
+
+      }
+    }
+
+    & .buttons {
+      display: flex;
+      align-self: baseline;
+      & ion-button {
+        --background: #d07c80;
+        --background-hover: #d07c80;
+        --background-activated: #d07c80;
+        --background-focused: #d07c80;
+        --color: black;
+
+        transition: all 0.3s ease-in-out;
+
+        &.flipped {
+          transform: rotate(180deg);
+        }
+
+        &::part(native) {
+          color: black;
+        }
+      }
+    }
+
+    // align-items: center;
+    // padding: 1rem;
+    // border-bottom: 1px solid #f3d1ce;
+    // background-color: #f3d1ce;
+    // margin: 0.5rem;
+    // border-radius: 1rem;
+    // box-shadow: 0 0 0.5rem 0.1rem #f3d1ce;
+    // transition: all 0.3s;
+    // cursor: pointer;
+
+    // &:hover {
+    //   transform: scale(1.05);
+    // }
+
+    // & .mikveh-name {
+    //   font-size: 1.5rem;
+    //   font-weight: bold;
+    //   color: #f3d1ce;
+    // }
+
+    // & .mikveh-address {
+    //   font-size: 1rem;
+    //   color: #f3d1ce;
+    // }
+
+    // & .mikveh-phone {
+    //   font-size: 1rem;
+    //   color: #f3d1ce;
+    // }
+
+    // & .mikveh-distance {
+    //   font-size: 1rem;
+    //   color: #f3d1ce;
+    // }
+  }
 }
 
 :host {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 google-map {
   display: flex;
   margin-top: auto;
-
+  & ::ng-deep {
+    .map-container {
+      border-radius: 1rem;
+    }
+  }
 }
-
