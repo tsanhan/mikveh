@@ -64,7 +64,7 @@
         </ion-button>
       </div>
       <div class="navigate">
-        <ion-button shape="round" size="small" class="no-shaddow" [href]="'https://www.google.com/maps/dir/?api=1&destination='+mikveh.lat+','+mikveh.lng" target="_blank">
+        <ion-button shape="round" size="small" class="no-shaddow" [href]="'geo:'+mikveh.lat+','+mikveh.lng+'?q='+mikveh.lat+','+mikveh.lng">
           <ion-icon slot="icon-only" name="location-outline"></ion-icon>
         </ion-button>
       </div>

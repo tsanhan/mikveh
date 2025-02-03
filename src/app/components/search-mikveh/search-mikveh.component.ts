@@ -119,10 +119,6 @@ export class SearchMikvehComponent implements OnInit {
     return a;
   }
 
-  // onIonInfinite(event: InfiniteScrollCustomEvent) {
-  //   this.generateItems();
-  //   setTimeout(() => {
-  //     event.target.complete();
-  //   }, 500);
-  // }
+
+
 }
