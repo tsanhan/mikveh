@@ -59,12 +59,12 @@
     </div>
     <div class="buttons">
       <div class="expand">
-        <ion-button shape="round" size="small" [ngClass]="{flipped:mikveh['expanded']}" >
+        <ion-button shape="round" size="small" class="no-shaddow" [ngClass]="{flipped:mikveh['expanded']}" >
           <ion-icon slot="icon-only" name="chevron-down-outline"></ion-icon>
         </ion-button>
       </div>
       <div class="navigate">
-        <ion-button shape="round" size="small">
+        <ion-button shape="round" size="small" class="no-shaddow" [href]="'https://www.google.com/maps/dir/?api=1&destination='+mikveh.lat+','+mikveh.lng" target="_blank">
           <ion-icon slot="icon-only" name="location-outline"></ion-icon>
         </ion-button>
       </div>
