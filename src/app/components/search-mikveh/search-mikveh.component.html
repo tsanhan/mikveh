@@ -33,16 +33,26 @@
            ובמשך {{ mikveh.fridayOrErevHagSummer.workingHours | translateHeb }}
            ({{getAddHoursRelative(mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative, candleLighting()) | date: 'HH:mm'}} -
           {{getAddHoursRelative( mikveh.fridayOrErevHagSummer.workingHours, getAddHoursRelative(mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative, candleLighting())) | date: 'HH:mm'}})
-
           <br>
-
           </div>
-        </div>
-        <div class="blah">
-          {{ mikveh.address }}
-        </div>
-        <div class="blah">
-          {{ mikveh.address }}
+          <div class="motzaeiShabbatOrHagSummer">
+            <span>מוצאי שבת וחג בקיץ:</span>
+           {{ mikveh.motzaeiShabbatOrHagSummer.hoursAfterMotzaeiRelative | translateHeb }}  לאחר מוצאי השבת/חג
+           ובמשך {{ mikveh.motzaeiShabbatOrHagSummer.workingHours | translateHeb }}
+           ({{getAddHoursRelative(mikveh.motzaeiShabbatOrHagSummer.hoursAfterMotzaeiRelative, candleLighting()) | date: 'HH:mm'}} -
+          {{getAddHoursRelative( mikveh.motzaeiShabbatOrHagSummer.workingHours, getAddHoursRelative(mikveh.motzaeiShabbatOrHagSummer.hoursAfterMotzaeiRelative, candleLighting())) | date: 'HH:mm'}})
+          <br>
+          </div>
+          <div class="mainBalanit">
+            <div>בלנית ראשית:</div>
+            {{ mikveh.mainBalanit.name }} - {{ mikveh.mainBalanit.phone }}
+          <br>
+          </div>
+          <div class="details" *ngIf="mikveh.details">
+            <div>הערות כלליות:</div>
+            {{ mikveh.details }}
+          <br>
+          </div>
         </div>
       </div>
     </div>

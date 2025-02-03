@@ -76,11 +76,22 @@ ion-searchbar {
         }
 
         & .openHours{
-          & .midWeekHours, .fridayOrErevHagSummer {
+          & .midWeekHours, .fridayOrErevHagSummer, .motzaeiShabbatOrHagSummer {
              & span {
               font-weight: bold;
              }
           }
+        }
+
+        .mainBalanit div {
+          font-weight: bold;
+          margin-top: 0.5rem;
+        }
+
+        .details div {
+          margin-top: 0.5rem;
+          font-weight: bold;
+
         }
       }
     }

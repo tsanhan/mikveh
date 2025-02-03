@@ -54,51 +54,63 @@ export class TranslateHebPipe implements PipeTransform {
     '3/4': 'שלושת רבעי',
   };
   transform(value: unknown, ...args: unknown[]): unknown {
-    const nw = this.translateNumberToHebrewHours(value as number);
+    const nw = this.translateHours(value as number);
     return nw;
   }
 
-  translateNumberToHebrewHours(hours: number): string {
-    const integerPart = Math.floor(hours);
-    const fractionalPart = hours - integerPart;
+  translateHours(num: number): string {
+    if (num === 0.5) return 'חצי שעה';
+    if (num === 0.25) return 'רבע שעה';
 
-    let result = "";
+    const integerPart = Math.floor(num);
+    const fractionalPart = num % 1;
 
-    if (integerPart > 0) {
-        switch (integerPart) {
-            case 1:
-                result += "שעה";
-                break;
-            case 2:
-                result += "שעתיים";
-                break;
-            default:
-                result += `${integerPart} שעות`;
-                break;
-        }
+    let integerStr = '';
+    switch (integerPart) {
+      case 0:
+        break;
+      case 1:
+        integerStr = fractionalPart !== 0 ? 'שעה' : 'שעה אחת';
+        break;
+      case 2:
+        integerStr = 'שעתיים';
+        break;
+      default:
+        integerStr = `${this.getFeminineNumber(integerPart)} שעות`;
     }
 
-    if (fractionalPart > 0) {
-        if (integerPart > 0) {
-            result += " ו"; // Add "and" (ו) if there's an integer part
-        }
-
-        if (fractionalPart === 0.5) {
-            result += "חצי שעה"; //  "חצי שעה" specifically for 0.5
-        } else if (fractionalPart === 0.25) {
-            result += "רבע שעה";  // "רבע שעה" specifically for 0.25
-        } else if (fractionalPart === 0.75) {
-            result += "שלושה רבעי שעה"; // Three-quarters of an hour
-        } else if (fractionalPart > 0 && fractionalPart < 1) {
-          const minutes = Math.round(fractionalPart * 60);
-          result += `${minutes} דקות`; //For other fractions, show minutes
-        }
+    let fractionalStr = '';
+    if (fractionalPart === 0.5) {
+      fractionalStr = 'וחצי';
+    } else if (fractionalPart === 0.25) {
+      fractionalStr = 'ורבע';
     }
 
-    if (result === "") {
-        return "אפס שעות"; // Handle zero case
-    }
+    return [integerStr, fractionalStr].filter(Boolean).join(' ');
+  }
 
-    return result;
-}
+  getFeminineNumber(n: number): string {
+    const numbers: { [key: number]: string } = {
+      3: 'שלוש',
+      4: 'ארבע',
+      5: 'חמש',
+      6: 'שש',
+      7: 'שבע',
+      8: 'שמונה',
+      9: 'תשע',
+      10: 'עשר',
+      11: 'אחת עשרה',
+      12: 'שתים עשרה',
+      13: 'שלוש עשרה',
+      14: 'ארבע עשרה',
+      15: 'חמש עשרה',
+      16: 'שש עשרה',
+      17: 'שבע עשרה',
+      18: 'שמונה עשרה',
+      19: 'תשע עשרה',
+      20: 'עשרים',
+    };
+
+    return numbers[n] || n.toString();
+  }
 }
