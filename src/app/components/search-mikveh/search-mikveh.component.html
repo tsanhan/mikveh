@@ -76,7 +76,7 @@
 <google-map
   #googleMap
   [center]="(center$ | async) || { lat: 1.768318, lng: 35.213711 }"
-  [zoom]="20"
+  [zoom]="15"
   [autofocus]="true"
   [dir]="'rtl'"
   lang="iw"
@@ -86,20 +86,24 @@
   mapId="3dedb5ed63e348"
   [options]="{
     controlSize: 20,
+    clickableIcons: false,
+    disableDefaultUI: true,
   }"
+  (mapClick)="mapClick($event)"
+  (mapDragend)="mapDragend()"
 >
   <!-- <map-marker *ngIf="center$ | async as center" [position]="center" /> -->
-  <map-advanced-marker
+  <!-- <map-advanced-marker
     *ngIf="center$ | async as center"
     [position]="center"
 
-  ></map-advanced-marker>
+  ></map-advanced-marker> -->
 
   @for(mikveh of mikvehs$ | async; track mikveh; let idx = $index ){
   <map-advanced-marker
     [position]="{ lat: mikveh.lat, lng: mikveh.lng }"
     [title]="mikveh.name"
-    (mapClick)="mapClick(mikveh)"
+    (mapClick)="markClick(mikveh)"
 
   ></map-advanced-marker>
   }

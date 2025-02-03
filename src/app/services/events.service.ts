@@ -102,8 +102,6 @@ export class EventsService {
       })
     );
   constructor() {
-    this.fridayCandleLighting$.subscribe((event) => {
-      console.log('Friday Candle Lighting', event);
-    });
+
   }
 }

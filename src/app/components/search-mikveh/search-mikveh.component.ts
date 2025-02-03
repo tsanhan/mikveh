@@ -65,11 +65,9 @@ export class SearchMikvehComponent implements OnInit {
         const { lat: latB, lng: lngB } = b;
         const dis0 = this.location.calcDistance(latC, lngC, latA, lngA);
         const dis1 = this.location.calcDistance(latC, lngC, latB, lngB);
-        const dis = Math.abs(dis0 - dis1);
+        const dis = dis0 - dis1 ;
         return dis;
       });
-
-
       return ordered;
     })
   );
@@ -121,7 +119,15 @@ export class SearchMikvehComponent implements OnInit {
     return a;
   }
 
-  mapClick($event: IMikveh) {
+  mapClick($event: any) {
+    console.log($event);
+  }
+  mapDragend() {
+   const latLng: google.maps.LatLng = this.map.getCenter() as google.maps.LatLng;
+    const  { lat, lng } = latLng.toJSON();
+    this.location.coordinates$.next({lat,lng});
+  }
+  markClick($event: IMikveh) {
     this.location.setMapCenter($event.lat, $event.lng);
     const elements:ElementRef[] = this.dynamicElements.toArray();
     const element:ElementRef = elements.find((element) => element.nativeElement.id === $event.id) as ElementRef;
