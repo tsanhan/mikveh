@@ -22,7 +22,11 @@ ion-searchbar {
     }
   }
 }
-
+.title {
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
 .warpper {
   flex: 1 1 20vh;
   overflow: scroll;
@@ -65,11 +69,7 @@ ion-searchbar {
           max-height: fit-content;
         }
 
-        & .title {
-          font-weight: bold;
-          font-size: 0.9rem;
-          margin-top: 0.5rem;
-        }
+
         & .phoneNum {
           margin-top: 0.5rem;
 

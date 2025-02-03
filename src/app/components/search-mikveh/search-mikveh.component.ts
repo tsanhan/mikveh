@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, OnInit, Signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Directive, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren } from '@angular/core';
 import { IonSearchbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 import { DalService } from 'src/app/services/dal.service';
@@ -13,6 +13,12 @@ import { EventsService } from 'src/app/services/events.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 
+@Directive({
+  selector: "[list-mikveh]",
+  standalone: true,
+})
+class ListMikvehDirective {}
+
 @Component({
   selector: 'app-search-mikveh',
   templateUrl: './search-mikveh.component.html',
@@ -25,16 +31,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
     GoogleMap,
     MapAdvancedMarker,
     DatePipe,
-    TranslateHebPipe
-  ],
+    TranslateHebPipe,
+    ],
 })
-export class SearchMikvehComponent implements OnInit {
+export class SearchMikvehComponent implements OnInit, AfterViewInit{
   dal = inject(DalService);
   location = inject(LocationService);
   events = inject(EventsService);
 
 
   @ViewChild('googleMap', { static: true }) map!: GoogleMap;
+  @ViewChildren(ListMikvehDirective) viewChildren!: QueryList<ListMikvehDirective>;
 
   center$: Observable<google.maps.LatLngLiteral> = this.location.mapCenter$;
 
@@ -75,6 +82,12 @@ export class SearchMikvehComponent implements OnInit {
 
   constructor() {
         addIcons({ chevronDownOutline, chevronUpOutline, locationOutline});
+
+  }
+  ngAfterViewInit(): void {
+    this.viewChildren.changes.subscribe((list) => {
+      console.log(list);
+    });
   }
   ngOnInit(): void {
     // const options: google.maps.MapOptions {
@@ -117,6 +130,20 @@ export class SearchMikvehComponent implements OnInit {
     const dateNum = newTime.setMinutes(date.getMinutes() + (hours*60));
     const a = new Date(dateNum);
     return a;
+  }
+
+  mapClick($event: IMikveh) {
+    this.location.setMapCenter($event.lat, $event.lng);
+
+    console.log($event);
+  }
+
+  createPinElement(mikveh: IMikveh):google.maps.marker.AdvancedMarkerElementOptions {
+    const rtn: google.maps.marker.AdvancedMarkerElementOptions = {
+      title: mikveh.name,
+
+    };
+    return rtn;
   }
 
 

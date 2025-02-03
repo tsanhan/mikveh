@@ -118,4 +118,8 @@ export class LocationService {
       optionIOS: app ? IOSSettings.App : IOSSettings.LocationServices,
     });
   }
+
+  setMapCenter(lat: number, lng: number) {
+    this.coordinates$.next({ lat, lng });
+  }
 }

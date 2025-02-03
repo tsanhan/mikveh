@@ -7,9 +7,9 @@
 
 <div class="warpper">
   @for(mikveh of mikvehs$ | async; track mikveh; let idx = $index ){
-  <div class="mikveh" [ngClass]="{expanded: mikveh['expanded']}" (click)="flipOnClick(mikveh)">
+  <div class="mikveh" list-mikveh [ngClass]="{expanded: mikveh['expanded']}" (click)="flipOnClick(mikveh)" >
     <div class="details">
-      <div class="name">
+      <div class="name title" style="margin: 0;">
         {{ mikveh.name }}
       </div>
       <div class="address">
@@ -44,13 +44,13 @@
           <br>
           </div>
           <div class="mainBalanit">
-            <div>בלנית ראשית:</div>
+            <div class="title">בלנית ראשית:</div>
 
             {{ mikveh.mainBalanit.name }} - <a [href]="'tel:'+ mikveh.mainBalanit.phone">{{ mikveh.mainBalanit.phone }} </a>
           <br>
           </div>
           <div class="details" *ngIf="mikveh.details">
-            <div>הערות כלליות:</div>
+            <div class="title">הערות כלליות:</div>
             {{ mikveh.details }}
           <br>
           </div>
@@ -75,7 +75,7 @@
 
 <google-map
   #googleMap
-  [center]="(center$ | async) || { lat: 31.768318, lng: 35.213711 }"
+  [center]="(center$ | async) || { lat: 1.768318, lng: 35.213711 }"
   [zoom]="20"
   [autofocus]="true"
   [dir]="'rtl'"
@@ -92,12 +92,15 @@
   <map-advanced-marker
     *ngIf="center$ | async as center"
     [position]="center"
+
   ></map-advanced-marker>
 
   @for(mikveh of mikvehs$ | async; track mikveh; let idx = $index ){
   <map-advanced-marker
     [position]="{ lat: mikveh.lat, lng: mikveh.lng }"
     [title]="mikveh.name"
+    (mapClick)="mapClick(mikveh)"
+
   ></map-advanced-marker>
   }
 </google-map>
