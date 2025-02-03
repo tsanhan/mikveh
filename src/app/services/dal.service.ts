@@ -14,7 +14,7 @@ export class DalService {
 
   constructor() {}
 
-  getMikvehList():Observable<IMikveh | IMikveh[]> {
+  getMikvehList():Observable<IMikveh[]> {
     return from(this.cache.getMikvehResults()).pipe(
       switchMap((cachedMikvehs: IMikveh[]) => {
         if (!!cachedMikvehs && cachedMikvehs.length) {

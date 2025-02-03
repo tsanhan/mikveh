@@ -24,10 +24,18 @@
             שעות פתיחה
           </div>
           <div class="midWeekHours">
-            א' - ה': {{ mikveh.midWeekHours.open | date: 'HH:mm' }} - {{ mikveh.midWeekHours.close | date: 'HH:mm'}}
+            <span>א' - ה':</span>
+             {{ mikveh.midWeekHours.open | date: 'HH:mm' }} - {{ mikveh.midWeekHours.close | date: 'HH:mm'}}
           </div>
           <div class="fridayOrErevHagSummer">
-           ערב שבת/חג בקיץ: {{ mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative | translateHeb }}  {{mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative > 1 ? 'שעות': 'שעה'}} לאחר כניסת השבת/חג
+            <span>ערב שבת/חג בקיץ:</span>
+           {{ mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative | translateHeb }}  לאחר כניסת השבת/חג
+           ובמשך {{ mikveh.fridayOrErevHagSummer.workingHours | translateHeb }}
+           ({{getAddHoursRelative(mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative, candleLighting()) | date: 'HH:mm'}} -
+          {{getAddHoursRelative( mikveh.fridayOrErevHagSummer.workingHours, getAddHoursRelative(mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative, candleLighting())) | date: 'HH:mm'}})
+
+          <br>
+
           </div>
         </div>
         <div class="blah">

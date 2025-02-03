@@ -70,7 +70,18 @@ ion-searchbar {
           font-size: 0.9rem;
           margin-top: 0.5rem;
         }
+        & .phoneNum {
+          font-size: 0.9rem;
+          margin-top: 0.5rem;
+        }
 
+        & .openHours{
+          & .midWeekHours, .fridayOrErevHagSummer {
+             & span {
+              font-weight: bold;
+             }
+          }
+        }
       }
     }
 
