@@ -5,7 +5,7 @@ import {
   IOSSettings,
   NativeSettings,
 } from 'capacitor-native-settings';
-import { BehaviorSubject, map, Observable, share, shareReplay } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import {
   Location,
   HebrewCalendar,
@@ -54,8 +54,7 @@ export class LocationService {
         }
       }
       return closest;
-    }),
-    shareReplay(1)
+    })
   );
 
 
@@ -84,8 +83,6 @@ export class LocationService {
           this.openSettings(true);
           return null;
         }
-
-        return null;
       }
 
       let options: PositionOptions = {

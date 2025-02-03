@@ -36,6 +36,7 @@ export class SearchMikvehComponent implements OnInit {
 
   @ViewChild('googleMap', { static: true }) map!: GoogleMap;
   @ViewChildren('dynamicElement') dynamicElements!: QueryList<ElementRef>;
+  @ViewChild('warpper',{ static: true }) warpper!: ElementRef;
 
   center$: Observable<google.maps.LatLngLiteral> = this.location.mapCenter$;
 
@@ -119,9 +120,7 @@ export class SearchMikvehComponent implements OnInit {
     return a;
   }
 
-  mapClick($event: any) {
-    console.log($event);
-  }
+
   mapDragend() {
    const latLng: google.maps.LatLng = this.map.getCenter() as google.maps.LatLng;
     const  { lat, lng } = latLng.toJSON();
@@ -129,11 +128,11 @@ export class SearchMikvehComponent implements OnInit {
   }
   markClick($event: IMikveh) {
     this.location.setMapCenter($event.lat, $event.lng);
-    const elements:ElementRef[] = this.dynamicElements.toArray();
-    const element:ElementRef = elements.find((element) => element.nativeElement.id === $event.id) as ElementRef;
-    element.nativeElement.focus();
-    element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', alignToTop: true });
-
+    // const elements:ElementRef[] = this.dynamicElements.toArray();
+    // const element:ElementRef = elements.find((element) => element.nativeElement.id === $event.id) as ElementRef;
+    // element.nativeElement.focus();
+    // element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', alignToTop: true });
+    this.warpper.nativeElement.scrollTo({ behavior: 'smooth', top: 0});
     $event['expanded'] = true;
 
     console.log($event);
