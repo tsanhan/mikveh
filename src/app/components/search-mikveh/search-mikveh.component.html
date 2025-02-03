@@ -7,7 +7,7 @@
 
 <div class="warpper">
   @for(mikveh of mikvehs$ | async; track mikveh; let idx = $index ){
-  <div class="mikveh" list-mikveh [ngClass]="{expanded: mikveh['expanded']}" (click)="flipOnClick(mikveh)" >
+  <div class="mikveh" #dynamicElement [ngClass]="{expanded: mikveh['expanded']}" (click)="flipOnClick(mikveh)" [id]="mikveh.id" >
     <div class="details">
       <div class="name title" style="margin: 0;">
         {{ mikveh.name }}

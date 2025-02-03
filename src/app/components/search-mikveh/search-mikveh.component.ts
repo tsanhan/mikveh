@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
-import { AfterViewInit, Component, Directive, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren } from '@angular/core';
 import { IonSearchbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 import { DalService } from 'src/app/services/dal.service';
@@ -13,12 +13,6 @@ import { EventsService } from 'src/app/services/events.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 
-@Directive({
-  selector: "[list-mikveh]",
-  standalone: true,
-})
-class ListMikvehDirective {}
-
 @Component({
   selector: 'app-search-mikveh',
   templateUrl: './search-mikveh.component.html',
@@ -31,17 +25,17 @@ class ListMikvehDirective {}
     GoogleMap,
     MapAdvancedMarker,
     DatePipe,
-    TranslateHebPipe,
-    ],
+    TranslateHebPipe
+  ],
 })
-export class SearchMikvehComponent implements OnInit, AfterViewInit{
+export class SearchMikvehComponent implements OnInit {
   dal = inject(DalService);
   location = inject(LocationService);
   events = inject(EventsService);
 
 
   @ViewChild('googleMap', { static: true }) map!: GoogleMap;
-  @ViewChildren(ListMikvehDirective) viewChildren!: QueryList<ListMikvehDirective>;
+  @ViewChildren('dynamicElement') dynamicElements!: QueryList<ElementRef>;
 
   center$: Observable<google.maps.LatLngLiteral> = this.location.mapCenter$;
 
@@ -83,11 +77,6 @@ export class SearchMikvehComponent implements OnInit, AfterViewInit{
   constructor() {
         addIcons({ chevronDownOutline, chevronUpOutline, locationOutline});
 
-  }
-  ngAfterViewInit(): void {
-    this.viewChildren.changes.subscribe((list) => {
-      console.log(list);
-    });
   }
   ngOnInit(): void {
     // const options: google.maps.MapOptions {
@@ -134,6 +123,12 @@ export class SearchMikvehComponent implements OnInit, AfterViewInit{
 
   mapClick($event: IMikveh) {
     this.location.setMapCenter($event.lat, $event.lng);
+    const elements:ElementRef[] = this.dynamicElements.toArray();
+    const element:ElementRef = elements.find((element) => element.nativeElement.id === $event.id) as ElementRef;
+    element.nativeElement.focus();
+    element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', alignToTop: true });
+
+    $event['expanded'] = true;
 
     console.log($event);
   }
