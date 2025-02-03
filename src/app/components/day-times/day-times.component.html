@@ -1,18 +1,18 @@
 <div class="list">
   <div class="item">
     <ion-icon name="calendar-outline"></ion-icon>
-    <div>{{ today | async }}</div>
+    <div>{{ today$ | async }}</div>
   </div>
   <div class="item">
     <ion-icon name="sunny-outline"></ion-icon>
-    <div>{{ sunrise | async }}</div>
+    <div> עלות השחר: {{ sunrise$ | async }}</div>
   </div>
   <div class="item">
     <ion-icon name="moon-outline"></ion-icon>
-    <div>{{ sunset | async }}</div>
+    <div>שקיעה: {{ sunset$ | async }}</div>
   </div>
   <div class="item">
     <ion-icon name="book-outline"></ion-icon>
-        <div>{{ parsha | async }}</div>
+        <div>פרשת השבוע: {{ parsha$ | async }}</div>
   </div>
 </div>

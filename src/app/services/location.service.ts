@@ -5,7 +5,7 @@ import {
   IOSSettings,
   NativeSettings,
 } from 'capacitor-native-settings';
-import { BehaviorSubject, map, share, shareReplay } from 'rxjs';
+import { BehaviorSubject, map, Observable, share, shareReplay } from 'rxjs';
 import {
   Location,
   HebrewCalendar,
@@ -22,6 +22,15 @@ import cities from '../../assets/data/cities.json';
 export class LocationService {
   cities = [...cities];
   coordinates$ = new BehaviorSubject({ lat: 31.768318, lng: 35.213711 });
+  mapCenter$: Observable<google.maps.LatLngLiteral> = this.coordinates$.pipe(
+    map((coordinates) => {
+      const rtn: google.maps.LatLngLiteral = {
+        lat: coordinates.lat,
+        lng: coordinates.lng,
+      };
+      return rtn;
+    })
+  );
   closestCity$ = this.coordinates$.pipe(
     map(({ lat, lng }) => {
       // gte the city that is closest to the coordinates

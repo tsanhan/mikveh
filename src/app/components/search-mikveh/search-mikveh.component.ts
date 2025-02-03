@@ -31,15 +31,7 @@ export class SearchMikvehComponent implements OnInit {
 
   @ViewChild('googleMap', { static: true }) map!: GoogleMap;
 
-  center$: Observable<google.maps.LatLngLiteral> = this.location.coordinates$.pipe(
-      map((coordinates) => {
-        const rtn: google.maps.LatLngLiteral = {
-          lat: coordinates.lat,
-          lng: coordinates.lng,
-        };
-        return rtn;
-      })
-    );
+  center$: Observable<google.maps.LatLngLiteral> = this.location.mapCenter$;
 
   keyStroke = new BehaviorSubject<string>('');
 
@@ -59,14 +51,8 @@ export class SearchMikvehComponent implements OnInit {
         const { lat: latC, lng: lngC } = center;
         const { lat: latA, lng: lngA } = a;
         const { lat: latB, lng: lngB } = b;
-        const dis0 = Math.sqrt(
-          Math.abs(Math.abs(latC) - Math.abs(latA)) ** 2 +
-            Math.abs(Math.abs(lngC) - Math.abs(lngA)) ** 2
-        );
-        const dis1 = Math.sqrt(
-          Math.abs(Math.abs(latC) - Math.abs(latB)) ** 2 +
-            Math.abs(Math.abs(lngC) - Math.abs(lngB)) ** 2
-        );
+        const dis0 = this.location.calcDistance(latC, lngC, latA, lngA);
+        const dis1 = this.location.calcDistance(latC, lngC, latB, lngB);
         const dis = Math.abs(dis0 - dis1);
         return dis;
       });

@@ -1,44 +1,51 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { IonGrid, IonCol, IonRow, IonImg, IonSkeletonText, IonText } from '@ionic/angular/standalone';
+import {
+  IonGrid,
+  IonCol,
+  IonRow,
+  IonImg,
+  IonSkeletonText,
+  IonText,
+} from '@ionic/angular/standalone';
 import { GeoLocation, HDate, Locale, Zmanim, Location } from '@hebcal/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { tdesignSunFall, tdesignSunRising } from '@ng-icons/tdesign-icons';
 import { CacheService } from 'src/app/services/cache.service';
 import '@hebcal/cities';
+import { EventsService } from 'src/app/services/events.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-day-times-header',
   templateUrl: './day-times-header.component.html',
   styleUrls: ['./day-times-header.component.scss'],
   standalone: true,
-  imports: [IonText, IonSkeletonText, IonImg, IonGrid, IonCol, IonRow, NgIconComponent, DatePipe],
+  imports: [IonText, IonImg, IonGrid, IonCol, IonRow, DatePipe, AsyncPipe],
   viewProviders: [
     provideIcons({
       tdesignSunRising,
       tdesignSunFall,
-
     }),
   ],
 })
 export class DayTimesHeaderComponent {
   cache = inject(CacheService);
+  events = inject(EventsService);
+
   gloc = computed(() => {
-    const { elevation, latitude, longitude, name, timeZoneId } = this.cache.location();
+    const { elevation, latitude, longitude, name, timeZoneId } =
+      this.cache.location();
     return new GeoLocation(name, latitude, longitude, elevation, timeZoneId);
   });
-  zmanim = computed(() => new Zmanim(this.gloc(), new Date(), false));
-  sunrize = computed(() => this.zmanim().sunrise());
-  sunset = computed(() => this.zmanim().sunset());
+  sunrize$ = this.events.sunrise$;
+  sunset$ = this.events.sunset$;
 
-  hdate = signal(new HDate(new Date()));
-  debDate = computed(() => this.hdate().renderGematriya(true));
+  debDate$ = this.events.zmanim$.pipe(
+    map((zmanim: HDate) => zmanim.renderGematriya())
+  );
 
   constructor() {
     Locale.hebrewStripNikkud('he');
-
-
   }
-
-
 }
