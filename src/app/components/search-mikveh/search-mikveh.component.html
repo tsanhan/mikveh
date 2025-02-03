@@ -17,7 +17,7 @@
       </div>
       <div class="expansion" [ngClass]="{show:mikveh['expanded']}">
         <div class="phoneNum">
-          {{ mikveh.phoneNum }}
+          <a [href]="'tel:'+ mikveh.phoneNum">{{ mikveh.phoneNum }} </a>
         </div>
         <div class="openHours">
           <div class="title">
@@ -45,7 +45,8 @@
           </div>
           <div class="mainBalanit">
             <div>בלנית ראשית:</div>
-            {{ mikveh.mainBalanit.name }} - {{ mikveh.mainBalanit.phone }}
+
+            {{ mikveh.mainBalanit.name }} - <a [href]="'tel:'+ mikveh.mainBalanit.phone">{{ mikveh.mainBalanit.phone }} </a>
           <br>
           </div>
           <div class="details" *ngIf="mikveh.details">

@@ -71,27 +71,44 @@ ion-searchbar {
           margin-top: 0.5rem;
         }
         & .phoneNum {
-          font-size: 0.9rem;
           margin-top: 0.5rem;
-        }
 
-        & .openHours{
-          & .midWeekHours, .fridayOrErevHagSummer, .motzaeiShabbatOrHagSummer {
-             & span {
-              font-weight: bold;
-             }
+          & a {
+            text-decoration: none;
+            &::after {
+              content: '📞';
+              margin-left: 0.5rem;
+            }
           }
         }
 
-        .mainBalanit div {
-          font-weight: bold;
-          margin-top: 0.5rem;
+        & .openHours {
+          & .midWeekHours,
+          .fridayOrErevHagSummer,
+          .motzaeiShabbatOrHagSummer {
+            & span {
+              font-weight: bold;
+            }
+          }
+        }
+
+        .mainBalanit {
+          & div {
+            font-weight: bold;
+            margin-top: 0.5rem;
+          }
+          & a {
+            text-decoration: none;
+            &::after {
+              content: '📞';
+              margin-left: 0.5rem;
+            }
+          }
         }
 
         .details div {
           margin-top: 0.5rem;
           font-weight: bold;
-
         }
       }
     }
