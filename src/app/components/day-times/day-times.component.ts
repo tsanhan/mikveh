@@ -33,7 +33,7 @@ export class DayTimesComponent {
 
   location = inject(LocationService);
 
-  coordinates = this.location.coordinates;
+  coordinates = this.location.coordinates$;
   zmanim = this.coordinates.pipe(
     map(({ lat, lng }) => {
       const loc = new Location(lat, lng, true, 'Asia/Jerusalem');

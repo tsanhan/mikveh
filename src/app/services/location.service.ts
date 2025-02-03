@@ -5,8 +5,15 @@ import {
   IOSSettings,
   NativeSettings,
 } from 'capacitor-native-settings';
-import { BehaviorSubject, map } from 'rxjs';
-import { Location, HebrewCalendar, CalOptions } from '@hebcal/core';
+import { BehaviorSubject, map, share, shareReplay } from 'rxjs';
+import {
+  Location,
+  HebrewCalendar,
+  CalOptions,
+  HDate,
+  Event,
+  CandleLightingEvent,
+} from '@hebcal/core';
 import cities from '../../assets/data/cities.json';
 
 @Injectable({
@@ -14,8 +21,8 @@ import cities from '../../assets/data/cities.json';
 })
 export class LocationService {
   cities = [...cities];
-  coordinates = new BehaviorSubject({ lat: 31.768318, lng: 35.213711 });
-  dayEvents = this.coordinates.pipe(
+  coordinates$ = new BehaviorSubject({ lat: 31.768318, lng: 35.213711 });
+  closestCity$ = this.coordinates$.pipe(
     map(({ lat, lng }) => {
       // gte the city that is closest to the coordinates
       let closest = Location.lookup(this.cities[0]) as Location;
@@ -37,35 +44,15 @@ export class LocationService {
           closest = location;
         }
       }
+      return closest;
+    }),
+    shareReplay(1)
+  );
 
-      const options: CalOptions = {
-        year: new Date().getFullYear(),
-        month: new Date().getMonth(),
-        sedrot: true,
-        candlelighting: true,
-        location: closest,
-        il: true,
-        locale: 'he'
-      };
-      const events = HebrewCalendar.calendar(options);
-
-      return events;
-    })
-  ).subscribe((events) => {
-    console.log('Day Events', events);
-  });
 
   constructor() {
     this.getCurrentLocation();
-    const options: CalOptions = {
-      year: new Date().getFullYear(),
-      month: new Date().getMonth(),
-      sedrot: true,
-      candlelighting: true,
-      location: Location.lookup('Tel Aviv'),
-    };
-    const events = HebrewCalendar.calendar(options);
-    console.log('Hebrew Calendar', events);
+
   }
 
   calcDistance(latA: number, lonA: number, latB: number, lonB: number) {
@@ -99,7 +86,7 @@ export class LocationService {
       };
       const position = await Geolocation.getCurrentPosition(options);
       console.log('Current Position', position);
-      this.coordinates.next({
+      this.coordinates$.next({
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });

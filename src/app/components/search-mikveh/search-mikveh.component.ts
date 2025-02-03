@@ -31,7 +31,7 @@ export class SearchMikvehComponent implements OnInit {
 
   @ViewChild('googleMap', { static: true }) map!: GoogleMap;
 
-  center$: Observable<google.maps.LatLngLiteral> = this.location.coordinates.pipe(
+  center$: Observable<google.maps.LatLngLiteral> = this.location.coordinates$.pipe(
       map((coordinates) => {
         const rtn: google.maps.LatLngLiteral = {
           lat: coordinates.lat,

@@ -1,5 +1,4 @@
 [
-  "Jerusalem",
   "Haifa",
   "Tel Aviv",
   "Ashdod",
@@ -58,6 +57,7 @@
   "Gedera",
   "Be'er Ya'aqov",
   "Sderot",
+  "Jerusalem",
   "Arad",
   "Giv'at Shmuel",
   "Et Tira",
@@ -74,4 +74,5 @@
   "Qiryat Mal'akhi",
   "Yoqne'am Illit",
   "Zikhron Ya'aqov"
+
 ]
