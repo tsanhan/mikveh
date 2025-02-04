@@ -20,6 +20,8 @@ export class DalService {
         if (!!cachedMikvehs && cachedMikvehs.length) {
           return of(cachedMikvehs);
         }
+
+//https://firestore.googleapis.com/v1/projects/mikveh-bo/databases/(default)/documents/mikvehs
         const mikvehsRef = collection(this.afs, 'mikvehs');
         const mikvehs = collectionData(mikvehsRef, {
           idField: 'id',

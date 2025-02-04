@@ -70,6 +70,8 @@ export class LocationService {
     );
     return dis;
   }
+
+
   async getCurrentLocation() {
     try {
       const permissionsCheck = await Geolocation.checkPermissions();
@@ -84,6 +86,7 @@ export class LocationService {
           return null;
         }
       }
+
 
       let options: PositionOptions = {
         maximumAge: 3000,
