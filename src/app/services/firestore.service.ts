@@ -1,20 +1,11 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import {
-  collection,
-  collectionData,
-  Firestore,
-  FirestoreModule,
-  addDoc,
-  setDoc,
-  doc
-} from '@angular/fire/firestore';
+
 
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirestoreService {
-  firestore: Firestore = inject(Firestore);
 
   // topics = computed(() => {
   //   const topics = this.#topics();
