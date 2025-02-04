@@ -2,12 +2,13 @@
   display: flex;
   flex-direction: column;
   height: -webkit-fill-available;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 .data {
   display: flex;
-  justify-content: center;
-  height: -webkit-fill-available;
+    justify-content: center;
+    height: -webkit-fill-available;
+    align-items: stretch;
 }
 .buttons{
   display: flex;

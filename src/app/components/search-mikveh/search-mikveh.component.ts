@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { IonSearchbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 import { DalService } from 'src/app/services/dal.service';
@@ -27,6 +27,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     DatePipe,
     TranslateHebPipe
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchMikvehComponent implements OnInit {
   dal = inject(DalService);
