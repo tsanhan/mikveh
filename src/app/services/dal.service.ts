@@ -16,8 +16,9 @@ export class DalService {
     return from(this.cache.getMikvehResults()).pipe(
       switchMap((cachedMikvehs: IMikveh[]) => {
         if (!!cachedMikvehs && cachedMikvehs.length) return of(cachedMikvehs);
-        const mikvehs = from(fetch('https://firestore.googleapis.com/v1/projects/mikveh-bo/databases/(default)/documents/mikvehs').then((res) => res.json()));
-          return mikvehs.pipe(
+         return from(fetch('https://firestore.googleapis.com/v1/projects/mikveh-bo/databases/(default)/documents/mikvehs'))
+          .pipe(
+            switchMap((res: Response) => from(res.json() as Promise<{ documents: any[] }>)),
             map(({documents}) => documents),
             map(docs => docs.map((x:any) => this.documentToJson(x.fields))),
             tap((mikvehs) => this.cache.storeMikvehResults(mikvehs))
