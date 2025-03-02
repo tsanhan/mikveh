@@ -1,25 +1,31 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import days from '../../../assets/data/days.json';
 import parashot from '../../../assets/data/parashot.json';
-
+import { Location, Locale } from '@hebcal/core';
+Locale.useLocale('he');
 import { map } from 'rxjs';
 import { LocationService } from 'src/app/services/location.service';
-import { IonList, IonItem, IonLabel, IonIcon } from '@ionic/angular/standalone';
+import { IonList, IonItem, IonLabel, IonIcon, IonImg } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   bookOutline,
   calendarOutline,
+  locationOutline,
   moonOutline,
   sunnyOutline,
 } from 'ionicons/icons';
+import { tablerCandle } from '@ng-icons/tabler-icons';
 import { EventsService } from 'src/app/services/events.service';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 @Component({
   selector: 'app-day-times',
   templateUrl: './day-times.component.html',
   styleUrls: ['./day-times.component.scss'],
   standalone: true,
-  imports: [IonIcon, AsyncPipe, JsonPipe],
+  imports: [DatePipe, IonImg, IonIcon, AsyncPipe, JsonPipe,NgIcon, NgIcon],
+  viewProviders: [provideIcons({ tablerCandle })]
+
 })
 export class DayTimesComponent {
   events = inject(EventsService);
@@ -30,7 +36,16 @@ export class DayTimesComponent {
   sunrise$ = this.events.sunrise$;
   sunset$ = this.events.sunset$;
   parsha$ = this.events.fridayCandleLighting$.pipe(map(({ memo }) => memo));
+  city$ = this.location.closestCity$.pipe(
+    map((city) => {
+      const cityName = city.getName() as string;
+      const hebrewName = Locale.lookupTranslation(cityName, 'he');
 
+      return hebrewName;
+    }
+  ));
+  closestCityHebName$ = this.location.closestCityHebName$;
+  candleLighting$ = this.events.candleLighting$;
   // this.zmanim$.pipe(
   //   map((zmanim) => {
   //     const as = new HebrewDateEvent(zmanim);
@@ -46,6 +61,6 @@ export class DayTimesComponent {
   // );
 
   constructor() {
-    addIcons({ calendarOutline, sunnyOutline, moonOutline, bookOutline });
+    addIcons({ calendarOutline, sunnyOutline, moonOutline, bookOutline, locationOutline });
   }
 }

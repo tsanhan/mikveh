@@ -14,13 +14,13 @@ import {
   Event,
   CandleLightingEvent,
 } from '@hebcal/core';
-import cities from '../../assets/data/cities.json';
+import citiesObj from '../../assets/data/cities.json';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocationService {
-  cities = [...cities];
+  cities = Object.keys(citiesObj);
   coordinates$ = new BehaviorSubject({ lat: 31.768318, lng: 35.213711 });
   mapCenter$: Observable<google.maps.LatLngLiteral> = this.coordinates$.pipe(
     map((coordinates) => {
@@ -31,6 +31,9 @@ export class LocationService {
       return rtn;
     })
   );
+
+
+
   closestCity$ = this.coordinates$.pipe(
     map(({ lat, lng }) => {
       // gte the city that is closest to the coordinates
@@ -56,7 +59,13 @@ export class LocationService {
       return closest;
     })
   );
-
+  closestCityHebName$ = this.closestCity$.pipe(
+    map((city) => {
+      const cityName = city.getName() as keyof typeof citiesObj;
+      const hebrewName = citiesObj[cityName];
+      return hebrewName;
+    })
+  );
 
   constructor() {
     this.getCurrentLocation();

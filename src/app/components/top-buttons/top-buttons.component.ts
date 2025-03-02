@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   IonIcon,
@@ -39,7 +39,12 @@ export class TopButtonsComponent {
 
   approaches = this.cache.approaches;
   selectedApproach = this.cache.approach;
-
+  selectedApproachNameHeb = computed(() => {
+    const {name} = this.selectedApproach();
+    const approaches = this.approaches();
+    const {nameHeb} = approaches[name];
+    return nameHeb;
+  });
   @ViewChild('shita', {read: ElementRef}) img: ElementRef;
   isShowApproaches = signal(false);
   countryCode: string = '972';

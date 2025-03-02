@@ -85,7 +85,10 @@ ion-searchbar {
         & .openHours {
           & .midWeekHours,
           .fridayOrErevHagSummer,
-          .motzaeiShabbatOrHagSummer {
+          .motzaeiShabbatOrHagSummer,
+          .fridayOrErevHagWinter,
+          .motzaeiShabbatOrHagWinter
+           {
             & span {
               font-weight: bold;
             }

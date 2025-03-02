@@ -42,10 +42,7 @@ export class SearchMikvehComponent implements OnInit {
   center$: Observable<google.maps.LatLngLiteral> = this.location.mapCenter$;
 
   keyStroke = new BehaviorSubject<string>('');
-  candleLighting$ = this.events.fridayCandleLighting$.pipe(
-    map(({ eventTime }) => eventTime),
-    shareReplay(1)
-  );
+  candleLighting$ = this.events.candleLighting$;
 
   candleLighting: Signal<Date> = toSignal<Date>(this.candleLighting$) as Signal<Date>;
 

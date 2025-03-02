@@ -43,6 +43,7 @@
     "@ng-icons/core": "^27.2.0",
     "@ng-icons/font-awesome": "^27.3.1",
     "@ng-icons/jam-icons": "^27.3.1",
+    "@ng-icons/tabler-icons": "^30.3.0",
     "@ng-icons/tdesign-icons": "^27.3.1",
     "@types/google.maps": "^3.58.1",
     "capacitor-native-settings": "^6.0.1",

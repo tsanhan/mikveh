@@ -39,7 +39,7 @@
         <ion-icon  slot="icon-only" name="calendar-outline"></ion-icon>
       </ion-button>
     </ion-fab-button> -->
-    <ion-fab-button [show]="true">
+    <!-- <ion-fab-button [show]="true">
       <ion-button
         [ngClass]="{ routActive: (rootRoute$ | async)?.includes('/map') }"
         fill="clear"
@@ -60,7 +60,7 @@
       >
         <ion-icon slot="icon-only" name="book-outline"></ion-icon>
       </ion-button>
-    </ion-fab-button>
+    </ion-fab-button> -->
   </ion-fab-list>
 </ion-fab>
 
@@ -85,6 +85,9 @@
 
 <ion-buttons slot="start" size="large">
   <ion-menu-button size="large"></ion-menu-button>
+  <ion-text class="shita-text">
+    {{this.selectedApproachNameHeb()}}
+  </ion-text>
 </ion-buttons>
 <!-- <ion-fab class="whatsapp" slot="fixed" vertical="top" horizontal="end">
   <ion-fab-button color="transparent" [href]="url" target="_blank" size="small">

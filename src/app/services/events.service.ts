@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { LocationService } from './location.service';
-import cities from '../../assets/data/cities.json';
+import citiesObj from '../../assets/data/cities.json';
 import days from '../../assets/data/days.json';
 
 import { map, Observable, shareReplay } from 'rxjs';
@@ -11,30 +11,11 @@ import { CalOptions, CandleLightingEvent, HDate, HebrewCalendar, Location, Event
 })
 export class EventsService {
   location = inject(LocationService);
+  cities = Object.keys(citiesObj);
 
 
-  weekEvents = this.location.coordinates$.pipe(
-    map(({ lat, lng }) => {
-      // gte the city that is closest to the coordinates
-      let closest = Location.lookup(cities[0]) as Location;
-      for (const city of cities.slice(1)) {
-        const location = Location.lookup(city) as Location;
-        const disClosest = this.location.calcDistance(
-          lat,
-          lng,
-          closest.getLatitude(),
-          closest.getLongitude()
-        );
-        const disCurrent = this.location.calcDistance(
-          lat,
-          lng,
-          location.getLatitude(),
-          location.getLongitude()
-        );
-        if (disCurrent < disClosest) {
-          closest = location;
-        }
-      }
+  weekEvents$ = this.location.closestCity$.pipe(
+    map((closest: Location) => {
       const today = new HDate(new Date());
       const options: CalOptions = {
         year: today.getFullYear(),
@@ -54,7 +35,7 @@ export class EventsService {
     shareReplay(1)
   );
 
-  fridayCandleLighting$ = this.weekEvents.pipe(
+  fridayCandleLighting$ = this.weekEvents$.pipe(
     map((events: Event[]) => {
       const fridayCL = events.find(
         (event: Event) =>
@@ -64,6 +45,10 @@ export class EventsService {
     })
   );
 
+  candleLighting$ = this.fridayCandleLighting$.pipe(
+    map(({ eventTime }) => eventTime),
+    shareReplay(1)
+  );
   zmanim$ = this.location.coordinates$.pipe(
       map(({ lat, lng }) => {
         const loc = new Location(lat, lng, true, 'Asia/Jerusalem');

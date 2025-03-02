@@ -1,5 +1,13 @@
 <div class="list">
   <div class="item">
+    <ion-icon name="location-outline"></ion-icon>
+    <div>מיקום: {{ closestCityHebName$ | async }}</div>
+  </div>
+  <div class="item">
+    <ion-img class="icon" src="assets/icon/shabbat.png"></ion-img>
+    <div>הדלקת נרות: {{ candleLighting$ | async | date: 'HH:mm' }}</div>
+  </div>
+  <div class="item">
     <ion-icon name="calendar-outline"></ion-icon>
     <div>{{ today$ | async }}</div>
   </div>
