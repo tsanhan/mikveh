@@ -11,6 +11,7 @@ import { GeoLocation, HDate, Locale, Zmanim, Location } from '@hebcal/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { tdesignSunFall, tdesignSunRising } from '@ng-icons/tdesign-icons';
+
 import { CacheService } from 'src/app/services/cache.service';
 import '@hebcal/cities';
 import { EventsService } from 'src/app/services/events.service';
@@ -26,6 +27,7 @@ import { map } from 'rxjs';
     provideIcons({
       tdesignSunRising,
       tdesignSunFall,
+
     }),
   ],
 })

@@ -4,7 +4,7 @@ import citiesObj from '../../assets/data/cities.json';
 import days from '../../assets/data/days.json';
 
 import { map, Observable, shareReplay } from 'rxjs';
-import { CalOptions, CandleLightingEvent, HDate, HebrewCalendar, Location, Event, Zmanim, HebrewDateEvent } from '@hebcal/core';
+import { CalOptions, CandleLightingEvent, HDate, HebrewCalendar, Location, Event, Zmanim, HebrewDateEvent, HavdalahEvent } from '@hebcal/core';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +42,17 @@ export class EventsService {
           event instanceof CandleLightingEvent && event.getDate().getDay() == 5
       );
       return fridayCL as CandleLightingEvent;
+    })
+  );
+
+  shabatHavdalah$ = this.weekEvents$.pipe(
+    map((events: Event[]) => {
+      const havdalah = events.find(
+        (event: Event) =>
+          event instanceof HavdalahEvent && event.getDate().getDay() == 6
+      );
+      const  {eventTime} = havdalah as HavdalahEvent;
+      return eventTime
     })
   );
 

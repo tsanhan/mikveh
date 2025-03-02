@@ -16,6 +16,7 @@ import {
   sunnyOutline,
 } from 'ionicons/icons';
 import { tablerCandle } from '@ng-icons/tabler-icons';
+import { bootstrapStars } from '@ng-icons/bootstrap-icons';
 import { EventsService } from 'src/app/services/events.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 @Component({
@@ -24,7 +25,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
   styleUrls: ['./day-times.component.scss'],
   standalone: true,
   imports: [DatePipe, IonImg, IonIcon, AsyncPipe, JsonPipe,NgIcon, NgIcon],
-  viewProviders: [provideIcons({ tablerCandle })]
+  viewProviders: [provideIcons({ tablerCandle, bootstrapStars })]
 
 })
 export class DayTimesComponent {
@@ -46,6 +47,7 @@ export class DayTimesComponent {
   ));
   closestCityHebName$ = this.location.closestCityHebName$;
   candleLighting$ = this.events.candleLighting$;
+  shabatHavdalah$ = this.events.shabatHavdalah$;
   // this.zmanim$.pipe(
   //   map((zmanim) => {
   //     const as = new HebrewDateEvent(zmanim);

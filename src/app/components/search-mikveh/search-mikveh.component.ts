@@ -44,7 +44,8 @@ export class SearchMikvehComponent implements OnInit {
   keyStroke = new BehaviorSubject<string>('');
   candleLighting$ = this.events.candleLighting$;
 
-  candleLighting: Signal<Date> = toSignal<Date>(this.candleLighting$) as Signal<Date>;
+  candleLighting: Signal<Date> = toSignal<Date>(this.events.candleLighting$) as Signal<Date>;
+  shabatHavdalah: Signal<Date> = toSignal<Date>(this.events.shabatHavdalah$) as Signal<Date>;
 
   mikvehs$ = combineLatest([
     this.dal.getMikvehList(),
@@ -111,7 +112,7 @@ export class SearchMikvehComponent implements OnInit {
     // }
   }
 
-  getAddHoursRelative(hours: number, date: Date) {
+  getAddHoursRelative(hours: number, date: Date, mikveh: IMikveh, path: string): Date {
     const newTime = new Date(date);
     const dateNum = newTime.setMinutes(date.getMinutes() + (hours*60));
     const a = new Date(dateNum);

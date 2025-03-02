@@ -5,7 +5,11 @@
   </div>
   <div class="item">
     <ion-img class="icon" src="assets/icon/shabbat.png"></ion-img>
-    <div>הדלקת נרות: {{ candleLighting$ | async | date: 'HH:mm' }}</div>
+    <div>כניסת שבת: {{ candleLighting$ | async | date: 'HH:mm' }}</div>
+  </div>
+  <div class="item">
+    <ng-icon class="icon" name="bootstrapStars"></ng-icon>
+    <div>צאת השבת: {{ shabatHavdalah$ | async | date: 'HH:mm' }}</div>
   </div>
   <div class="item">
     <ion-icon name="calendar-outline"></ion-icon>
