@@ -30,16 +30,7 @@ register();
 })
 export class ApproachesComponent{
   cache = inject(CacheService);
-  topics = this.cache.topics;
-
-
-
-
-
-
-  approach = this.cache.approach;
-  approaches =  this.cache.approaches;
-  darkMode = this.cache.darkMode;
+  topics$ = this.cache.topics$;
 
   // onSlideChange({detail}: any) {
   //   const swiper: Swiper = detail[0];

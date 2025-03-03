@@ -8,7 +8,7 @@
       </ion-text >
     </div>
   </swiper-slide> -->
-  @for(topic of topics(); track topic; let idx = $index ) {
+  @for(topic of topics$ | async; track topic; let idx = $index ) {
   <swiper-slide>
     <div class="topic-slide-link">
       <img [src]="'assets/images/categories/'+(idx+1)+'.png'" />

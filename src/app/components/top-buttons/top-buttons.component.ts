@@ -10,7 +10,7 @@ import {
   IonImg, IonButton ,  IonMenuButton, IonButtons } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { bookOutline, calendarOutline, logoWhatsapp, mapOutline } from 'ionicons/icons';
-import { filter, map, shareReplay, startWith, tap } from 'rxjs';
+import { combineLatest, filter, map, shareReplay, startWith, tap } from 'rxjs';
 import { CacheService } from 'src/app/services/cache.service';
 @Component({
   selector: 'app-top-buttons',
@@ -37,14 +37,16 @@ export class TopButtonsComponent {
   cache = inject(CacheService);
   router = inject(Router);
 
-  approaches = this.cache.approaches;
-  selectedApproach = this.cache.approach;
-  selectedApproachNameHeb = computed(() => {
-    const {name} = this.selectedApproach();
-    const approaches = this.approaches();
-    const {nameHeb} = approaches[name];
-    return nameHeb;
-  });
+  approaches$ = this.cache.approaches$;
+  selectedApproach$ = this.cache.approach$;
+  selectedApproachNameHeb$ = combineLatest([this.selectedApproach$, this.approaches$ ]).pipe(
+    map(([selectedApproach, approaches]) => {
+      const {name} = selectedApproach;
+      const {nameHeb} = approaches[name];
+      return nameHeb
+    })
+  );
+
   @ViewChild('shita', {read: ElementRef}) img: ElementRef;
   isShowApproaches = signal(false);
   countryCode: string = '972';

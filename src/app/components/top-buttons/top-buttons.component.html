@@ -9,59 +9,64 @@
   <ion-fab-button color="transparent" size="small">
     <ion-img src="assets/icon/shita.png"></ion-img>
   </ion-fab-button>
-  <ion-fab-list side="bottom">
-    <ion-fab-button
-      [ngClass]="{ active: selectedApproach().name === 'ashkenaz' }"
-      (click)="chooseApproach('ashkenaz')"
-    >
-      <ion-text>
-        {{ this.approaches()["ashkenaz"].nameHeb }}
-      </ion-text>
-    </ion-fab-button>
-    <ion-fab-button
-      [ngClass]="{ active: selectedApproach().name === 'chabad' }"
-      (click)="chooseApproach('chabad')"
-    >
-      <ion-text style="padding-bottom: 0.5rem">
-        {{ this.approaches()["chabad"].nameHeb }}
-      </ion-text>
-    </ion-fab-button>
-    <ion-fab-button
-      [ngClass]="{ active: selectedApproach().name === 'sfarad' }"
-      (click)="chooseApproach('sfarad')"
-    >
-      <ion-text style="height: -webkit-fill-available">
-        {{ this.approaches()["sfarad"].nameHeb }}
-      </ion-text>
-    </ion-fab-button>
-    <!-- <ion-fab-button [show]="true">
-      <ion-button [ngClass]="{routActive: (rootRoute$ | async)?.includes('/calendar')}" fill="clear" routerLink="/calendar" style="--padding-bottom: 10px;">
-        <ion-icon  slot="icon-only" name="calendar-outline"></ion-icon>
-      </ion-button>
-    </ion-fab-button> -->
-    <!-- <ion-fab-button [show]="true">
-      <ion-button
-        [ngClass]="{ routActive: (rootRoute$ | async)?.includes('/map') }"
-        fill="clear"
-        routerLink="/map"
-        style="--padding-bottom: 10px"
-      >
-        <ion-icon slot="icon-only" name="map-outline"></ion-icon>
-      </ion-button>
-    </ion-fab-button>
-    <ion-fab-button [show]="true">
-      <ion-button
-        [ngClass]="{
-          routActive: (rootRoute$ | async)?.includes('/approaches')
-        }"
-        fill="clear"
-        routerLink="/approaches"
-        style="--padding-bottom: 10px"
-      >
-        <ion-icon slot="icon-only" name="book-outline"></ion-icon>
-      </ion-button>
-    </ion-fab-button> -->
-  </ion-fab-list>
+  @if (this.approaches$ | async; as approaches) {
+    @if (selectedApproach$ | async; as selectedApproach) {
+      <ion-fab-list side="bottom">
+        <ion-fab-button
+          [ngClass]="{ active: selectedApproach.name === 'ashkenaz' }"
+          (click)="chooseApproach('ashkenaz')"
+        >
+          <ion-text>
+            {{ approaches["ashkenaz"].nameHeb }}
+          </ion-text>
+        </ion-fab-button>
+        <ion-fab-button
+          [ngClass]="{ active: selectedApproach.name === 'chabad' }"
+          (click)="chooseApproach('chabad')"
+        >
+          <ion-text style="padding-bottom: 0.5rem" >
+            {{ approaches["chabad"].nameHeb }}
+          </ion-text>
+        </ion-fab-button>
+        <ion-fab-button
+          [ngClass]="{ active: selectedApproach.name === 'sfarad' }"
+          (click)="chooseApproach('sfarad')"
+        >
+          <ion-text style="height: -webkit-fill-available">
+            {{ approaches["sfarad"].nameHeb }}
+          </ion-text>
+        </ion-fab-button>
+        <!-- <ion-fab-button [show]="true">
+          <ion-button [ngClass]="{routActive: (rootRoute$ | async)?.includes('/calendar')}" fill="clear" routerLink="/calendar" style="--padding-bottom: 10px;">
+            <ion-icon  slot="icon-only" name="calendar-outline"></ion-icon>
+          </ion-button>
+        </ion-fab-button> -->
+        <!-- <ion-fab-button [show]="true">
+          <ion-button
+            [ngClass]="{ routActive: (rootRoute$ | async)?.includes('/map') }"
+            fill="clear"
+            routerLink="/map"
+            style="--padding-bottom: 10px"
+          >
+            <ion-icon slot="icon-only" name="map-outline"></ion-icon>
+          </ion-button>
+        </ion-fab-button>
+        <ion-fab-button [show]="true">
+          <ion-button
+            [ngClass]="{
+              routActive: (rootRoute$ | async)?.includes('/approaches')
+            }"
+            fill="clear"
+            routerLink="/approaches"
+            style="--padding-bottom: 10px"
+          >
+            <ion-icon slot="icon-only" name="book-outline"></ion-icon>
+          </ion-button>
+        </ion-fab-button> -->
+      </ion-fab-list>
+    }
+  }
+
 </ion-fab>
 
 <ion-fab
@@ -86,7 +91,7 @@
 <ion-buttons slot="start" size="large">
   <ion-menu-button size="large"></ion-menu-button>
   <ion-text class="shita-text">
-    {{this.selectedApproachNameHeb()}}
+    {{this.selectedApproachNameHeb$ | async}}
   </ion-text>
 </ion-buttons>
 <!-- <ion-fab class="whatsapp" slot="fixed" vertical="top" horizontal="end">

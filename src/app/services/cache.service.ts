@@ -1,12 +1,12 @@
-import { inject, Injectable, signal, Signal, computed, WritableSignal, effect } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Storage,  } from '@ionic/storage-angular';
 import * as locations from '../../assets/data/locations.json';
 import * as approaches from '../../assets/data/approaches.json';
 import * as topicsJson from '../../assets/data/topics.json';
-import { Locations, Location } from '../interfaces/locations';
-import { Topic } from '../interfaces/topics';
+import { Location } from '../interfaces/locations';
 import { Approach, Approaches } from '../interfaces/approaches';
 import { IMikveh } from '../interfaces/mikveh.interface';
+import { BehaviorSubject, share, shareReplay } from 'rxjs';
 
 
 @Injectable({
@@ -22,34 +22,33 @@ export class CacheService {
 
 
   //#region Location
-  private locations: Signal<Locations> = signal(locations);
-  private _location:  WritableSignal<Location> = signal<Location>(this.locations()['Jerusalem']);
-  public location = computed(() => this._location());
+  private locations$ = new BehaviorSubject(locations);
+  private _location$ = new BehaviorSubject<Location>(this.locations$.getValue()['Jerusalem']);
+  public location$ = this._location$.asObservable();
   //#endregion
 
   //#region Topics
-  private _topics: Signal<Topic[]> = signal<any[]>(Array.from({...topicsJson}));
-  public topics: Signal<Topic[]> = computed(() => this._topics());
+  private _topics$ = new BehaviorSubject<any[]>(Array.from({...topicsJson}));
+  public topics$ = this._topics$.asObservable();
   //#endregion
 
   //#region Approach
-  public approaches: Signal<Approaches> = signal<Approaches>({...approaches});
-  private _approach: WritableSignal<Approach> = signal<Approach>(this.approaches()['chabad']);
-  public approach = computed(() => this._approach());
+  public approaches$ = new BehaviorSubject<Approaches>({...approaches});
+  public approach$ = new BehaviorSubject<Approach>(this.approaches$.getValue()['chabad']);
   //#endregion
 
   //#region DarkMode
-  private _darkMode: WritableSignal<boolean> = signal<boolean>(false);
-  public darkMode = computed(() => this._darkMode());
+  private _darkMode$ = new BehaviorSubject<boolean>(false);
+  public darkMode$ = this._darkMode$.asObservable();
   //#endregion
 
   //#region topics-data
-  private _topicsData: WritableSignal<any> = signal<any>([]);
-  public topicsData = computed(() => this._topicsData());
+  private _topicsData$ = new BehaviorSubject<any>([]);
+  public topicsData$ = this._topicsData$.asObservable();
   //#endregion
 
   constructor() {
-    console.log(this.topics());
+    console.log(this._topics$.getValue());
 
     this.init();
   }
@@ -62,16 +61,16 @@ export class CacheService {
 
     const loc = await this._storage.get('location');
     if(!loc) {
-      await this._storage.set('location', {...this._location()});
+      await this._storage.set('location', {...this._location$.getValue()});
     } else {
-      this._location.set(loc);
+      this._location$.next(loc);
     }
 
     const app = await this._storage.get('approach');
     if(!app) {
-      await this._storage.set('approach', {...this._approach()});
+      await this._storage.set('approach', {...this.approach$.getValue()});
     } else {
-      this._approach.set(app);
+      this.approach$.next(app);
     }
 
     // const dm = await this._storage.get('darkMode');
@@ -85,18 +84,18 @@ export class CacheService {
   }
 
   public setLocation(location: Location) {
-    this._location.set(location);
+    this._location$.next(location);
     this._storage.set('location', location);
   }
 
   public setApproach(key: string) {
-    const approach = this.approaches()[key];
-    this._approach.set(approach);
+    const approach = this.approaches$.getValue()[key];
+    this.approach$.next({...approach});
     this._storage.set('approach', approach);
   }
 
   public setDarkMode(darkMode: boolean) {
-    this._darkMode.set(darkMode);
+    this._darkMode$.next(darkMode);
     this._storage.set('darkMode', darkMode);
     document.body.classList[darkMode ? 'add':'remove']('dark');
   }

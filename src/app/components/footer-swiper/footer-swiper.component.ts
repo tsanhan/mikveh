@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { IonAvatar, IonText } from "@ionic/angular/standalone";
 import { CacheService } from 'src/app/services/cache.service';
@@ -7,7 +7,7 @@ import { CacheService } from 'src/app/services/cache.service';
   selector: 'app-footer-swiper',
   standalone: true,
   imports: [IonText, IonAvatar,
-    CommonModule,
+    CommonModule, AsyncPipe
   ],
   templateUrl: './footer-swiper.component.html',
   styleUrl: './footer-swiper.component.scss',
@@ -17,6 +17,6 @@ import { CacheService } from 'src/app/services/cache.service';
 })
 export class FooterSwiperComponent {
   cache = inject(CacheService);
-  topics = this.cache.topics;
+  topics$ = this.cache.topics$;
 
 }
