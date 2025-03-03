@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { Storage,  } from '@ionic/storage-angular';
 import * as locations from '../../assets/data/locations.json';
-import * as approaches from '../../assets/data/approaches.json';
 import * as topicsJson from '../../assets/data/topics.json';
 import { Location } from '../interfaces/locations';
 import { Approach, Approaches } from '../interfaces/approaches';
 import { IMikveh } from '../interfaces/mikveh.interface';
-import { BehaviorSubject, share, shareReplay } from 'rxjs';
+import { BehaviorSubject, Observable, share, shareReplay } from 'rxjs';
+import { ApproachService } from './approach.service';
 
 
 @Injectable({
@@ -15,6 +15,7 @@ import { BehaviorSubject, share, shareReplay } from 'rxjs';
 export class CacheService {
   storage =  inject(Storage)
   mikvehStorage = inject(Storage)
+  approach = inject(ApproachService)
   private _storage: Storage = new Storage();
   private _mikvehStorage: Storage = new Storage();
 
@@ -22,9 +23,9 @@ export class CacheService {
 
 
   //#region Location
-  private locations$ = new BehaviorSubject(locations);
-  private _location$ = new BehaviorSubject<Location>(this.locations$.getValue()['Jerusalem']);
-  public location$ = this._location$.asObservable();
+  private locations$:BehaviorSubject<any>;
+  private _location$: BehaviorSubject<Location>;
+  public location$: Observable<Location>;
   //#endregion
 
   //#region Topics
@@ -32,10 +33,7 @@ export class CacheService {
   public topics$ = this._topics$.asObservable();
   //#endregion
 
-  //#region Approach
-  public approaches$ = new BehaviorSubject<Approaches>({...approaches});
-  public approach$ = new BehaviorSubject<Approach>(this.approaches$.getValue()['chabad']);
-  //#endregion
+
 
   //#region DarkMode
   private _darkMode$ = new BehaviorSubject<boolean>(false);
@@ -49,6 +47,10 @@ export class CacheService {
 
   constructor() {
     console.log(this._topics$.getValue());
+    this.locations$ = new BehaviorSubject(locations);
+    this._location$= new BehaviorSubject<Location>(this.locations$.getValue()['Jerusalem']);
+    this.location$= this._location$.asObservable();
+
 
     this.init();
   }
@@ -68,9 +70,9 @@ export class CacheService {
 
     const app = await this._storage.get('approach');
     if(!app) {
-      await this._storage.set('approach', {...this.approach$.getValue()});
+      await this._storage.set('approach', {...this.approach.approach$.getValue()});
     } else {
-      this.approach$.next(app);
+      this.approach.approach$.next(app);
     }
 
     // const dm = await this._storage.get('darkMode');
@@ -89,8 +91,8 @@ export class CacheService {
   }
 
   public setApproach(key: string) {
-    const approach = this.approaches$.getValue()[key];
-    this.approach$.next({...approach});
+    const approach = this.approach.approaches$.getValue()[key];
+    this.approach.approach$.next({...approach});
     this._storage.set('approach', approach);
   }
 

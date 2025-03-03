@@ -1,53 +1,71 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
-  IonIcon,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import {
   IonText,
   IonFab,
   IonFabButton,
   IonFabList,
-  IonImg, IonButton ,  IonMenuButton, IonButtons } from '@ionic/angular/standalone';
+  IonImg,
+  IonButton,
+  IonMenuButton,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { bookOutline, calendarOutline, logoWhatsapp, mapOutline } from 'ionicons/icons';
+import {
+  bookOutline,
+  calendarOutline,
+  logoWhatsapp,
+  mapOutline,
+} from 'ionicons/icons';
 import { combineLatest, filter, map, shareReplay, startWith, tap } from 'rxjs';
+import { ApproachService } from 'src/app/services/approach.service';
 import { CacheService } from 'src/app/services/cache.service';
 @Component({
   selector: 'app-top-buttons',
   standalone: true,
-  imports: [IonButtons, IonButton, IonImg,
+  imports: [
+    IonButtons,
+    IonImg,
     IonFabList,
     IonFabButton,
     IonFab,
     IonText,
-    IonIcon,
     CommonModule,
     IonImg,
-    RouterLink,
-    RouterLinkActive,
     AsyncPipe,
     IonMenuButton,
-
   ],
   templateUrl: './top-buttons.component.html',
   styleUrl: './top-buttons.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopButtonsComponent {
   cache = inject(CacheService);
+  approach = inject(ApproachService);
   router = inject(Router);
 
-  approaches$ = this.cache.approaches$;
-  selectedApproach$ = this.cache.approach$;
-  selectedApproachNameHeb$ = combineLatest([this.selectedApproach$, this.approaches$ ]).pipe(
+  approaches$ = this.approach.approaches$;
+  selectedApproach$ = this.approach.approach$;
+  selectedApproachNameHeb$ = combineLatest([
+    this.selectedApproach$,
+    this.approaches$,
+  ]).pipe(
     map(([selectedApproach, approaches]) => {
-      const {name} = selectedApproach;
-      const {nameHeb} = approaches[name];
-      return nameHeb
+      const { name } = selectedApproach;
+      const { nameHeb } = approaches[name];
+      return nameHeb;
     })
   );
 
-  @ViewChild('shita', {read: ElementRef}) img: ElementRef;
+  @ViewChild('shita', { read: ElementRef }) img: ElementRef;
   isShowApproaches = signal(false);
   countryCode: string = '972';
   wsNumber: string = '584298770';
@@ -63,20 +81,18 @@ export class TopButtonsComponent {
     map((e) => this.router.url),
     startWith(this.router.url),
     shareReplay(1)
-
-  )
+  );
 
   constructor() {
-    addIcons({calendarOutline,mapOutline,bookOutline,logoWhatsapp});
-  }
+    addIcons({ calendarOutline, mapOutline, bookOutline, logoWhatsapp });
 
+
+  }
 
   protected toggle(source: string) {
     // console.log('source', source);
 
     this.isShowApproaches.update((prev) => !prev);
-
-
   }
 
   protected onclose() {

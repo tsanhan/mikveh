@@ -16,6 +16,7 @@ import {
 import { IonAvatar, IonText, IonImg, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 import { CacheService } from 'src/app/services/cache.service';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { ApproachService } from 'src/app/services/approach.service';
 
 @Component({
   selector: 'app-main-swiper',
@@ -28,14 +29,14 @@ import { BehaviorSubject, combineLatest, map } from 'rxjs';
 })
 export class MainSwiperComponent {
   cache = inject(CacheService);
-  topics$ = this.cache.topics$;
-  approachKey$ = this.cache.approach$.pipe(map(approach => approach['name']));
+    approach = inject(ApproachService);
 
-  constructor() {
+  topics$ = this.cache.topics$;
+  approachKey$ = this.approach.approach$.pipe(map(approach => approach['name']));
+
+  constructor( ) {
     addIcons({ document, chevronForwardCircle, colorPalette, globe });
-    this.cache.approach$.subscribe((topics) => {
-      console.log(topics);
-    });
+
   }
 
   jsonEscape = (str: string) => {

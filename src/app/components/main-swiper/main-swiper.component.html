@@ -1,6 +1,5 @@
 <swiper-container style="background: #F4D1CD; --swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
   class="mySwiper" thumbs-swiper=".mySwiper2" space-between="10">
-  {{this.approachKey$ |  async}}
   @for(topic of topics$ | async; track topic; let idx = $index) {
   <swiper-slide style="background: #F4D1CD;">
     <ion-card style="background: #F4D1CD;">
