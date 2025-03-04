@@ -26,7 +26,7 @@
             <span>א' - ה':</span>
              {{ mikveh.midWeekHours.open | date: 'HH:mm' }} - {{ mikveh.midWeekHours.close | date: 'HH:mm'}}
           </div>
-          <div class="fridayOrErevHagSummer">
+           <div class="fridayOrErevHagSummer">
             <span>ערב שבת/חג שעון קיץ:</span>
            {{ mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative | translateHeb }}  לאחר כניסת השבת/חג
            ובמשך {{ mikveh.fridayOrErevHagSummer.workingHours | translateHeb }}
@@ -47,7 +47,7 @@
            {{ mikveh.fridayOrErevHagWinter.hoursAfterKnisatRelative | translateHeb }}  לאחר כניסת השבת/חג
            ובמשך {{ mikveh.fridayOrErevHagWinter.workingHours | translateHeb }}
            ({{getAddHoursRelative(mikveh.fridayOrErevHagWinter.hoursAfterKnisatRelative, candleLighting(), mikveh,'fridayOrErevHagWinter.hoursAfterKnisatRelative') | date: 'HH:mm'}} -
-          {{getAddHoursRelative( mikveh.fridayOrErevHagWinter.workingHours, getAddHoursRelative(mikveh.fridayOrErevHagWinter.hoursAfterKnisatRelative, shabatHavdalah(), mikveh,'fridayOrErevHagWinter.hoursAfterKnisatRelative'), mikveh,'ridayOrErevHagWinter.workingHours') | date: 'HH:mm'}})
+          {{getAddHoursRelative( mikveh.fridayOrErevHagWinter.workingHours, getAddHoursRelative(mikveh.fridayOrErevHagWinter.hoursAfterKnisatRelative, candleLighting(), mikveh,'fridayOrErevHagWinter.hoursAfterKnisatRelative'), mikveh,'ridayOrErevHagWinter.workingHours') | date: 'HH:mm'}})
           <br>
           </div>
           <div class="motzaeiShabbatOrHagWinter">
@@ -55,7 +55,7 @@
            {{ mikveh.motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative | translateHeb }}  לאחר מוצאי השבת/חג
            ובמשך {{ mikveh.motzaeiShabbatOrHagWinter.workingHours | translateHeb }}
            ({{getAddHoursRelative(mikveh.motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative, shabatHavdalah(), mikveh,'motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative') | date: 'HH:mm'}} -
-          {{getAddHoursRelative( mikveh.motzaeiShabbatOrHagWinter.workingHours, getAddHoursRelative(mikveh.motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative, candleLighting(), mikveh,'motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative'), mikveh,'motzaeiShabbatOrHagWinter.workingHours') | date: 'HH:mm'}})
+          {{getAddHoursRelative( mikveh.motzaeiShabbatOrHagWinter.workingHours, getAddHoursRelative(mikveh.motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative, shabatHavdalah(), mikveh,'motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative'), mikveh,'motzaeiShabbatOrHagWinter.workingHours') | date: 'HH:mm'}})
           <br>
           </div>
           <div class="mainBalanit">
