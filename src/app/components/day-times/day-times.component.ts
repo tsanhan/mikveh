@@ -35,6 +35,7 @@ export class DayTimesComponent {
   coordinates = this.location.coordinates$;
   today$ = this.events.today$;
   sunrise$ = this.events.sunrise$;
+  alotHashachar$ = this.events.alotHashachar$;
   sunset$ = this.events.sunset$;
   parsha$ = this.events.fridayCandleLighting$.pipe(map(({ memo }) => memo));
   city$ = this.location.closestCity$.pipe(

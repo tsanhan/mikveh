@@ -14,24 +14,13 @@ export class DalService {
 
   constructor() {}
 
-  getMikvehList():Observable<IMikveh[]> {
-    return from(this.cache.getMikvehResults()).pipe(
-      switchMap((cachedMikvehs: IMikveh[]) => {
-        if (!!cachedMikvehs && cachedMikvehs.length) {
-          return of(cachedMikvehs);
-        }
-
-//https://firestore.googleapis.com/v1/projects/mikveh-bo/databases/(default)/documents/mikvehs
-        const mikvehsRef = collection(this.afs, 'mikvehs');
-        const mikvehs = collectionData(mikvehsRef, {
-          idField: 'id',
-        }) as Observable<IMikveh[]>;
-        return mikvehs.pipe(
-          tap((mikvehs) => this.cache.storeMikvehResults(mikvehs))
-        );
-      })
-    );
-  }
+  getMikvehList(): Observable<IMikveh[]> {
+    const mikvehsRef = collection(this.afs, 'mikvehs');
+    const mikvehs = collectionData(mikvehsRef, {
+      idField: 'id',
+    }) as Observable<IMikveh[]>;
+    return  mikvehs;
+  };
 
   // This method is used to get a paginated list of mikvehs from Firestore
   // It uses the query() method to get the first page of mikvehs

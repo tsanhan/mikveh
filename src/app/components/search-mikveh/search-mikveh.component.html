@@ -29,7 +29,8 @@
            <div class="fridayOrErevHagSummer">
             <span>ערב שבת/חג שעון קיץ:</span>
            {{ mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative | translateHeb }}  לאחר כניסת השבת/חג
-           ובמשך {{ mikveh.fridayOrErevHagSummer.workingHours | translateHeb }}
+           למשך {{ mikveh.fridayOrErevHagSummer.workingHours | translateHeb }}
+           <br />
            ({{getAddHoursRelative(mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative, candleLighting(), mikveh,'fridayOrErevHagSummer.hoursAfterKnisatRelative') | date: 'HH:mm'}} -
           {{getAddHoursRelative( mikveh.fridayOrErevHagSummer.workingHours, getAddHoursRelative(mikveh.fridayOrErevHagSummer.hoursAfterKnisatRelative, candleLighting(), mikveh,'fridayOrErevHagSummer.hoursAfterKnisatRelative'), mikveh,'fridayOrErevHagSummer.workingHours') | date: 'HH:mm'}})
           <br>
@@ -37,7 +38,8 @@
           <div class="motzaeiShabbatOrHagSummer">
             <span>מוצאי שבת וחג בקיץ:</span>
            {{ mikveh.motzaeiShabbatOrHagSummer.hoursAfterMotzaeiRelative | translateHeb }}  לאחר מוצאי השבת/חג
-           ובמשך {{ mikveh.motzaeiShabbatOrHagSummer.workingHours | translateHeb }}
+           למשך {{ mikveh.motzaeiShabbatOrHagSummer.workingHours | translateHeb }}
+           <br />
            ({{getAddHoursRelative(mikveh.motzaeiShabbatOrHagSummer.hoursAfterMotzaeiRelative, shabatHavdalah(), mikveh,'motzaeiShabbatOrHagSummer.hoursAfterMotzaeiRelative') | date: 'HH:mm'}} -
           {{getAddHoursRelative( mikveh.motzaeiShabbatOrHagSummer.workingHours, getAddHoursRelative(mikveh.motzaeiShabbatOrHagSummer.hoursAfterMotzaeiRelative, shabatHavdalah(), mikveh,'motzaeiShabbatOrHagSummer.hoursAfterMotzaeiRelative'), mikveh,'motzaeiShabbatOrHagSummer.workingHours') | date: 'HH:mm'}})
           <br>
@@ -45,7 +47,8 @@
           <div class="fridayOrErevHagWinter">
             <span>ערב שבת/חג שעון חורף:</span>
            {{ mikveh.fridayOrErevHagWinter.hoursAfterKnisatRelative | translateHeb }}  לאחר כניסת השבת/חג
-           ובמשך {{ mikveh.fridayOrErevHagWinter.workingHours | translateHeb }}
+           למשך {{ mikveh.fridayOrErevHagWinter.workingHours | translateHeb }}
+           <br />
            ({{getAddHoursRelative(mikveh.fridayOrErevHagWinter.hoursAfterKnisatRelative, candleLighting(), mikveh,'fridayOrErevHagWinter.hoursAfterKnisatRelative') | date: 'HH:mm'}} -
           {{getAddHoursRelative( mikveh.fridayOrErevHagWinter.workingHours, getAddHoursRelative(mikveh.fridayOrErevHagWinter.hoursAfterKnisatRelative, candleLighting(), mikveh,'fridayOrErevHagWinter.hoursAfterKnisatRelative'), mikveh,'ridayOrErevHagWinter.workingHours') | date: 'HH:mm'}})
           <br>
@@ -53,7 +56,8 @@
           <div class="motzaeiShabbatOrHagWinter">
             <span>מוצאי שבת וחג שעון חורף:</span>
            {{ mikveh.motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative | translateHeb }}  לאחר מוצאי השבת/חג
-           ובמשך {{ mikveh.motzaeiShabbatOrHagWinter.workingHours | translateHeb }}
+           למשך {{ mikveh.motzaeiShabbatOrHagWinter.workingHours | translateHeb }}
+           <br />
            ({{getAddHoursRelative(mikveh.motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative, shabatHavdalah(), mikveh,'motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative') | date: 'HH:mm'}} -
           {{getAddHoursRelative( mikveh.motzaeiShabbatOrHagWinter.workingHours, getAddHoursRelative(mikveh.motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative, shabatHavdalah(), mikveh,'motzaeiShabbatOrHagWinter.hoursAfterMotzaeiRelative'), mikveh,'motzaeiShabbatOrHagWinter.workingHours') | date: 'HH:mm'}})
           <br>

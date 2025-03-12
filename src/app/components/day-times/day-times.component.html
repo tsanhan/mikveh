@@ -4,6 +4,27 @@
     <div>מיקום: {{ closestCityHebName$ | async }}</div>
   </div>
   <div class="item">
+    <ion-icon name="calendar-outline"></ion-icon>
+    <div>{{ today$ | async }}</div>
+  </div>
+  <div class="item">
+    <ion-icon name="sunny-outline"></ion-icon>
+    <div> עלות השחר: {{ alotHashachar$ | async }}</div>
+  </div>
+  <div class="item">
+    <ion-icon name="sunny-outline"></ion-icon>
+    <div> זריחה (נץ החמה): {{ sunrise$ | async }}</div>
+  </div>
+  <div class="item">
+    <ion-icon name="moon-outline"></ion-icon>
+    <div>שקיעה: {{ sunset$ | async }}</div>
+  </div>
+
+  <div class="item">
+    <ion-icon name="book-outline"></ion-icon>
+        <div>פרשת השבוע: {{ parsha$ | async }}</div>
+  </div>
+  <div class="item">
     <ion-img class="icon" src="assets/icon/shabbat.png"></ion-img>
     <div>כניסת שבת: {{ candleLighting$ | async | date: 'HH:mm' }}</div>
   </div>
@@ -11,20 +32,7 @@
     <ng-icon class="icon" name="bootstrapStars"></ng-icon>
     <div>צאת השבת: {{ shabatHavdalah$ | async | date: 'HH:mm' }}</div>
   </div>
-  <div class="item">
-    <ion-icon name="calendar-outline"></ion-icon>
-    <div>{{ today$ | async }}</div>
-  </div>
-  <div class="item">
-    <ion-icon name="sunny-outline"></ion-icon>
-    <div> עלות השחר: {{ sunrise$ | async }}</div>
-  </div>
-  <div class="item">
-    <ion-icon name="moon-outline"></ion-icon>
-    <div>שקיעה: {{ sunset$ | async }}</div>
-  </div>
-  <div class="item">
-    <ion-icon name="book-outline"></ion-icon>
-        <div>פרשת השבוע: {{ parsha$ | async }}</div>
-  </div>
+
+
+
 </div>

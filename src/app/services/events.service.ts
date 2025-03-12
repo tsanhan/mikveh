@@ -52,7 +52,8 @@ export class EventsService {
           event instanceof HavdalahEvent && event.getDate().getDay() == 6
       );
       const  {eventTime} = havdalah as HavdalahEvent;
-      return eventTime
+      eventTime.setMinutes(eventTime.getMinutes() + 3);
+      return eventTime;
     })
   );
 
@@ -78,11 +79,29 @@ export class EventsService {
       })
     );
 
-    sunrise$ = this.location.closestCity$.pipe(
+
+    sunriseDate$ = this.location.closestCity$.pipe(
       map((loc: Location) => {
         const sr = new Zmanim(loc, new Date(), true).sunrise();
-        const hour = sr.getHours(); // Get the hour
-        const minutes = sr.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
+        sr.setMinutes(sr.getMinutes() + 4);
+        return sr;
+      })
+    );
+
+    sunrise$ = this.sunriseDate$.pipe(
+      map((sunriseDate: Date) => {
+        const hour = sunriseDate.getHours(); // Get the hour
+        const minutes = sunriseDate.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
+        const formattedTime = `${hour}:${minutes}`;
+        return formattedTime;
+      })
+    );
+
+    alotHashachar$ = this.sunriseDate$.pipe(
+      map((sunriseDate: Date) => {
+        sunriseDate.setMinutes(sunriseDate.getMinutes() - 72);
+        const hour = sunriseDate.getHours(); // Get the hour
+        const minutes = sunriseDate.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
         const formattedTime = `${hour}:${minutes}`;
         return formattedTime;
       })
