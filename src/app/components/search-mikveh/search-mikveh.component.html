@@ -15,7 +15,7 @@
         {{ mikveh.address }}
       </div>
       <div class="expansion" [ngClass]="{show:mikveh['expanded']}">
-        <div class="phoneNum">
+        <div class="phoneNum" *ngIf="mikveh.phoneNum">
           <a [href]="'tel:'+ mikveh.phoneNum">{{ mikveh.phoneNum }} </a>
         </div>
         <div class="openHours">
