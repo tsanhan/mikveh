@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
+import { Capacitor } from '@capacitor/core';
 import {
   AndroidSettings,
   IOSSettings,
@@ -22,6 +23,8 @@ import citiesObj from '../../assets/data/cities.json';
 export class LocationService {
   cities = Object.keys(citiesObj);
   coordinates$ = new BehaviorSubject({ lat: 31.768318, lng: 35.213711 });
+  isNative = Capacitor.isNativePlatform(); // true on iOS/Android, false on web
+  platform = Capacitor.getPlatform();
   mapCenter$: Observable<google.maps.LatLngLiteral> = this.coordinates$.pipe(
     map((coordinates) => {
       const rtn: google.maps.LatLngLiteral = {
@@ -31,8 +34,6 @@ export class LocationService {
       return rtn;
     })
   );
-
-
 
   closestCity$ = this.coordinates$.pipe(
     map(({ lat, lng }) => {
@@ -67,9 +68,25 @@ export class LocationService {
     })
   );
 
+  options: PositionOptions = {
+    maximumAge: 3000,
+    timeout: 10000,
+    enableHighAccuracy: true,
+  };
   constructor() {
-    this.getCurrentLocation();
-
+    if (this.isNative) {
+      this.getCurrentLocationNative();
+    } else {
+      this.getCurrentLocationWeb(this.options).then((position) => {
+        console.log('Current Position', position);
+        this.coordinates$.next({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      }).catch((error) => {
+        console.error('Error getting location', error);
+      });
+    }
   }
 
   calcDistance(latA: number, lonA: number, latB: number, lonB: number) {
@@ -80,8 +97,7 @@ export class LocationService {
     return dis;
   }
 
-
-  async getCurrentLocation() {
+  async getCurrentLocationNative() {
     try {
       const permissionsCheck = await Geolocation.checkPermissions();
       console.log('Current Permissions', permissionsCheck.location);
@@ -96,13 +112,7 @@ export class LocationService {
         }
       }
 
-
-      let options: PositionOptions = {
-        maximumAge: 3000,
-        timeout: 10000,
-        enableHighAccuracy: true,
-      };
-      const position = await Geolocation.getCurrentPosition(options);
+      const position = await Geolocation.getCurrentPosition(this.options);
       console.log('Current Position', position);
       this.coordinates$.next({
         lat: position.coords.latitude,
@@ -119,6 +129,18 @@ export class LocationService {
     }
   }
 
+  async getCurrentLocationWeb(
+    options?: PositionOptions
+  ): Promise<GeolocationPosition> {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        return reject(
+          new Error('Geolocation is not supported by this browser.')
+        );
+      }
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+  }
   openSettings(app = false) {
     return NativeSettings.open({
       optionAndroid: app

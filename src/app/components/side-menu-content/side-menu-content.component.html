@@ -10,7 +10,19 @@
       >
         <ion-icon slot="icon-only" name="time-outline" />
       </ion-button>
-      <div  [ngClass]="{ active: page() === 'time' }">זמני היום</div>
+      <div [ngClass]="{ active: page() === 'time' }">זמני היום</div>
+    </div>
+    <div class="button">
+      <ion-button
+        size="large"
+        shape="round"
+        color="light"
+        (click)="page.set('cal')"
+        [ngClass]="{ active: page() === 'cal' }"
+      >
+        <ion-icon slot="icon-only" name="calendar-outline" />
+      </ion-button>
+      <div [ngClass]="{ active: page() === 'cal' }">יומן</div>
     </div>
     <div class="button">
       <ion-button
@@ -50,6 +62,8 @@
     <app-day-times></app-day-times>
     } @case ('search') {
     <app-search-mikveh></app-search-mikveh>
+    } @case ('cal') {
+    <app-cal></app-cal>
     } }
   </div>
 </div>
