@@ -68,7 +68,6 @@ export class EventsService {
       map(({ lat, lng }) => {
         const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
         const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, new Date(), true);
-
         return zmanAwware;
       })
     );
@@ -122,4 +121,12 @@ export class EventsService {
   constructor() {
 
   }
+
+  localISOString(date = new Date()) {
+    const tzOffset = date.getTimezoneOffset() * 60000; // in milliseconds
+    const localDate = new Date(date.getTime() - tzOffset);
+    return localDate.toISOString().slice(0, -1);
+  }
+
+
 }

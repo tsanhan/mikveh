@@ -1,1 +1,10 @@
-<ion-datetime color="rose" [style]="{direction: 'ltr'}" locale="he-HE" presentation="date"></ion-datetime>
+<ion-datetime
+  color="rose"
+  [style]="{direction: 'ltr'}"
+  locale="he-IL"
+  presentation="date"
+  (ionChange)="onDateChange($event)"
+  [value]="israelTime"
+  ></ion-datetime>
+  {{israelTime}}
+  <br>

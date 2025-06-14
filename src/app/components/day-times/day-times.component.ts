@@ -1,8 +1,10 @@
 import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { Locale } from '@hebcal/core';
+import { Locale, Location } from '@hebcal/core';
 Locale.useLocale('he');
 import { map } from 'rxjs';
+import '@hebcal/cities';
+
 import { LocationService } from 'src/app/services/location.service';
 import { IonList, IonItem, IonLabel, IonIcon, IonImg } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';

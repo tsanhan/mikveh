@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -7,24 +7,21 @@ import {
   NativeSettings,
 } from 'capacitor-native-settings';
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import {
-  Location,
-  HebrewCalendar,
-  CalOptions,
-  HDate,
-  Event,
-  CandleLightingEvent,
-} from '@hebcal/core';
 import citiesObj from '../../assets/data/cities.json';
-
+import { CacheService } from './cache.service';
+import { Locale, Location } from '@hebcal/core';
+import '@hebcal/cities';
 @Injectable({
   providedIn: 'root',
 })
 export class LocationService {
+  cache = inject(CacheService);
   cities = Object.keys(citiesObj);
   coordinates$ = new BehaviorSubject({ lat: 31.768318, lng: 35.213711 });
   isNative = Capacitor.isNativePlatform(); // true on iOS/Android, false on web
   platform = Capacitor.getPlatform();
+
+
   mapCenter$: Observable<google.maps.LatLngLiteral> = this.coordinates$.pipe(
     map((coordinates) => {
       const rtn: google.maps.LatLngLiteral = {
@@ -153,4 +150,5 @@ export class LocationService {
   setMapCenter(lat: number, lng: number) {
     this.coordinates$.next({ lat, lng });
   }
+
 }
