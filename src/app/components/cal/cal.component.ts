@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { IonDatetime } from "@ionic/angular/standalone";
+import { Zmanim } from '@hebcal/core';
 
 @Component({
   selector: 'app-cal',

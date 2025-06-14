@@ -1,8 +1,6 @@
 import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import days from '../../../assets/data/days.json';
-import parashot from '../../../assets/data/parashot.json';
-import { Location, Locale } from '@hebcal/core';
+import { Locale } from '@hebcal/core';
 Locale.useLocale('he');
 import { map } from 'rxjs';
 import { LocationService } from 'src/app/services/location.service';
@@ -24,7 +22,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
   templateUrl: './day-times.component.html',
   styleUrls: ['./day-times.component.scss'],
   standalone: true,
-  imports: [DatePipe, IonImg, IonIcon, AsyncPipe, JsonPipe,NgIcon, NgIcon],
+  imports: [DatePipe, IonImg, IonIcon, AsyncPipe, NgIcon, NgIcon],
   viewProviders: [provideIcons({ tablerCandle, bootstrapStars })]
 
 })
@@ -49,7 +47,7 @@ export class DayTimesComponent {
   closestCityHebName$ = this.location.closestCityHebName$;
   candleLighting$ = this.events.candleLighting$;
   shabatHavdalah$ = this.events.shabatHavdalah$;
-  // this.zmanim$.pipe(
+  // this.HDateNow$.pipe(
   //   map((zmanim) => {
   //     const as = new HebrewDateEvent(zmanim);
   //     const sedra = new Sedra(as.getDate().getFullYear(), true);

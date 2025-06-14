@@ -61,7 +61,10 @@ export class EventsService {
     map(({ eventTime }) => eventTime),
     shareReplay(1)
   );
-  zmanim$ = this.location.coordinates$.pipe(
+
+
+
+  hDateNow$: Observable<HDate> = this.location.coordinates$.pipe(
       map(({ lat, lng }) => {
         const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
         const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, new Date(), true);
@@ -70,7 +73,7 @@ export class EventsService {
       })
     );
 
-  today$ = this.zmanim$.pipe(
+  today$: Observable<string> = this.hDateNow$.pipe(
       map((zmanim) => {
         const as = new HebrewDateEvent(zmanim);
         const day = as.getDate().getDay();

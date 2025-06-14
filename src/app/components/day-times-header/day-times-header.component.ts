@@ -46,7 +46,7 @@ export class DayTimesHeaderComponent {
   sunrize$ = this.events.sunrise$;
   sunset$ = this.events.sunset$;
 
-  debDate$ = this.events.zmanim$.pipe(
+  debDate$ = this.events.hDateNow$.pipe(
     map((zmanim: HDate) => zmanim.renderGematriya())
   );
 
