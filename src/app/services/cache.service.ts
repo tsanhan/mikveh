@@ -3,9 +3,8 @@ import { Storage,  } from '@ionic/storage-angular';
 import * as locations from '../../assets/data/locations.json';
 import * as topicsJson from '../../assets/data/topics.json';
 import { Location } from '../interfaces/locations';
-import { Approach, Approaches } from '../interfaces/approaches';
 import { IMikveh } from '../interfaces/mikveh.interface';
-import { BehaviorSubject, Observable, share, shareReplay } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ApproachService } from './approach.service';
 
 

@@ -1,9 +1,10 @@
-export type CalDay = { [date: string]: GishaCalDay[] };
+import { Approach } from "./approaches";
 
-export type GishaCalDay = { [gisha: string]: CalEvent[] };
+export type CalDay = { [date: string]: CalEvent[] };
 
 export interface CalEvent {
+  approach: Approach;
   hashashType: string;
-  event: string;
-  instractions: string[]
+  hebCalEvent: string; // like 7 cleanings, blood observed
+  instructions: string
 }
