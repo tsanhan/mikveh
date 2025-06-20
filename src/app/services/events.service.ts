@@ -15,14 +15,14 @@ export class EventsService {
 
 
   weekEvents$ = this.location.closestCity$.pipe(
-    map((closest: Location) => {
+    map((location: Location) => {
       const today = new HDate(new Date());
       const options: CalOptions = {
         year: today.getFullYear(),
         month: today.getMonth(),
         sedrot: true,
         candlelighting: true,
-        location: closest,
+        location,
         il: true,
         locale: 'he',
         end: today.add(1, 'w'),

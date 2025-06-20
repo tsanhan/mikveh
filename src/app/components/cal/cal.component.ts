@@ -6,12 +6,20 @@ import {
   OnInit,
 } from '@angular/core';
 import { IonDatetime } from '@ionic/angular/standalone';
-import { Zmanim, Locale, Location, HebrewDateEvent } from '@hebcal/core';
+import {
+  Zmanim,
+  Locale,
+  Location,
+  HebrewDateEvent,
+  HDate,
+  HebrewCalendar,
+} from '@hebcal/core';
 import { EventsService } from 'src/app/services/events.service';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import '@hebcal/cities';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, lastValueFrom, map } from 'rxjs';
 import { CalService } from 'src/app/services/cal.service';
+import { LocationService } from 'src/app/services/location.service';
 @Component({
   selector: 'app-cal',
   templateUrl: './cal.component.html',
@@ -23,16 +31,26 @@ import { CalService } from 'src/app/services/cal.service';
 export class CalComponent {
   events = inject(EventsService);
   cal = inject(CalService);
+  loc = inject(LocationService);
   israelTime = this.events.localISOString(new Date());
-  selectedDateData = new BehaviorSubject<string>(this.events.localISOString(new Date()));
-  highlightedDatesArr = this.cal.highlightedDatesArr;
-  highlightedDatesFunc = this.cal.highlightedDatesFunc;
+  selectedDate$ = new BehaviorSubject<string>(this.israelTime);
+  highlightedDates$ = this.cal.highlightedDates$;
+  selectedDateData$ = combineLatest([this.cal.dates$, this.selectedDate$]).pipe(
+    map(async ([dates, selectedDate]) => {
+      const localISOString = this.events.localISOString(new Date(selectedDate));
+      const dateToHebrew = await this.dateToHebrew(new Date(selectedDate));
+      return dates[selectedDate] || null;
+    })
+  );
+
+  // highlightedDatesFunc = this.cal.highlightedDatesFunc;
   constructor(private el: ElementRef) {}
 
   onDateChange(event: CustomEvent) {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
-    this.selectedDateData.next(this.events.localISOString(date));
+    this.selectedDate$.next(this.events.localISOString(date));
+
     // const date = new Date(event.detail.value);
     // this.cal.addHighlightedDate(
     //   date,
@@ -64,10 +82,19 @@ export class CalComponent {
     // }
   }
 
-  dateToHebrew(date: Date): string {
-    const loc = Location.lookup('Jerusalem') as Location;
-    const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
-    const as = new HebrewDateEvent(zmanAwware);
-    return as.render('he-x-NoNikud');
+  async dateToHebrew(date: Date): Promise<string> {
+    return lastValueFrom(this.loc.closestCity$).then((loc) => {
+      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
+      const as = new HebrewDateEvent(zmanAwware);
+      return as.render('he-x-NoNikud');
+    });
+  }
+
+  async hebrewDateToDate(hebrewDate: string): Promise<Date> {
+    return lastValueFrom(this.loc.closestCity$).then((loc) => {
+      const hDate = HDate.fromGematriyaString(hebrewDate);
+      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, hDate.greg(), true);
+      return zmanAwware.greg();
+    });
   }
 }

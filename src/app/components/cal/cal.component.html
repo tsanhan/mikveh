@@ -5,9 +5,9 @@
   presentation="date"
   (ionChange)="onDateChange($event)"
   [value]="israelTime"
-  [highlightedDates]="highlightedDatesArr"
+  [highlightedDates]="highlightedDates$ | async"
   ></ion-datetime>
-  {{israelTime}}
+  {{selectedDateData$ | async}}
   <br>
 
   <!--  -->
