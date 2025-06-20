@@ -24,7 +24,7 @@ export class CalComponent {
   events = inject(EventsService);
   cal = inject(CalService);
   israelTime = this.events.localISOString(new Date());
-  selectedDateData = new BehaviorSubject<string>(this.dateToHebrew(new Date()));
+  selectedDateData = new BehaviorSubject<string>(this.events.localISOString(new Date()));
   highlightedDatesArr = this.cal.highlightedDatesArr;
   highlightedDatesFunc = this.cal.highlightedDatesFunc;
   constructor(private el: ElementRef) {}
@@ -32,11 +32,13 @@ export class CalComponent {
   onDateChange(event: CustomEvent) {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
-    this.cal.addHighlightedDate(
-      date,
-      '#800080',
-      '#ffc0cb'
-    )
+    this.selectedDateData.next(this.events.localISOString(date));
+    // const date = new Date(event.detail.value);
+    // this.cal.addHighlightedDate(
+    //   date,
+    //   '#800080',
+    //   '#ffc0cb'
+    // )
     // const loc = Location.lookup('Jerusalem') as Location;
     // // let israelTime = this.events.localISOString(date);
     // const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
