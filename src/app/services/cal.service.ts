@@ -36,11 +36,13 @@ export class CalService {
         let textColor;
         let backgroundColor;
 
-        switch (data[0].type) {
-          case CalEventType.SEE_BLOOD:
-            textColor = '#800080'; // Purple
-            backgroundColor = '#ffc0cb'; // Pink
-            break;
+        // logic to pick the colors based on the CalEvent array
+        for (const calEvent of data) {
+          if( calEvent.type === CalEventType.SEE_BLOOD) {
+            textColor = '#800080';
+            backgroundColor = '#ffc0cb';
+            break; // Assuming only one type of event per date
+          }
         }
 
         return {
