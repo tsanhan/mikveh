@@ -1,10 +1,17 @@
-import { Approach } from "./approaches";
+import { Approach } from './approaches';
 
 export type CalDay = { [date: string]: CalEvent[] };
 
 export interface CalEvent {
-  approach: Approach;
-  hashashType: string;
-  hebCalEvent: string; // like 7 cleanings, blood observed
-  instructions: string
+  type: CalEventType;
+  datetime: string;
+}
+
+export type CalEvents = {
+  [date: string]: CalEvent[];
+};
+
+export enum CalEventType {
+  SEE_BLOOD = 'see blood',
+  OTHER = 'other',
 }

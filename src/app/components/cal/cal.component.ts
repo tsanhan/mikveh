@@ -3,54 +3,80 @@ import {
   Component,
   ElementRef,
   inject,
-  OnInit,
 } from '@angular/core';
-import { IonDatetime } from '@ionic/angular/standalone';
 import {
-  Zmanim,
-  Locale,
-  Location,
-  HebrewDateEvent,
-  HDate,
-  HebrewCalendar,
-} from '@hebcal/core';
+  IonDatetime,
+  AlertController,
+  AlertOptions,
+  ModalController,
+} from '@ionic/angular/standalone';
+import { Zmanim, HebrewDateEvent, HDate } from '@hebcal/core';
 import { EventsService } from 'src/app/services/events.service';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
 import '@hebcal/cities';
-import { BehaviorSubject, combineLatest, lastValueFrom, map } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  lastValueFrom,
+  map,
+  switchMap,
+} from 'rxjs';
 import { CalService } from 'src/app/services/cal.service';
 import { LocationService } from 'src/app/services/location.service';
+import { CustomAlertComponent as AddCalEventCustomAlertComponent } from './custom-alert/custom-alert.component';
+
 @Component({
   selector: 'app-cal',
   templateUrl: './cal.component.html',
   styleUrls: ['./cal.component.scss'],
   standalone: true,
-  imports: [IonDatetime, AsyncPipe, DatePipe],
+  imports: [IonDatetime, AsyncPipe, DatePipe, JsonPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalComponent {
   events = inject(EventsService);
   cal = inject(CalService);
   loc = inject(LocationService);
+  modalCtrl = inject(ModalController);
   israelTime = this.events.localISOString(new Date());
-  selectedDate$ = new BehaviorSubject<string>(this.israelTime);
+  selectedDate$ = new BehaviorSubject<Date>(new Date());
+  selectedHDate$ = this.selectedDate$.pipe(
+    map((date: Date) => this.cal.dateToHDate(date))
+  );
   highlightedDates$ = this.cal.highlightedDates$;
-  selectedDateData$ = combineLatest([this.cal.dates$, this.selectedDate$]).pipe(
-    map(async ([dates, selectedDate]) => {
-      const localISOString = this.events.localISOString(new Date(selectedDate));
-      const dateToHebrew = await this.dateToHebrew(new Date(selectedDate));
-      return dates[selectedDate] || null;
+  selectedDateData$ = combineLatest([
+    this.cal.calEvents$,
+    this.selectedHDate$,
+  ]).pipe(
+    switchMap(async ([dates, selectedHDate]) => {
+      // const hDate = HDate.fromGematriyaString(dateToHebrew);
+      // const hDateStr = hDate.toString();
+      const { desc: date } = new HebrewDateEvent(selectedHDate);
+      return dates[date] || null;
     })
   );
 
   // highlightedDatesFunc = this.cal.highlightedDatesFunc;
   constructor(private el: ElementRef) {}
 
-  onDateChange(event: CustomEvent) {
+  async onDateChange(event: CustomEvent) {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
-    this.selectedDate$.next(this.events.localISOString(date));
+    this.selectedDate$.next(event.detail.value);
 
+    // const selectedDate = this.dateToHebrew(date);
+    // const alertOptions = this.generateAlertOptions();
+    // const modal = await this.modalCtrl.create({
+    //   component: AddCalEventCustomAlertComponent,
+    //   componentProps: {
+    //     /* pass data/callbacks here */
+    //   },
+    //   cssClass: 'report-event-custom-alert',
+    //   backdropDismiss: false,
+    //   showBackdrop: true,
+
+    // });
+    // await modal.present();
     // const date = new Date(event.detail.value);
     // this.cal.addHighlightedDate(
     //   date,
@@ -67,7 +93,7 @@ export class CalComponent {
     //     console.log('israelTime:', as.render('he-x-NoNikud'));
     date.setHours(20); // success!!!
     console.log('selectedDate:', date);
-    console.log('israelTime:', this.dateToHebrew(date));
+    // console.log('israelTime:', await this.dateToHebrew(date));
 
     // const dt = this.el.nativeElement.querySelector('ion-datetime');
     // const shadow = dt?.shadowRoot;
@@ -82,19 +108,30 @@ export class CalComponent {
     // }
   }
 
-  async dateToHebrew(date: Date): Promise<string> {
-    return lastValueFrom(this.loc.closestCity$).then((loc) => {
-      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
-      const as = new HebrewDateEvent(zmanAwware);
-      return as.render('he-x-NoNikud');
-    });
-  }
 
-  async hebrewDateToDate(hebrewDate: string): Promise<Date> {
-    return lastValueFrom(this.loc.closestCity$).then((loc) => {
-      const hDate = HDate.fromGematriyaString(hebrewDate);
-      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, hDate.greg(), true);
-      return zmanAwware.greg();
-    });
+
+  generateAlertOptions(): AlertOptions {
+    return {
+      header: 'Custom Alert',
+      subHeader: 'This is a custom alert with aria attributes.',
+      message: 'This alert has custom aria attributes for accessibility.',
+      inputs: [
+        {
+          type: 'date',
+          name: 'dateInput',
+          placeholder: 'Select a date',
+          value: this.selectedDate$.getValue(),
+          attributes: {
+            'aria-label': 'Select a date',
+            'aria-required': 'true',
+          },
+        },
+      ],
+      buttons: ['OK'],
+      cssClass: 'custom-alert',
+      backdropDismiss: true,
+      keyboardClose: true,
+      animated: true,
+    };
   }
 }

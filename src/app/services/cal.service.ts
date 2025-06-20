@@ -1,35 +1,24 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, lastValueFrom, map } from 'rxjs';
+import { CalEvent, CalEvents, CalEventType } from '../interfaces/cal';
+import { LocationService } from './location.service';
+import { HDate, HebrewDateEvent, Zmanim } from '@hebcal/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CalService {
-
-  dates$ = new BehaviorSubject<any>({
-    '2025-06-05': {
-      hebCalEvent: '7 cleanings, blood observed',
-      instructions: 'Check your teeth',
-      hashashType: 'hashashType1',
-    },
-    '2025-06-10': {
-      hebCalEvent: 'Blood observed',
-      instructions: 'Check your blood',
-      hashashType: 'hashashType2',
-    },
-    '2025-06-20': {
-      hebCalEvent: 'Blood observed',
-      instructions: 'Check your blood',
-      hashashType: 'hashashType3',
-    },
-    '2025-06-23': {
-      hebCalEvent: 'Blood observed',
-      instructions: 'Check your blood',
-      hashashType: 'hashashType4',
-    },
+  loc = inject(LocationService);
+  calEvents$ = new BehaviorSubject<CalEvents>({
+    "24 Sivan 5785": [
+      {
+        type: CalEventType.SEE_BLOOD,
+        datetime: '2025-06-20T00:00:00Z',
+      }
+    ]
   });
-  highlightedDates$ = this.dates$.pipe(
-    map((data: any) => {
+  highlightedDates$ = this.calEvents$.pipe(
+    map((data: CalEvents) => {
       const entries = Object.entries(data).map(([date, data]) => ({
         date,
         data,
@@ -37,11 +26,27 @@ export class CalService {
       return entries;
     }),
     map((entries) => {
-      const rtn = entries.map(({ data, date }) => {
+      const rtn = entries.map(({ data, date:HebDate }) => {
+        const [day, month, year] = HebDate.split(' ');
+        const hDate = new HDate(parseInt(day), month, parseInt(year));
+        const gregDate = hDate.greg();
+        const newDate = new Date(Date.UTC(gregDate.getFullYear(), gregDate.getMonth(), gregDate.getDate()));
+        const date = newDate.toISOString().split('T')[0];
+
+        let textColor;
+        let backgroundColor;
+
+        switch (data[0].type) {
+          case CalEventType.SEE_BLOOD:
+            textColor = '#800080'; // Purple
+            backgroundColor = '#ffc0cb'; // Pink
+            break;
+        }
+
         return {
           date,
-          textColor: '#800080',
-          backgroundColor: '#ffc0cb',
+          textColor,
+          backgroundColor,
         };
       });
       return rtn;
@@ -87,8 +92,34 @@ export class CalService {
 
   addDate(date: Date, data: any) {
     const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
-    const currentData = this.dates$.value;
+    const currentData = this.calEvents$.value;
     currentData[dateKey] = data;
-    this.dates$.next(currentData);
+    this.calEvents$.next(currentData);
   }
+
+
+  dateToHDate(date: Date): HDate {
+      const loc = this.loc.closestCity;
+      console.log('lastValueFrom:', loc);
+
+      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
+      return zmanAwware;
+      // const as = new HebrewDateEvent(zmanAwware);
+
+      // return as.render('he-x-NoNikud');
+    }
+
+    hebDateToHebrew(hebrewDate: HDate): string {
+      const as = new HebrewDateEvent(hebrewDate);
+      return as.render('he-x-NoNikud');
+    }
+
+    hebrewDateToDate(hebrewDate: string): Date {
+      const loc = this.loc.closestCity;
+      console.log('lastValueFrom:', loc);
+
+      const hDate = HDate.fromGematriyaString(hebrewDate);
+      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, hDate.greg(), true);
+      return zmanAwware.greg();
+    }
 }

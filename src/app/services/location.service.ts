@@ -6,7 +6,7 @@ import {
   IOSSettings,
   NativeSettings,
 } from 'capacitor-native-settings';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import citiesObj from '../../assets/data/cities.json';
 import { CacheService } from './cache.service';
 import { Locale, Location } from '@hebcal/core';
@@ -20,7 +20,7 @@ export class LocationService {
   coordinates$ = new BehaviorSubject({ lat: 31.768318, lng: 35.213711 });
   isNative = Capacitor.isNativePlatform(); // true on iOS/Android, false on web
   platform = Capacitor.getPlatform();
-
+  closestCity: Location ;
 
   mapCenter$: Observable<google.maps.LatLngLiteral> = this.coordinates$.pipe(
     map((coordinates) => {
@@ -55,6 +55,9 @@ export class LocationService {
         }
       }
       return closest;
+    }),
+    tap((closestCityData) => {
+      this.closestCity = closestCityData;
     })
   );
   closestCityHebName$ = this.closestCity$.pipe(
