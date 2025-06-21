@@ -102,8 +102,6 @@ export class CalService {
 
   dateToHDate(date: Date): HDate {
       const loc = this.loc.closestCity;
-      console.log('lastValueFrom:', loc);
-
       const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
       return zmanAwware;
       // const as = new HebrewDateEvent(zmanAwware);

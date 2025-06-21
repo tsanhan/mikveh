@@ -63,7 +63,7 @@ export class CalComponent {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
     this.selectedDate$.next(event.detail.value);
-
+    const hdate = new HDate(date);
     // const selectedDate = this.dateToHebrew(date);
     // const alertOptions = this.generateAlertOptions();
     // const modal = await this.modalCtrl.create({
@@ -83,14 +83,13 @@ export class CalComponent {
     //   '#800080',
     //   '#ffc0cb'
     // )
-    // const loc = Location.lookup('Jerusalem') as Location;
+    const loc = this.loc.closestCity;
     // // let israelTime = this.events.localISOString(date);
-    // const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
+    const zmanAwware = this.cal.dateToHDate(date);
 
-    // console.log('israelTime:', zmanAwware);
-    //     console.log('israelTime:', zmanAwware.render('he-x-NoNikud'));
-    //     const as = new HebrewDateEvent(zmanAwware);
-    //     console.log('israelTime:', as.render('he-x-NoNikud'));
+    console.log('israelTime:', zmanAwware);
+    console.log('israelTime:', zmanAwware.render('he-x-NoNikud'));
+    console.log('israelTime:', this.cal.hebDateToHebrew(zmanAwware));
     date.setHours(20); // success!!!
     console.log('selectedDate:', date);
     // console.log('israelTime:', await this.dateToHebrew(date));
