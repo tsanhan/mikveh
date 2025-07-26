@@ -12,6 +12,7 @@ export interface IMikveh {
   motzaeiShabbatOrHagSummer: MotzaeiShabbatOrHag
   fridayOrErevHagWinter: FridayOrErevHag
   motzaeiShabbatOrHagWinter: MotzaeiShabbatOrHag
+  isStructured: boolean
   [key: string]: any
 }
 

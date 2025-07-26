@@ -15,10 +15,13 @@
         {{ mikveh.address }}
       </div>
       <div class="expansion" [ngClass]="{show:mikveh['expanded']}">
-        <div class="phoneNum" >
-          <a [href]="'tel:'+ mikveh.phoneNum">{{ mikveh.phoneNum }} </a>
-        </div>
+         @if(mikveh.isStructured){
+          <div class="phoneNum" >
+            <a [href]="'tel:'+ mikveh.phoneNum">{{ mikveh.phoneNum }} </a>
+          </div>
+        }
         <div class="openHours">
+        @if(mikveh.isStructured){
           <div class="title">
             שעות פתיחה
           </div>
@@ -68,10 +71,15 @@
             {{ mikveh.mainBalanit.name }} - <a *ngIf="mikveh.mainBalanit.phone" [href]="'tel:'+ mikveh.mainBalanit.phone">{{ mikveh.mainBalanit.phone }} </a>
           <br>
           </div>
+        }
           <div class="details" *ngIf="mikveh.details">
             <div class="title">הערות כלליות:</div>
-            {{ mikveh.details }}
-          <br>
+            @if(mikveh.isStructured){
+              {{ mikveh.details }}
+            } @else {
+              <span [innerHTML]="mikveh.details"></span>
+            }
+            <br>
           </div>
         </div>
       </div>
