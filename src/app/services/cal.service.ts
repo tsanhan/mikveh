@@ -26,7 +26,7 @@ export class CalService {
       return entries;
     }),
     map((entries) => {
-      const rtn = entries.map(({ data, date:HebDate }) => {
+      const rtn = entries.map(({ data, date: HebDate }) => {
         const [day, month, year] = HebDate.split(' ');
         const hDate = new HDate(parseInt(day), month, parseInt(year));
         const gregDate = hDate.greg();
@@ -38,7 +38,7 @@ export class CalService {
 
         // logic to pick the colors based on the CalEvent array
         for (const calEvent of data) {
-          if( calEvent.type === CalEventType.SEE_BLOOD) {
+          if (calEvent.type === CalEventType.SEE_BLOOD) {
             textColor = '#800080';
             backgroundColor = '#ffc0cb';
             break; // Assuming only one type of event per date
@@ -77,7 +77,7 @@ export class CalService {
   //   return undefined;
   // };
 
-  constructor() {}
+  constructor() { }
 
   // addHighlightedDate(
   //   dateToSelect: Date,
@@ -101,25 +101,32 @@ export class CalService {
 
 
   dateToHDate(date: Date): HDate {
-      const loc = this.loc.closestCity;
-      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
-      return zmanAwware;
-      // const as = new HebrewDateEvent(zmanAwware);
+    const loc = this.loc.closestCity;
+    const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
+    return zmanAwware;
+    // const as = new HebrewDateEvent(zmanAwware);
 
-      // return as.render('he-x-NoNikud');
-    }
+    // return as.render('he-x-NoNikud');
+  }
 
-    hebDateToHebrew(hebrewDate: HDate): string {
-      const as = new HebrewDateEvent(hebrewDate);
-      return as.render('he-x-NoNikud');
-    }
+  hebDateToHebrew(hebrewDate: HDate): string {
+    const as = new HebrewDateEvent(hebrewDate);
+    return as.render('he-x-NoNikud');
+  }
 
-    hebrewDateToDate(hebrewDate: string): Date {
-      const loc = this.loc.closestCity;
-      console.log('lastValueFrom:', loc);
+  simpleDateToHebrew(date: Date): HDate {
+    const a = new HDate(date);
+    return a;
+  }
 
-      const hDate = HDate.fromGematriyaString(hebrewDate);
-      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, hDate.greg(), true);
-      return zmanAwware.greg();
-    }
+  hebrewDateToDate(hebrewDate: string): Date {
+    const loc = this.loc.closestCity;
+    console.log('lastValueFrom:', loc);
+
+    const hDate = HDate.fromGematriyaString(hebrewDate);
+    const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, hDate.greg(), true);
+    return zmanAwware.greg();
+  }
+
+  
 }

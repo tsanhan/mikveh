@@ -8,8 +8,7 @@ import {
   IonDatetime,
   AlertController,
   AlertOptions,
-  ModalController,
-} from '@ionic/angular/standalone';
+  ModalController, IonButtons, IonButton, IonFab, IonFabButton, IonIcon, IonItem, IonAvatar, IonImg, IonLabel, IonList, IonTitle, IonToolbar, IonContent, IonModal } from '@ionic/angular/standalone';
 import { Zmanim, HebrewDateEvent, HDate } from '@hebcal/core';
 import { EventsService } from 'src/app/services/events.service';
 import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
@@ -25,12 +24,17 @@ import { CalService } from 'src/app/services/cal.service';
 import { LocationService } from 'src/app/services/location.service';
 import { CustomAlertComponent as AddCalEventCustomAlertComponent } from './custom-alert/custom-alert.component';
 
+
+
+import { addIcons } from 'ionicons';
+import { add } from 'ionicons/icons';
+
 @Component({
   selector: 'app-cal',
   templateUrl: './cal.component.html',
   styleUrls: ['./cal.component.scss'],
   standalone: true,
-  imports: [IonDatetime, AsyncPipe, DatePipe, JsonPipe],
+  imports: [IonModal, IonContent, IonToolbar, IonTitle, IonList, IonLabel, IonImg, IonAvatar, IonItem, IonIcon, IonFabButton, IonFab, IonButton, IonButtons, IonDatetime, AsyncPipe, DatePipe, JsonPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalComponent {
@@ -42,6 +46,10 @@ export class CalComponent {
   selectedDate$ = new BehaviorSubject<Date>(new Date());
   selectedHDate$ = this.selectedDate$.pipe(
     map((date: Date) => this.cal.dateToHDate(date))
+  );
+  selectedHDateHeb$ = this.selectedDate$.pipe(
+    map((date: Date) => this.cal.simpleDateToHebrew(date)),
+    map((date: HDate) => this.cal.hebDateToHebrew(date))
   );
   highlightedDates$ = this.cal.highlightedDates$;
   selectedDateData$ = combineLatest([
@@ -57,12 +65,14 @@ export class CalComponent {
   );
 
   // highlightedDatesFunc = this.cal.highlightedDatesFunc;
-  constructor(private el: ElementRef) {}
+  constructor(private el: ElementRef) {
+    addIcons({ add });
+  }
 
   async onDateChange(event: CustomEvent) {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
-    this.selectedDate$.next(event.detail.value);
+    this.selectedDate$.next(date);
     const hdate = new HDate(date);
     // const selectedDate = this.dateToHebrew(date);
     // const alertOptions = this.generateAlertOptions();
@@ -108,6 +118,9 @@ export class CalComponent {
   }
 
 
+  async openAddEventModal(){
+    
+  }
 
   generateAlertOptions(): AlertOptions {
     return {
