@@ -51,7 +51,7 @@ export class EventsService {
         (event: Event) =>
           event instanceof HavdalahEvent && event.getDate().getDay() == 6
       );
-      const  {eventTime} = havdalah as HavdalahEvent;
+      const { eventTime } = havdalah as HavdalahEvent;
       eventTime.setMinutes(eventTime.getMinutes() + 3);
       return eventTime;
     })
@@ -65,61 +65,64 @@ export class EventsService {
 
 
   hDateNow$: Observable<HDate> = this.location.coordinates$.pipe(
-      map(({ lat, lng }) => {
-        const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
-        const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, new Date(), true);
-        return zmanAwware;
-      })
-    );
+    map(({ lat, lng }) => {
+      const loc = new Location(lat, lng, true, 'Asia/Jerusalem');
+      const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, new Date(), true);
+      return zmanAwware;
+    })
+  );
 
   today$: Observable<string> = this.hDateNow$.pipe(
-      map((zmanim) => {
-        const as = new HebrewDateEvent(zmanim);
-        const day = as.getDate().getDay();
-        const dateStr = `יום ${days[day]}, ${as.render('he-x-NoNikud')}`;
-        return dateStr;
-      })
-    );
+    map((zmanim) => {
+      const as = new HebrewDateEvent(zmanim);
+      const day = as.getDate().getDay();
+      const dateStr = `יום ${days[day]}, ${as.render('he-x-NoNikud')}`;
+      return dateStr;
+    })
+  );
 
 
-    sunriseDate$ = this.location.closestCity$.pipe(
-      map((loc: Location) => {
-        const sr = new Zmanim(loc, new Date(), true).sunrise();
-        sr.setMinutes(sr.getMinutes() + 4);
-        return sr;
-      })
-    );
+  sunriseDate$ = this.location.closestCity$.pipe(
+    map((loc: Location) => {
+      const sr = new Zmanim(loc, new Date(), true).sunrise();
+      sr.setMinutes(sr.getMinutes() + 4);
+      return sr;
+    })
+  );
 
-    sunrise$ = this.sunriseDate$.pipe(
-      map((sunriseDate: Date) => {
-        const hour = sunriseDate.getHours(); // Get the hour
-        const minutes = sunriseDate.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
-        const formattedTime = `${hour}:${minutes}`;
-        return formattedTime;
-      })
-    );
+  sunrise$ = this.sunriseDate$.pipe(
+    map((sunriseDate: Date) => {
+      const hour = sunriseDate.getHours(); // Get the hour
+      const minutes = sunriseDate.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
+      const formattedTime = `${hour}:${minutes}`;
+      return formattedTime;
+    })
+  );
 
-    alotHashachar$ = this.sunriseDate$.pipe(
-      map((sunriseDate: Date) => {
-        sunriseDate.setMinutes(sunriseDate.getMinutes() - 72);
-        const hour = sunriseDate.getHours(); // Get the hour
-        const minutes = sunriseDate.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
-        const formattedTime = `${hour}:${minutes}`;
-        return formattedTime;
-      })
-    );
+  alotHashachar$ = this.sunriseDate$.pipe(
+    map((sunriseDate: Date) => {
+      sunriseDate.setMinutes(sunriseDate.getMinutes() - 72);
+      const hour = sunriseDate.getHours(); // Get the hour
+      const minutes = sunriseDate.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
+      const formattedTime = `${hour}:${minutes}`;
+      return formattedTime;
+    })
+  );
 
-    sunset$ = this.location.closestCity$.pipe(
-      map((loc: Location) => {
-        const ss = new Zmanim(loc, new Date(), true).sunset();
-        const hour = ss.getHours(); // Get the hour
-        const minutes = ss.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
-        const formattedTime = `${hour}:${minutes}`;
-        return formattedTime;
-      })
-    );
+  sunset$ = this.location.closestCity$.pipe(
+    map((loc: Location) => this.locationToSunsetTime(loc, new Date()))
+  );
   constructor() {
 
+  }
+
+
+  locationToSunsetTime(location: Location, date: Date): string {
+    const ss = new Zmanim(location, date, true).sunset();
+    const hour = ss.getHours(); // Get the hour
+    const minutes = ss.getMinutes().toString().padStart(2, '0'); // Ensure minutes are always 2 digits
+    const formattedTime = `${hour}:${minutes}`;
+    return formattedTime;
   }
 
   localISOString(date = new Date()) {

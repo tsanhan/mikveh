@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, lastValueFrom, map } from 'rxjs';
-import { CalEvent, CalEvents, CalEventType } from '../interfaces/cal';
+import { CalEvent, CalEventType } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { HDate, HebrewDateEvent, Zmanim } from '@hebcal/core';
 
@@ -9,46 +9,35 @@ import { HDate, HebrewDateEvent, Zmanim } from '@hebcal/core';
 })
 export class CalService {
   loc = inject(LocationService);
-  calEvents$ = new BehaviorSubject<CalEvents>({
-    "24 Sivan 5785": [
+  calEvents$ = new BehaviorSubject<CalEvent[]>(
+    [
       {
+        hDateSunsetAwareString: '24 Sivan 5785',
         type: CalEventType.SEE_BLOOD,
-        datetime: '2025-06-20T00:00:00Z',
+        afterSunset: false,
       }
     ]
-  });
+  );
   highlightedDates$ = this.calEvents$.pipe(
-    map((data: CalEvents) => {
-      const entries = Object.entries(data).map(([date, data]) => ({
-        date,
-        data,
-      }));
-      return entries;
-    }),
-    map((entries) => {
-      const rtn = entries.map(({ data, date: HebDate }) => {
-        const [day, month, year] = HebDate.split(' ');
-        const hDate = new HDate(parseInt(day), month, parseInt(year));
-        const gregDate = hDate.greg();
-        const newDate = new Date(Date.UTC(gregDate.getFullYear(), gregDate.getMonth(), gregDate.getDate()));
-        const date = newDate.toISOString().split('T')[0];
 
+    map((entries) => {
+      const rtn = entries.map(({ afterSunset, hDateSunsetAwareString, type }) => {       
+        const newDate = this.hDateSunsetAwareStringToDate(hDateSunsetAwareString);
+        const date = newDate.toISOString().split('T')[0];;
         let textColor;
         let backgroundColor;
 
         // logic to pick the colors based on the CalEvent array
-        for (const calEvent of data) {
-          if (calEvent.type === CalEventType.SEE_BLOOD) {
-            textColor = '#800080';
-            backgroundColor = '#ffc0cb';
-            break; // Assuming only one type of event per date
-          }
+        if (type === CalEventType.SEE_BLOOD) {
+          textColor = '#800080';
+          backgroundColor = '#ffc0cb';
         }
 
         return {
           date,
           textColor,
           backgroundColor,
+          afterSunset,
         };
       });
       return rtn;
@@ -56,54 +45,26 @@ export class CalService {
   );
 
 
-  // highlightedDatesFunc = (isoString: string) => {
-  //   const date = new Date(isoString);
-  //   const utcDay = date.getUTCDate();
-
-  //   if (utcDay % 5 === 0) {
-  //     return {
-  //       textColor: '#800080',
-  //       backgroundColor: '#ffc0cb',
-  //     };
-  //   }
-
-  //   if (utcDay % 3 === 0) {
-  //     return {
-  //       textColor: 'var(--ion-color-secondary-contrast)',
-  //       backgroundColor: 'var(--ion-color-secondary)',
-  //     };
-  //   }
-
-  //   return undefined;
-  // };
-
   constructor() { }
 
-  // addHighlightedDate(
-  //   dateToSelect: Date,
-  //   textColor: string,
-  //   backgroundColor: string
-  // ) {
-  //   const date: string = dateToSelect.toISOString().split('T')[0]; //  YYYY-MM-DD
-  //   this.highlightedDatesArr.push({
-  //     date,
-  //     textColor,
-  //     backgroundColor,
-  //   });
-  // }
 
-  addDate(date: Date, data: any) {
-    const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
-    const currentData = this.calEvents$.value;
-    currentData[dateKey] = data;
-    this.calEvents$.next(currentData);
+  async addEvent(event: CalEvent) {
+    const currentEvents = this.calEvents$.getValue();
+    currentEvents.push(event);
+    this.calEvents$.next(currentEvents);
+  }
+  hDateSunsetAwareStringToDate(hDateSunsetAwareString: string): Date {
+    const [day, month, year] = hDateSunsetAwareString.split(' ');
+    const hDate = new HDate(parseInt(day), month, parseInt(year));
+    const gregDate = hDate.greg();
+    return new Date(Date.UTC(gregDate.getFullYear(), gregDate.getMonth(), gregDate.getDate()));
   }
 
-
-  dateToHDate(date: Date): HDate {
-    const loc = this.loc.closestCity;
-    const zmanAwware = Zmanim.makeSunsetAwareHDate(loc, date, true);
-    return zmanAwware;
+  dateToHDate(date: Date, afterSunset: boolean): HDate {    
+    if (afterSunset) date.setDate(date.getDate() + 1);
+    const hdate = new HDate(date);
+    return hdate;
+    // zmanAwware.toString();
     // const as = new HebrewDateEvent(zmanAwware);
 
     // return as.render('he-x-NoNikud');
@@ -119,8 +80,10 @@ export class CalService {
     return a;
   }
 
+
   hebrewDateToDate(hebrewDate: string): Date {
     const loc = this.loc.closestCity;
+    
     console.log('lastValueFrom:', loc);
 
     const hDate = HDate.fromGematriyaString(hebrewDate);
@@ -128,5 +91,5 @@ export class CalService {
     return zmanAwware.greg();
   }
 
-  
+
 }
