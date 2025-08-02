@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, lastValueFrom, map } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, map, share } from 'rxjs';
 import { CalEvent, CalEventType } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { HDate, HebrewDateEvent, Zmanim } from '@hebcal/core';
@@ -17,7 +17,8 @@ export class CalService {
     map((entries) => {
       const rtn = entries.flatMap((calEvent: CalEvent) => this.eventDto(calEvent));
       return rtn;
-    })
+    }),
+    share()
   );
 
 
