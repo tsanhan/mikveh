@@ -26,8 +26,11 @@ import {
   mapOutline,
 } from 'ionicons/icons';
 import { combineLatest, filter, map, shareReplay, startWith, tap } from 'rxjs';
+import { ApproachName } from 'src/app/interfaces/approaches';
 import { ApproachService } from 'src/app/services/approach.service';
 import { CacheService } from 'src/app/services/cache.service';
+
+
 @Component({
   selector: 'app-top-buttons',
   standalone: true,
@@ -51,6 +54,8 @@ export class TopButtonsComponent {
   cache = inject(CacheService);
   approach = inject(ApproachService);
   router = inject(Router);
+
+  selectedApproach = ApproachName;
 
   approaches$ = this.approach.approaches$;
   selectedApproach$ = this.approach.approach$;

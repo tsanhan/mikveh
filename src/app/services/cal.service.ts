@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, lastValueFrom, map, share } from 'rxjs';
-import { CalEvent, CalEventType } from '../interfaces/cal';
+import { CalEvent, CalEventType, EventDto, Ona } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { HDate, HebrewDateEvent, Zmanim } from '@hebcal/core';
 import { CacheService } from './cache.service';
+import { ApproachName } from '../interfaces/approaches';
 
 @Injectable({
   providedIn: 'root',
@@ -120,7 +121,8 @@ export class CalService {
   }
 
   private buildFollowingEventsChabadOnaBenonit(event: CalEvent) {
-    const rtn: { date: string; textColor: string; backgroundColor: string, details: string[] }[] = [];
+    let approach: ApproachName;
+    const rtn: EventDto[] = [];
     const date = this.hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
 
     // add 4 days for הפסק טהרה. if if event was on sunday, the next event will be on thursday
@@ -133,7 +135,9 @@ export class CalService {
       details: [
         'הפסק טהרה',
         'מחר מתחילים לספור 7 נקיים',
-      ]
+      ],
+      ona: Ona.OnaBenonit,
+      approach: this.cache.approach.approach$.getValue(),
     });
 
     // add 1 after הפסק טהרה for ספירת 7 נקיים

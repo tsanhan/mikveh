@@ -84,7 +84,11 @@ export class CalComponent {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
     this.selectedDate$.next(date);
-    this.highlightedDates$.pipe(take(1)).subscribe(value => {
+    const dateTofind = date.toISOString().split('T')[0];
+    this.highlightedDates$.pipe(
+      take(1),
+      map(value => value.filter(item => item.date === dateTofind).map(item => item)),
+    ).subscribe(value => {
         console.log(value);
     });
     // const hdate = new HDate(date);

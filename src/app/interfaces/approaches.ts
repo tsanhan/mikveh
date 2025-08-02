@@ -8,4 +8,9 @@ export interface Approaches {
   [key: string]: Approach;
 }
 
+export enum ApproachName {
+  CHABAD = 'chabad',
+  ASHKENAZI = 'ashkenaz',
+  SEPHARDI = 'sfarad',
+}
 
