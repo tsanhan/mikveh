@@ -16,6 +16,7 @@ import {
   lastValueFrom,
   map,
   switchMap,
+  take,
 } from 'rxjs';
 import { CalService } from 'src/app/services/cal.service';
 import { LocationService } from 'src/app/services/location.service';
@@ -83,6 +84,9 @@ export class CalComponent {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
     this.selectedDate$.next(date);
+    this.highlightedDates$.pipe(take(1)).subscribe(value => {
+        console.log(value);
+    });
     // const hdate = new HDate(date);
    
     // const loc = this.loc.closestCity;

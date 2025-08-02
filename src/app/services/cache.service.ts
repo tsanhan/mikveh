@@ -6,6 +6,7 @@ import { Location } from '../interfaces/locations';
 import { IMikveh } from '../interfaces/mikveh.interface';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApproachService } from './approach.service';
+import { CalEvent } from '../interfaces/cal';
 
 
 @Injectable({
@@ -14,12 +15,21 @@ import { ApproachService } from './approach.service';
 export class CacheService {
   storage =  inject(Storage)
   mikvehStorage = inject(Storage)
+  calEventsStorage = inject(Storage)
+
   approach = inject(ApproachService)
+
   private _storage: Storage = new Storage();
   private _mikvehStorage: Storage = new Storage();
-
+  
   //#region Mikveh
-
+  
+  //#region calEvents
+  private _calEventsStorage: Storage = new Storage();
+  private _calEvents$ = new BehaviorSubject<CalEvent[]>([]);
+  public calEvents$ = this._calEvents$.asObservable();
+  
+  //#endregion
 
   //#region Location
   private locations$:BehaviorSubject<any>;
@@ -57,7 +67,7 @@ export class CacheService {
   private async init() {
     this._mikvehStorage = await this.mikvehStorage.create();
     this._storage = await this.storage.create();
-
+    this._calEventsStorage = await this.calEventsStorage.create();
 
 
     const loc = await this._storage.get('location');
@@ -72,6 +82,13 @@ export class CacheService {
       await this._storage.set('approach', {...this.approach.approach$.getValue()});
     } else {
       this.approach.approach$.next(app);
+    }
+
+    const calEvents = await this._calEventsStorage.get('calEvents');
+    if(!calEvents) {
+      await this._calEventsStorage.set('calEvents', []);
+    } else {
+      this._calEvents$.next(calEvents);
     }
 
     // const dm = await this._storage.get('darkMode');
@@ -106,5 +123,12 @@ export class CacheService {
   }
   public getMikvehResults():Promise<IMikveh[]> {
     return this._mikvehStorage.get('mikvehs');
+  }
+
+  public setCalEvent(event: CalEvent) {
+    const currentEvents = this._calEvents$.getValue();
+    currentEvents.push(event);
+    this._calEvents$.next(currentEvents);
+    this._calEventsStorage.set('calEvents', currentEvents);
   }
 }
