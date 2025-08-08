@@ -5,7 +5,7 @@
 ></ion-searchbar>
 
 <div class="warpper" #warpper>
-  {{this.isLoading()  ? 'טוען...' : 'תוצאות:'}}
+  <!-- {{this.isLoading()  ? 'טוען...' : 'תוצאות:'}} -->
   @for(mikveh of mikvehs$ | async; track mikveh; let idx = $index ){
   <div class="mikveh" #dynamicElement [ngClass]="{expanded: mikveh['expanded']}" (click)="flipOnClick(mikveh)" [id]="mikveh.id" >
     <div class="details">
