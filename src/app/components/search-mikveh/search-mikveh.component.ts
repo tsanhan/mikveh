@@ -1,7 +1,7 @@
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren, ChangeDetectionStrategy, signal } from '@angular/core';
 import { IonSearchbar, IonButton, IonIcon } from '@ionic/angular/standalone';
-import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, interval, map, Observable, shareReplay, tap, throttle } from 'rxjs';
 import { DalService } from 'src/app/services/dal.service';
 import { GoogleMap, MapMarker, MapAdvancedMarker } from '@angular/google-maps';
 import { LocationService } from 'src/app/services/location.service';
@@ -11,6 +11,7 @@ import { chevronDownOutline, chevronUpOutline, locationOutline } from 'ionicons/
 import { TranslateHebPipe } from 'src/app/pipes/translate-heb.pipe';
 import { EventsService } from 'src/app/services/events.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TelHighlightPipe } from 'src/app/pipes/telHighlight';
 
 
 @Component({
@@ -25,7 +26,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
     GoogleMap,
     MapAdvancedMarker,
     DatePipe,
-    TranslateHebPipe
+    TranslateHebPipe,
+    TelHighlightPipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -40,7 +42,7 @@ export class SearchMikvehComponent implements OnInit {
   @ViewChild('warpper',{ static: true }) warpper!: ElementRef;
 
   center$: Observable<google.maps.LatLngLiteral> = this.location.mapCenter$;
-
+  isLoading = signal<boolean>(true);
   keyStroke = new BehaviorSubject<string>('');
   candleLighting$ = this.events.candleLighting$;
 
@@ -52,6 +54,7 @@ export class SearchMikvehComponent implements OnInit {
     this.keyStroke,
     this.center$,
   ]).pipe(
+    throttle(() => interval(5000)),
     map(([results, key, center]) => {
       const filtered = results.filter((result:IMikveh) => {
         return (
@@ -69,6 +72,14 @@ export class SearchMikvehComponent implements OnInit {
         return dis;
       });
       return ordered;
+
+    }),
+    
+    tap(() => this.isLoading.set(false)),
+    catchError((err) => {
+      console.error('Error fetching mikvehs:', err);  
+      this.isLoading.set(false);
+      return [];
     })
   );
 

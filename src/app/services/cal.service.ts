@@ -4,7 +4,7 @@ import { CalEvent, CalEventType, EventDto, Ona } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { HDate, HebrewDateEvent, Zmanim } from '@hebcal/core';
 import { CacheService } from './cache.service';
-import { ApproachName } from '../interfaces/approaches';
+import { Approach, ApproachName } from '../interfaces/approaches';
 
 @Injectable({
   providedIn: 'root',
@@ -121,7 +121,8 @@ export class CalService {
   }
 
   private buildFollowingEventsChabadOnaBenonit(event: CalEvent) {
-    let approach: ApproachName;
+    let approach: Approach = this.cache.getApproach(ApproachName.CHABAD);
+    let ona: Ona = Ona.OnaBenonit;
     const rtn: EventDto[] = [];
     const date = this.hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
 
@@ -136,8 +137,8 @@ export class CalService {
         'הפסק טהרה',
         'מחר מתחילים לספור 7 נקיים',
       ],
-      ona: Ona.OnaBenonit,
-      approach: this.cache.approach.approach$.getValue(),
+      ona,
+      approach
     });
 
     // add 1 after הפסק טהרה for ספירת 7 נקיים
@@ -149,7 +150,9 @@ export class CalService {
         backgroundColor: '#fff3e6', // Light orange background
         details: [
           `היום ה${i} של ספירת 7 נקיים`,
-        ]
+        ],
+      ona,
+      approach
       }
       if (i === 7) {
         toAddtoRtn.textColor = '#00ff00'; // Green for the last day
@@ -168,7 +171,9 @@ export class CalService {
       backgroundColor: '#ffe6e6', // Light red background
       details: [
         'היום ה-30, יש לבדוק',
-      ]
+      ],
+      ona,
+      approach
     });
 
     return rtn;

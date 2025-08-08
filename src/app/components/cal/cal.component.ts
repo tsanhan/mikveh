@@ -20,7 +20,6 @@ import {
 } from 'rxjs';
 import { CalService } from 'src/app/services/cal.service';
 import { LocationService } from 'src/app/services/location.service';
-import { CustomAlertComponent as AddCalEventCustomAlertComponent } from './custom-alert/custom-alert.component';
 
 
 

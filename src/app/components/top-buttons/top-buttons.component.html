@@ -21,11 +21,11 @@
           </ion-text>
         </ion-fab-button>
         <ion-fab-button
-          [ngClass]="{ active: selectedApproach.name === 'chabad' }"
-          (click)="chooseApproach('chabad')"
+          [ngClass]="{ active: selectedApproach.name === ApproachNameEnum.CHABAD}"
+          (click)="chooseApproach(ApproachNameEnum.CHABAD)"
         >
           <ion-text style="padding-bottom: 0.5rem" >
-            {{ approaches["chabad"].nameHeb }}
+            {{ approaches[ApproachNameEnum.CHABAD].nameHeb }}
           </ion-text>
         </ion-fab-button>
         <ion-fab-button

@@ -55,7 +55,7 @@ export class TopButtonsComponent {
   approach = inject(ApproachService);
   router = inject(Router);
 
-  selectedApproach = ApproachName;
+  public ApproachNameEnum = ApproachName;
 
   approaches$ = this.approach.approaches$;
   selectedApproach$ = this.approach.approach$;

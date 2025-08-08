@@ -7,6 +7,7 @@ import { IMikveh } from '../interfaces/mikveh.interface';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApproachService } from './approach.service';
 import { CalEvent } from '../interfaces/cal';
+import { Approach } from '../interfaces/approaches';
 
 
 @Injectable({
@@ -110,6 +111,10 @@ export class CacheService {
     const approach = this.approach.approaches$.getValue()[key];
     this.approach.approach$.next({...approach});
     this._storage.set('approach', approach);
+  }
+
+  public getApproach(key: string): Approach {
+    return this.approach.approaches$.getValue()[key];
   }
 
   public setDarkMode(darkMode: boolean) {
