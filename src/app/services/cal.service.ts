@@ -5,6 +5,7 @@ import { LocationService } from './location.service';
 import { HDate, HebrewDateEvent, Zmanim } from '@hebcal/core';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
+import { ApproachService } from './approach.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,8 @@ import { Approach, ApproachName } from '../interfaces/approaches';
 export class CalService {
   loc = inject(LocationService);
   cache = inject(CacheService);
+  approach = inject(ApproachService);
+
   calEvents$ = this.cache.calEvents$;
 
   highlightedDates$ = this.calEvents$.pipe(
@@ -68,20 +71,34 @@ export class CalService {
     return zmanAwware.greg();
   }
 
-
-  private eventDto(event: CalEvent): {
-    date: string;
-    textColor: string;
-    backgroundColor: string;
-    details: string[];
-  }[] {
+/**
+ approach
+: 
+{nameHeb: 'חב"ד', name: 'chabad', svg: 'jamCrown'}
+backgroundColor
+: 
+"#e6ffe6"
+date
+: 
+"2025-08-15"
+details
+: 
+(2) ['היום ה7 של ספירת 7 נקיים', 'היום ה-7 נקיים, היום בערב אפשר לטבול']
+ona
+: 
+"עונה בינונית"
+textColor
+: 
+"#00ff00"
+ */
+  private eventDto(event: CalEvent):EventDto[] {
     const { hDateSunsetAwareString, type } = event;
     const date = this.getDateParam(hDateSunsetAwareString);
 
     let textColor: string;
     let backgroundColor: string;
     let details: string[] = [];
-    let followingEventsChabadOnaBenonit: { date: string; textColor: string; backgroundColor: string, details: string[] }[] = [];
+    let followingEventsChabadOnaBenonit: EventDto[] = [];
 
     switch (type) {
       case CalEventType.SEE_BLOOD:
@@ -109,6 +126,8 @@ export class CalService {
         textColor,
         backgroundColor,
         details,
+        ona: Ona.OnaBenonit,
+        approach: this.approach.approach$.getValue(),
       },
       ...followingEventsChabadOnaBenonit
     ];
@@ -120,7 +139,7 @@ export class CalService {
     return date;
   }
 
-  private buildFollowingEventsChabadOnaBenonit(event: CalEvent) {
+  private buildFollowingEventsChabadOnaBenonit(event: CalEvent):EventDto[] {
     let approach: Approach = this.cache.getApproach(ApproachName.CHABAD);
     let ona: Ona = Ona.OnaBenonit;
     const rtn: EventDto[] = [];

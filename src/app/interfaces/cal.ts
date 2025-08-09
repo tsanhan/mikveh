@@ -25,6 +25,7 @@ export interface EventDto {
 
 export enum Ona {
   OnaBenonit = 'עונה בינונית',
+  Clali = 'כללי'
 
 }
 

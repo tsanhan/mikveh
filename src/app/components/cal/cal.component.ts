@@ -15,6 +15,8 @@ import {
   combineLatestAll,
   lastValueFrom,
   map,
+  Observable,
+  shareReplay,
   switchMap,
   take,
 } from 'rxjs';
@@ -27,13 +29,14 @@ import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CalEvent, CalEventType } from 'src/app/interfaces/cal';
+import { ApproachService } from 'src/app/services/approach.service';
 
 @Component({
   selector: 'app-cal',
   templateUrl: './cal.component.html',
   styleUrls: ['./cal.component.scss'],
   standalone: true,
-  imports: [IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe, JsonPipe, IonSelectOption, IonSelect, IonButton],
+  imports: [IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe, JsonPipe, IonSelectOption, IonSelect, IonButton, IonLabel],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalComponent {
@@ -42,19 +45,35 @@ export class CalComponent {
   cal = inject(CalService);
   loc = inject(LocationService);
   modalCtrl = inject(ModalController);
+  approach = inject(ApproachService);
+
   fb = inject(FormBuilder)
   israelTime = this.events.localISOString(new Date());
   selectedDate$ = new BehaviorSubject<Date>(new Date());
+
   sunsetForDate$ = combineLatest([this.loc.closestCity$, this.selectedDate$]).pipe(
     map(([location, date]) => this.events.locationToSunsetTime(location, date))
   )
-  selectedHDateHeb$ = this.selectedDate$.pipe(
+  selectedHDateHeb$: Observable<string> = this.selectedDate$.pipe(
     map((date: Date) => this.cal.simpleDateToHebrew(date)),
     map((date: HDate) => this.cal.hebDateToHebrew(date))
   );
-  highlightedDates$ = this.cal.highlightedDates$;
+  highlightedDates$ = this.cal.highlightedDates$.pipe(shareReplay(1));
   public CalEventTypeEnum = CalEventType;
 
+
+
+  detailsToList$ = combineLatest([this.highlightedDates$, this.selectedDate$]).pipe(
+    map(([highlightedDates, selectedDate]) => {
+      const dateTofind = selectedDate.toISOString().split('T')[0];
+      const eventsOnThisDate = highlightedDates.filter(item => item.date === dateTofind);
+      const approach = this.approach.approach$.getValue();
+      const filteredByApproach = eventsOnThisDate.filter(x => x.approach.name == approach.name);
+      console.log(filteredByApproach);
+      
+      return filteredByApproach;
+    }),
+  )
   addEventForm = new FormGroup({
     type: new FormControl<CalEventType>(CalEventType.SEE_BLOOD, { nonNullable: true, validators: [Validators.required] }),
     afterSunset: new FormControl<boolean>(false, { nonNullable: true, validators: [Validators.required] }),
@@ -69,9 +88,9 @@ export class CalComponent {
     const { type = CalEventType.SEE_BLOOD, afterSunset = false } = this.addEventForm.value;
     const date = this.selectedDate$.getValue();
     const hdate = this.cal.dateToHDate(date, afterSunset);
-    const event:CalEvent = {
+    const event: CalEvent = {
       type,
-      hDateSunsetAwareString:hdate.toString(),
+      hDateSunsetAwareString: hdate.toString(),
       afterSunset,
     };
     this.cal.addEvent(event);
@@ -83,15 +102,8 @@ export class CalComponent {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
     this.selectedDate$.next(date);
-    const dateTofind = date.toISOString().split('T')[0];
-    this.highlightedDates$.pipe(
-      take(1),
-      map(value => value.filter(item => item.date === dateTofind).map(item => item)),
-    ).subscribe(value => {
-        console.log(value);
-    });
     // const hdate = new HDate(date);
-   
+
     // const loc = this.loc.closestCity;
     // // let israelTime = this.events.localISOString(date);
     // const zmanAwware = this.cal.dateToHDate(date);
