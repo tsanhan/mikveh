@@ -136,4 +136,11 @@ export class CacheService {
     this._calEvents$.next(currentEvents);
     this._calEventsStorage.set('calEvents', currentEvents);
   }
+
+  public getCalEvents(): CalEvent[] {
+    const currentEvents = this._calEvents$.getValue();
+    return currentEvents;
+  }
+
+  
 }

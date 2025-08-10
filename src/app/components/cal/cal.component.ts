@@ -61,8 +61,6 @@ export class CalComponent {
   highlightedDates$ = this.cal.highlightedDates$.pipe(shareReplay(1));
   public CalEventTypeEnum = CalEventType;
 
-
-
   detailsToList$ = combineLatest([this.highlightedDates$, this.selectedDate$]).pipe(
     map(([highlightedDates, selectedDate]) => {
       const dateTofind = selectedDate.toISOString().split('T')[0];
@@ -87,13 +85,8 @@ export class CalComponent {
     console.log('onAddEvent:', this.addEventForm.value);
     const { type = CalEventType.SEE_BLOOD, afterSunset = false } = this.addEventForm.value;
     const date = this.selectedDate$.getValue();
-    const hdate = this.cal.dateToHDate(date, afterSunset);
-    const event: CalEvent = {
-      type,
-      hDateSunsetAwareString: hdate.toString(),
-      afterSunset,
-    };
-    this.cal.addEvent(event);
+    
+    this.cal.addEvent(type,date,afterSunset);
     this.addEventForm.reset();
 
   }

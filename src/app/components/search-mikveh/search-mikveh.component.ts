@@ -11,7 +11,7 @@ import { chevronDownOutline, chevronUpOutline, locationOutline } from 'ionicons/
 import { TranslateHebPipe } from 'src/app/pipes/translate-heb.pipe';
 import { EventsService } from 'src/app/services/events.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TelHighlightPipe } from 'src/app/pipes/telHighlight';
+import { TelHighlightPipe } from 'src/app/pipes/tel-highlight.pipe';
 
 
 @Component({

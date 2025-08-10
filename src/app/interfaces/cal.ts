@@ -10,11 +10,16 @@ export interface CalEvent {
 
 export enum CalEventType {
   SEE_BLOOD = 'blood',
+  BETWEEN_BLOOD_AND_HEFSEK='blood to hefsek',
+  SEVEN_CLEAN='seven cleans',
+  MIKVEH_DAY='mikveh day',
+  BETWEEN_MIKVEH_DAY_AND_PRISHA='mikveh to prisha',
   OTHER = 'other',
 }
 
 
 export interface EventDto {
+  type: CalEventType,
   date: string;
   textColor: string;
   backgroundColor: string,

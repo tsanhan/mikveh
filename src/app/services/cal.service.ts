@@ -29,7 +29,35 @@ export class CalService {
   constructor() { }
 
 
-  async addEvent(event: CalEvent) {
+  async addEvent(type: CalEventType, date: Date, afterSunset: boolean) {
+    const hdate = this.dateToHDate(date, afterSunset);
+
+    if (type === CalEventType.SEE_BLOOD) {
+      if (afterSunset) date.setDate(date.getDate() + 1);
+
+      const events = this.cache.getCalEvents();
+      // get the later most date behind this date
+      const getTheBloodOnes = events.filter(x => x.type === CalEventType.SEE_BLOOD);
+      const filteredBrforeNow = getTheBloodOnes.filter(x => this.hDateSunsetAwareStringToDate(x.hDateSunsetAwareString) < date);
+      const later = filteredBrforeNow.sort((a: CalEvent, b: CalEvent) => this.hDateSunsetAwareStringToDate(a.hDateSunsetAwareString).getTime() - this.hDateSunsetAwareStringToDate(b.hDateSunsetAwareString).getTime())[0]
+      const laterDate = this.hDateSunsetAwareStringToDate(later.hDateSunsetAwareString);
+      const isDurring4FirstDays = Math.abs(date.getTime() - laterDate.getTime())
+      const millisecondsInDay = 1000 * 60 * 60 * 24;
+      const daysDifference = Math.floor(isDurring4FirstDays / millisecondsInDay);
+      if (daysDifference <4) {
+        ssss
+      }
+      // if duing the first 4 days, dismiss the event
+
+    }
+    // check if the event is blood
+    // then if it's in 7 nekeem we delete the previuse blood report and apply this one as if it was 4 days ego (restarting 7 nekeem)
+
+    const event: CalEvent = {
+      type,
+      hDateSunsetAwareString: hdate.toString(),
+      afterSunset,
+    };
     this.cache.setCalEvent(event);
   }
 
@@ -71,27 +99,27 @@ export class CalService {
     return zmanAwware.greg();
   }
 
-/**
- approach
-: 
-{nameHeb: 'חב"ד', name: 'chabad', svg: 'jamCrown'}
-backgroundColor
-: 
-"#e6ffe6"
-date
-: 
-"2025-08-15"
-details
-: 
-(2) ['היום ה7 של ספירת 7 נקיים', 'היום ה-7 נקיים, היום בערב אפשר לטבול']
-ona
-: 
-"עונה בינונית"
-textColor
-: 
-"#00ff00"
- */
-  private eventDto(event: CalEvent):EventDto[] {
+  /**
+   approach
+  : 
+  {nameHeb: 'חב"ד', name: 'chabad', svg: 'jamCrown'}
+  backgroundColor
+  : 
+  "#e6ffe6"
+  date
+  : 
+  "2025-08-15"
+  details
+  : 
+  (2) ['היום ה7 של ספירת 7 נקיים', 'היום ה-7 נקיים, היום בערב אפשר לטבול']
+  ona
+  : 
+  "עונה בינונית"
+  textColor
+  : 
+  "#00ff00"
+   */
+  private eventDto(event: CalEvent): EventDto[] {
     const { hDateSunsetAwareString, type } = event;
     const date = this.getDateParam(hDateSunsetAwareString);
 
@@ -122,6 +150,7 @@ textColor
 
     return [
       {
+        type,
         date,
         textColor,
         backgroundColor,
@@ -139,7 +168,7 @@ textColor
     return date;
   }
 
-  private buildFollowingEventsChabadOnaBenonit(event: CalEvent):EventDto[] {
+  private buildFollowingEventsChabadOnaBenonit(event: CalEvent): EventDto[] {
     let approach: Approach = this.cache.getApproach(ApproachName.CHABAD);
     let ona: Ona = Ona.OnaBenonit;
     const rtn: EventDto[] = [];
@@ -149,6 +178,7 @@ textColor
     date.setDate(date.getDate() + 4);
 
     rtn.push({
+      type: CalEventType.BETWEEN_BLOOD_AND_HEFSEK,
       date: date.toISOString().split('T')[0],
       textColor: '#ff8800ff', // Red
       backgroundColor: '#ffe6e6', // Light red background
@@ -164,16 +194,18 @@ textColor
     for (let i = 1; i <= 7; i++) {
       date.setDate(date.getDate() + 1);
       const toAddtoRtn = {
+        type: CalEventType.SEVEN_CLEAN,
         date: date.toISOString().split('T')[0],
         textColor: '#a1a05cff',
         backgroundColor: '#fff3e6', // Light orange background
         details: [
           `היום ה${i} של ספירת 7 נקיים`,
         ],
-      ona,
-      approach
+        ona,
+        approach
       }
       if (i === 7) {
+        toAddtoRtn.type = CalEventType.MIKVEH_DAY;
         toAddtoRtn.textColor = '#00ff00'; // Green for the last day
         toAddtoRtn.backgroundColor = '#e6ffe6'; // Light green background
         toAddtoRtn.details.push('היום ה-7 נקיים, היום בערב אפשר לטבול');
@@ -185,6 +217,7 @@ textColor
     const nextMonthsDate = this.hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
     nextMonthsDate.setDate(nextMonthsDate.getDate() + 29);
     rtn.push({
+      type: CalEventType.BETWEEN_MIKVEH_DAY_AND_PRISHA,
       date: nextMonthsDate.toISOString().split('T')[0],
       textColor: '#ff006aff',
       backgroundColor: '#ffe6e6', // Light red background
