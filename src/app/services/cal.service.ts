@@ -6,6 +6,7 @@ import { HDate, HebrewDateEvent, Zmanim } from '@hebcal/core';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { ApproachService } from './approach.service';
+import {Dayjs} from 'dayjs';
 
 @Injectable({
   providedIn: 'root',
@@ -31,23 +32,51 @@ export class CalService {
 
   async addEvent(type: CalEventType, date: Date, afterSunset: boolean) {
     const hdate = this.dateToHDate(date, afterSunset);
+    const events: CalEvent[] = this.cache.getCalEvents();
+    const getTheBloodOnes: CalEvent[]= events.filter(x => x.type === CalEventType.SEE_BLOOD);
 
+    // 1. sfarad : if see blood during the first 4 days,
     if (type === CalEventType.SEE_BLOOD) {
-      if (afterSunset) date.setDate(date.getDate() + 1);
+      let isTooClose = false;
+      switch(this.approach.approach$.getValue().name) {
+        case ApproachName.SEPHARDI:
+          isTooClose = getTheBloodOnes.some(x => {
+            const subject = this.hDateStringToHDate(x.hDateSunsetAwareString);
+            const isTooClose = hdate.deltaDays(subject) <= 3;
+            return isTooClose;
+          });
+          break;
+        default:
+          isTooClose = getTheBloodOnes.some(x => {
+            const subject = this.hDateStringToHDate(x.hDateSunsetAwareString);
+            const isTooClose = hdate.deltaDays(subject) <= 4;
+            return isTooClose;
+          });
+          break;
+          
+      }
+      if (isTooClose) {
+        return; // do not add the event, it's too close to a previous blood event
+      }
 
-      const events = this.cache.getCalEvents();
       // get the later most date behind this date
-      const getTheBloodOnes = events.filter(x => x.type === CalEventType.SEE_BLOOD);
+      
+      
       const filteredBrforeNow = getTheBloodOnes.filter(x => this.hDateSunsetAwareStringToDate(x.hDateSunsetAwareString) < date);
-      const later = filteredBrforeNow.sort((a: CalEvent, b: CalEvent) => this.hDateSunsetAwareStringToDate(a.hDateSunsetAwareString).getTime() - this.hDateSunsetAwareStringToDate(b.hDateSunsetAwareString).getTime())[0]
+      const later = filteredBrforeNow.sort((a: CalEvent, b: CalEvent) => this.hDateSunsetAwareStringToDate(a.hDateSunsetAwareString).getTime() - this.hDateSunsetAwareStringToDate(b.hDateSunsetAwareString).getTime()).pop() as CalEvent
+      
       const laterDate = this.hDateSunsetAwareStringToDate(later.hDateSunsetAwareString);
+      
+      const a = new Dayjs(laterDate);
+      
+      
       const isDurring4FirstDays = Math.abs(date.getTime() - laterDate.getTime())
       const millisecondsInDay = 1000 * 60 * 60 * 24;
       const daysDifference = Math.floor(isDurring4FirstDays / millisecondsInDay);
-      if (daysDifference <4) {
-        ssss
+      if (daysDifference < 4) {
+        return ;
       }
-      // if duing the first 4 days, dismiss the event
+      // if during the first 4 days, dismiss the event
 
     }
     // check if the event is blood
@@ -61,9 +90,14 @@ export class CalService {
     this.cache.setCalEvent(event);
   }
 
-  hDateSunsetAwareStringToDate(hDateSunsetAwareString: string): Date {
+
+  hDateStringToHDate(hDateSunsetAwareString: string): HDate {
     const [day, month, year] = hDateSunsetAwareString.split(' ');
-    const hDate = new HDate(parseInt(day), month, parseInt(year));
+    return new HDate(parseInt(day), month, parseInt(year));
+  }
+
+  hDateSunsetAwareStringToDate(hDateSunsetAwareString: string): Date {
+    const hDate = this.hDateStringToHDate(hDateSunsetAwareString);
     const gregDate = hDate.greg();
     return new Date(Date.UTC(gregDate.getFullYear(), gregDate.getMonth(), gregDate.getDate()));
   }
@@ -155,7 +189,7 @@ export class CalService {
         textColor,
         backgroundColor,
         details,
-        ona: Ona.OnaBenonit,
+        ona: Ona.Clali,
         approach: this.approach.approach$.getValue(),
       },
       ...followingEventsChabadOnaBenonit
@@ -172,7 +206,7 @@ export class CalService {
     let approach: Approach = this.cache.getApproach(ApproachName.CHABAD);
     let ona: Ona = Ona.OnaBenonit;
     const rtn: EventDto[] = [];
-    const date = this.hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
+    const date: Date = this.hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
 
     // add 4 days for הפסק טהרה. if if event was on sunday, the next event will be on thursday
     date.setDate(date.getDate() + 4);
