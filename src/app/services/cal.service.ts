@@ -46,7 +46,8 @@ export class CalService {
             return isTooClose;
           });
           break;
-        default:
+        case ApproachName.CHABAD:
+        case ApproachName.ASHKENAZI:
           isTooClose = getTheBloodOnes.some(x => {
             const subject = this.hDateStringToHDate(x.hDateSunsetAwareString);
             const isTooClose = hdate.deltaDays(subject) <= 4;

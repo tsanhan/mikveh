@@ -81,12 +81,12 @@ export class CalComponent {
     addIcons({ add });
   }
 
-  onAddEvent() {
+  async onAddEvent() {
     console.log('onAddEvent:', this.addEventForm.value);
     const { type = CalEventType.SEE_BLOOD, afterSunset = false } = this.addEventForm.value;
     const date = this.selectedDate$.getValue();
     
-    this.cal.addEvent(type,date,afterSunset);
+    await this.cal.addEvent(type,date,afterSunset);
     this.addEventForm.reset();
 
   }
