@@ -1,6 +1,6 @@
 import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { Locale, Location } from '@hebcal/core';
+import { Locale, Location}  from '@hebcal/core';
 Locale.useLocale('he');
 import { map } from 'rxjs';
 import '@hebcal/cities';
@@ -19,6 +19,7 @@ import { tablerCandle } from '@ng-icons/tabler-icons';
 import { bootstrapStars } from '@ng-icons/bootstrap-icons';
 import { EventsService } from 'src/app/services/events.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { cityToHebrewName } from 'src/app/utils/location.util';
 @Component({
   selector: 'app-day-times',
   templateUrl: './day-times.component.html',
@@ -38,30 +39,15 @@ export class DayTimesComponent {
   alotHashachar$ = this.events.alotHashachar$;
   sunset$ = this.events.sunset$;
   parsha$ = this.events.fridayCandleLighting$.pipe(map(({ memo }) => memo));
-  city$ = this.location.closestCity$.pipe(
-    map((city) => {
-      const cityName = city.getName() as string;
-      const hebrewName = Locale.lookupTranslation(cityName, 'he');
 
-      return hebrewName;
-    }
+
+  city$ = this.location.closestCity$.pipe(
+    map((city: Location) => cityToHebrewName(city)
   ));
+
   closestCityHebName$ = this.location.closestCityHebName$;
   candleLighting$ = this.events.candleLighting$;
   shabatHavdalah$ = this.events.shabatHavdalah$;
-  // this.HDateNow$.pipe(
-  //   map((zmanim) => {
-  //     const as = new HebrewDateEvent(zmanim);
-  //     const sedra = new Sedra(as.getDate().getFullYear(), true);
-  //     const sedraResult = sedra.lookup(zmanim);
-  //     const first = sedraResult.parsha[0];
-  //     if (sedraResult.parsha.length === 1) {
-  //       return `פרשת השבוע: פרשת ${this.para[first]}`;
-  //     }
-  //     const second = sedraResult.parsha[1];
-  //     return `פרשת השבוע: פרשת ${this.para[first]}-${this.para[second]}`
-  //   })
-  // );
 
   constructor() {
     addIcons({ calendarOutline, sunnyOutline, moonOutline, bookOutline, locationOutline });

@@ -17,6 +17,8 @@
 selectedHDateHeb {{selectedHDateHeb$ | async }}
 filteredByApproach {{detailsToList$ | async | json}} -->
 <!--  -->
+{{this.selectedDate$ | async | date:'d LLLL':'':'he'}}
+
 @for (item of detailsToList$ | async; track item.date) {
 <ion-list  lines="none">
   @for ( detail of item.details; track detail) {
@@ -26,6 +28,7 @@ filteredByApproach {{detailsToList$ | async | json}} -->
   }
 </ion-list>
 }
+
 
 <ion-modal #modal trigger="open-add-event-modal">
   <ng-template>

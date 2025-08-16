@@ -4,21 +4,22 @@ import {
   ElementRef,
   inject,
 } from '@angular/core';
-import { IonDatetime, AlertController, AlertOptions, ModalController, IonButtons, IonButton, IonFab, IonFabButton, IonIcon, IonItem, IonAvatar, IonImg, IonLabel, IonList, IonTitle, IonToolbar, IonContent, IonModal, IonSelectOption, IonSelect, IonRadio, IonRadioGroup, IonText } from '@ionic/angular/standalone';
-import { Zmanim, HebrewDateEvent, HDate } from '@hebcal/core';
+import { IonDatetime, AlertOptions, ModalController, IonButton, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonTitle, IonToolbar, IonContent, IonModal, IonSelectOption, IonSelect, IonRadio, IonRadioGroup, IonText } from '@ionic/angular/standalone';
+import { HDate } from '@hebcal/core';
 import { EventsService } from 'src/app/services/events.service';
-import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
+import { AsyncPipe, CommonModule, DatePipe, JsonPipe, NgIf } from '@angular/common';
 import '@hebcal/cities';
 import {
   BehaviorSubject,
   combineLatest,
-  combineLatestAll,
+  firstValueFrom,
   lastValueFrom,
   map,
   Observable,
-  shareReplay,
+  of,
+  share,
   switchMap,
-  take,
+  tap,
 } from 'rxjs';
 import { CalService } from 'src/app/services/cal.service';
 import { LocationService } from 'src/app/services/location.service';
@@ -28,15 +29,16 @@ import { LocationService } from 'src/app/services/location.service';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CalEvent, CalEventType } from 'src/app/interfaces/cal';
+import { CalEvent, CalEventType, EventDto } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
+import { hebDateToHebrew, simpleDateToHebrew } from 'src/app/utils/date.util';
 
 @Component({
   selector: 'app-cal',
   templateUrl: './cal.component.html',
   styleUrls: ['./cal.component.scss'],
   standalone: true,
-  imports: [IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe, JsonPipe, IonSelectOption, IonSelect, IonButton, IonLabel],
+  imports: [CommonModule,IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe, JsonPipe, IonSelectOption, IonSelect, IonButton, IonLabel, NgIf],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalComponent {
@@ -49,28 +51,48 @@ export class CalComponent {
 
   fb = inject(FormBuilder)
   israelTime = this.events.localISOString(new Date());
+  approach$ = this.approach.approach$.pipe(share());
   selectedDate$ = new BehaviorSubject<Date>(new Date());
 
   sunsetForDate$ = combineLatest([this.loc.closestCity$, this.selectedDate$]).pipe(
     map(([location, date]) => this.events.locationToSunsetTime(location, date))
   )
+
   selectedHDateHeb$: Observable<string> = this.selectedDate$.pipe(
-    map((date: Date) => this.cal.simpleDateToHebrew(date)),
-    map((date: HDate) => this.cal.hebDateToHebrew(date))
+    map((date: Date) => simpleDateToHebrew(date)),
+    map((date: HDate) => hebDateToHebrew(date))
   );
-  highlightedDates$ = this.cal.highlightedDates$.pipe(shareReplay(1));
+
+  highlightedDates$ = this.cal.highlightedDates$.pipe();
   public CalEventTypeEnum = CalEventType;
 
-  detailsToList$ = combineLatest([this.highlightedDates$, this.selectedDate$]).pipe(
-    map(([highlightedDates, selectedDate]) => {
+  // detailsToList$ = this.highlightedDates$.pipe(
+  //   map((highlightedDates: EventDto[]) => {
+  //     const selectedDate = this.selectedDate$.getValue();
+  //     const dateTofind = selectedDate.toISOString().split('T')[0];
+  //     return { highlightedDates, dateTofind };
+  //   }),
+  //   switchMap(({ highlightedDates, dateTofind }) => {
+  //     const eventsOnThisDate = highlightedDates.filter(item => item.date === dateTofind);
+  //     const approach = this.approach.approach$.getValue();
+  //     const filteredByApproach = eventsOnThisDate.filter(x => x.approach.name == approach.name);
+  //     return of(filteredByApproach);
+  //   })
+  // )
+
+  detailsToList$ = combineLatest([
+    this.selectedDate$.pipe(tap(date => console.log('Selected date:', date))),
+    this.approach$.pipe(tap(approach => console.log('Approach:', approach)))
+  ]).pipe(
+    switchMap(async ([selectedDate, approach]) => {
       const dateTofind = selectedDate.toISOString().split('T')[0];
+      const highlightedDates = await firstValueFrom(this.highlightedDates$);
       const eventsOnThisDate = highlightedDates.filter(item => item.date === dateTofind);
-      const approach = this.approach.approach$.getValue();
       const filteredByApproach = eventsOnThisDate.filter(x => x.approach.name == approach.name);
       console.log(filteredByApproach);
-      
+
       return filteredByApproach;
-    }),
+    })
   )
   addEventForm = new FormGroup({
     type: new FormControl<CalEventType>(CalEventType.SEE_BLOOD, { nonNullable: true, validators: [Validators.required] }),
@@ -85,8 +107,8 @@ export class CalComponent {
     console.log('onAddEvent:', this.addEventForm.value);
     const { type = CalEventType.SEE_BLOOD, afterSunset = false } = this.addEventForm.value;
     const date = this.selectedDate$.getValue();
-    
-    await this.cal.addEvent(type,date,afterSunset);
+
+    await this.cal.addEvent(type, date, afterSunset);
     this.addEventForm.reset();
 
   }
@@ -95,30 +117,7 @@ export class CalComponent {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value);
     this.selectedDate$.next(date);
-    // const hdate = new HDate(date);
 
-    // const loc = this.loc.closestCity;
-    // // let israelTime = this.events.localISOString(date);
-    // const zmanAwware = this.cal.dateToHDate(date);
-
-    // console.log('israelTime:', zmanAwware);
-    // console.log('israelTime:', zmanAwware.render('he-x-NoNikud'));
-    // console.log('israelTime:', this.cal.hebDateToHebrew(zmanAwware));
-    // date.setHours(20); // success!!!
-    // console.log('selectedDate:', date);
-    // console.log('israelTime:', await this.dateToHebrew(date));
-
-    // const dt = this.el.nativeElement.querySelector('ion-datetime');
-    // const shadow = dt?.shadowRoot;
-    // if (shadow) {
-    //   const btn = shadow.querySelector(
-    //     'button.calendar-day[data-day="17"][data-month="6"][data-year="2025"]'
-    //   );
-    //   btn?.setAttribute(
-    //     'style',
-    //     'background: linear-gradient(135deg, #a6c0fe, #f68084) !important; color: white !important;'
-    //   );
-    // }
   }
 
 
@@ -150,4 +149,6 @@ export class CalComponent {
       animated: true,
     };
   }
+
 }
+

@@ -5,6 +5,7 @@ import days from '../../assets/data/days.json';
 
 import { map, Observable, shareReplay } from 'rxjs';
 import { CalOptions, CandleLightingEvent, HDate, HebrewCalendar, Location, Event, Zmanim, HebrewDateEvent, HavdalahEvent } from '@hebcal/core';
+import { getDayString } from '../utils/date.util';
 
 @Injectable({
   providedIn: 'root'
@@ -73,12 +74,7 @@ export class EventsService {
   );
 
   today$: Observable<string> = this.hDateNow$.pipe(
-    map((zmanim) => {
-      const as = new HebrewDateEvent(zmanim);
-      const day = as.getDate().getDay();
-      const dateStr = `יום ${days[day]}, ${as.render('he-x-NoNikud')}`;
-      return dateStr;
-    })
+    map((zmanim) => getDayString(zmanim)),
   );
 
 
