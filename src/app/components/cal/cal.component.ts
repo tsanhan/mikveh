@@ -63,7 +63,7 @@ export class CalComponent {
     map((date: HDate) => hebDateToHebrew(date))
   );
 
-  highlightedDates$ = this.cal.highlightedDates$.pipe();
+  highlightedDates$ = this.cal.highlightedDates$;
   public CalEventTypeEnum = CalEventType;
 
   // detailsToList$ = this.highlightedDates$.pipe(
@@ -81,12 +81,12 @@ export class CalComponent {
   // )
 
   detailsToList$ = combineLatest([
+    this.highlightedDates$.pipe(tap(highlightedDates => console.log('Highlighted Dates:', highlightedDates))),
     this.selectedDate$.pipe(tap(date => console.log('Selected date:', date))),
     this.approach$.pipe(tap(approach => console.log('Approach:', approach)))
   ]).pipe(
-    switchMap(async ([selectedDate, approach]) => {
+    switchMap(async ([highlightedDates, selectedDate, approach]) => {
       const dateTofind = selectedDate.toISOString().split('T')[0];
-      const highlightedDates = await firstValueFrom(this.highlightedDates$);
       const eventsOnThisDate = highlightedDates.filter(item => item.date === dateTofind);
       const filteredByApproach = eventsOnThisDate.filter(x => x.approach.name == approach.name);
       console.log(filteredByApproach);
