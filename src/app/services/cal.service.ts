@@ -18,11 +18,12 @@ export class CalService {
   calEvents$ = this.cache.calEvents$;
 
   highlightedDates$ = this.calEvents$.pipe(
-    map((entries: CalEvent[]) => {
-      const rtn = entries.flatMap((calEvent: CalEvent) => this.eventDto(calEvent));
+    map((calEvents: CalEvent[]) => {
+      const events = [...calEvents];
+      const rtn = events.flatMap((calEvent: CalEvent, index: number, entries: CalEvent[]) => this.eventDto(calEvent, entries, index));
       return rtn;
     }),
-    
+
   );
 
 
@@ -36,11 +37,11 @@ export class CalService {
 
     // 1. sfarad : if see blood during the first 4 days,
     if (type === CalEventType.SEE_BLOOD) {
-      
+
       let isTooClose = getTheBloodOnes.some(x => {
         const subject = hDateStringToHDate(x.hDateSunsetAwareString);
         const delta = hdate.deltaDays(subject);
-        
+
         switch (this.approach.approach$.getValue().name) {
           case ApproachName.SEPHARDI:
             return delta >= 0 && delta <= 3;
@@ -65,7 +66,7 @@ export class CalService {
     this.cache.setCalEvent(event);
   }
 
-  private eventDto(event: CalEvent): EventDto[] {
+  private eventDto(event: CalEvent, allevents: CalEvent[], index: number): EventDto[] {
     const { hDateSunsetAwareString, type } = event;
     const date = getDateParam(hDateSunsetAwareString);
 
@@ -82,7 +83,8 @@ export class CalService {
           'נראה דם',
           'עוד 4 ימים הפסק טהרה',
         ];
-        followingEventsChabadOnaBenonit = this.buildFollowingEventsChabadOnaBenonit(event);
+
+        followingEventsChabadOnaBenonit = this.buildFollowingEventsChabadOnaBenonit(event, allevents, index);
         break;
       case CalEventType.OTHER:
         textColor = '#000000'; // Black
@@ -110,13 +112,13 @@ export class CalService {
 
 
 
-  private buildFollowingEventsChabadOnaBenonit(event: CalEvent): EventDto[] {
+  private buildFollowingEventsChabadOnaBenonit(event: CalEvent, allevents: CalEvent[], index: number): EventDto[] {
     let approach: Approach = this.cache.getApproach(ApproachName.CHABAD);
     let ona: Ona = Ona.OnaBenonit;
     const rtn: EventDto[] = [];
     const date: Date = hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
 
-    // add 4 days for הפסק טהרה. if if event was on sunday, the next event will be on thursday
+    // add 4 days for הפסק טהרה.  if event was on sunday, the next event will be on thursday
     date.setDate(date.getDate() + 4);
 
     rtn.push({
@@ -135,6 +137,26 @@ export class CalService {
     // add 1 after הפסק טהרה for ספירת 7 נקיים
     for (let i = 1; i <= 7; i++) {
       date.setDate(date.getDate() + 1);
+
+      const hebDate = dateToHDate(date, false);
+      const another = allevents.find((eventObj: CalEvent, eventIndex: number, events: CalEvent[]) =>
+        index !== eventIndex &&
+        eventObj.hDateSunsetAwareString === hebDate.toString() &&
+        eventObj.type === CalEventType.SEE_BLOOD
+      );
+      let anotherline = '';
+      if (another) {
+        const indexOfAnother = allevents.indexOf(another);
+        allevents.splice(indexOfAnother, 1); // remove the found event to avoid duplicates
+        console.log('removing from allevents', another);
+        
+        i = 1;
+        anotherline
+          = `היה דם ביום הזה, מתחילים לספור מחדש מ${another.hDateSunsetAwareString}`;
+
+      }
+
+
       const toAddtoRtn = {
         type: CalEventType.SEVEN_CLEAN,
         date: date.toISOString().split('T')[0],
@@ -142,16 +164,21 @@ export class CalService {
         backgroundColor: '#fff3e6', // Light orange background
         details: [
           `היום ה${i} של ספירת 7 נקיים`,
+          
         ],
         ona,
         approach
       }
+      anotherline!! && toAddtoRtn.details.push(anotherline);
       if (i === 7) {
         toAddtoRtn.type = CalEventType.MIKVEH_DAY;
         toAddtoRtn.textColor = '#00ff00'; // Green for the last day
         toAddtoRtn.backgroundColor = '#e6ffe6'; // Light green background
         toAddtoRtn.details.push('היום ה-7 נקיים, היום בערב אפשר לטבול');
       }
+
+
+
       rtn.push(toAddtoRtn);
     }
 
