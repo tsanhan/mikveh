@@ -20,7 +20,7 @@ export class CalService {
   highlightedDates$ = this.calEvents$.pipe(
     map((calEvents: CalEvent[]) => {
       const events = [...calEvents];
-      const rtn = events.flatMap((calEvent: CalEvent, index: number, entries: CalEvent[]) => this.eventDto(calEvent, entries, index));
+      const rtn:EventDto[] = events.flatMap((calEvent: CalEvent, index: number, entries: CalEvent[]) => this.eventDto(calEvent, entries, index));
       return rtn;
     }),
 
@@ -71,6 +71,7 @@ export class CalService {
     const date = getDateParam(hDateSunsetAwareString);
 
     let textColor: string;
+    let border: string;
     let backgroundColor: string;
     let details: string[] = [];
     let followingEventsChabadOnaBenonit: EventDto[] = [];
@@ -78,6 +79,7 @@ export class CalService {
     switch (type) {
       case CalEventType.SEE_BLOOD:
         textColor = '#ff0000'; // Red
+        border = '1px solid #ff0000';
         backgroundColor = '#ffe6e6'; // Light red background
         details = [
           'נראה דם',
@@ -88,10 +90,12 @@ export class CalService {
         break;
       case CalEventType.OTHER:
         textColor = '#000000'; // Black
+        border = '1px solid #000000';
         backgroundColor = '#ffffff'; // White background
         break;
       default:
         textColor = '#000000'; // Fallback text color
+        border = '1px solid #000000'; // Fallback border color
         backgroundColor = '#ffffff'; // Fallback background color
         break;
     }
@@ -100,6 +104,7 @@ export class CalService {
       {
         type,
         date,
+        border,
         textColor,
         backgroundColor,
         details,
@@ -125,6 +130,7 @@ export class CalService {
       type: CalEventType.BETWEEN_BLOOD_AND_HEFSEK,
       date: date.toISOString().split('T')[0],
       textColor: '#ff8800ff', // Red
+      border: '1px solid #ff8800ff',
       backgroundColor: '#ffe6e6', // Light red background
       details: [
         'הפסק טהרה',
@@ -157,15 +163,15 @@ export class CalService {
       }
 
 
-      const toAddtoRtn = {
+      const toAddtoRtn:EventDto = {
         type: CalEventType.SEVEN_CLEAN,
         date: date.toISOString().split('T')[0],
         textColor: '#a1a05cff',
         backgroundColor: '#fff3e6', // Light orange background
         details: [
           `היום ה${i} של ספירת 7 נקיים`,
-          
         ],
+        border: '1px solid #a1a05cff',
         ona,
         approach
       }
@@ -173,6 +179,7 @@ export class CalService {
       if (i === 7) {
         toAddtoRtn.type = CalEventType.MIKVEH_DAY;
         toAddtoRtn.textColor = '#00ff00'; // Green for the last day
+        toAddtoRtn.border = '1px solid #00ff00';
         toAddtoRtn.backgroundColor = '#e6ffe6'; // Light green background
         toAddtoRtn.details.push('היום ה-7 נקיים, היום בערב אפשר לטבול');
       }
@@ -189,6 +196,7 @@ export class CalService {
       type: CalEventType.BETWEEN_MIKVEH_DAY_AND_PRISHA,
       date: nextMonthsDate.toISOString().split('T')[0],
       textColor: '#ff006aff',
+      border: '1px solid #ff006aff',
       backgroundColor: '#ffe6e6', // Light red background
       details: [
         'היום ה-30, יש לבדוק',

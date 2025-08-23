@@ -22,10 +22,11 @@ export interface EventDto {
   type: CalEventType,
   date: string;
   textColor: string;
-  backgroundColor: string,
-  details: string[]
+  border: string;
+  backgroundColor: string;
+  details: string[];
   approach: Approach;
-  ona: Ona
+  ona: Ona;
 }
 
 export enum Ona {
