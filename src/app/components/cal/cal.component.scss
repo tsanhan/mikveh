@@ -124,3 +124,8 @@ ion-modal ion-toolbar {
   --color: white;
 }
 
+
+ion-datetime.host-class::part(calendar-day)   {
+  font-weight: bold;
+}
+

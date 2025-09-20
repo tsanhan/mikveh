@@ -1,8 +1,11 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   inject,
+  OnDestroy,
+  ViewChild,
 } from '@angular/core';
 import { IonDatetime, AlertOptions, ModalController, IonButton, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonTitle, IonToolbar, IonContent, IonModal, IonSelectOption, IonSelect, IonRadio, IonRadioGroup, IonText } from '@ionic/angular/standalone';
 import { HDate } from '@hebcal/core';
@@ -41,7 +44,9 @@ import { hebDateToHebrew, simpleDateToHebrew } from 'src/app/utils/date.util';
   imports: [CommonModule,IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe, JsonPipe, IonSelectOption, IonSelect, IonButton, IonLabel, NgIf],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CalComponent {
+export class CalComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('dt', { static: true }) dtRef!: any;
+  private mo?: MutationObserver;
 
   events = inject(EventsService);
   cal = inject(CalService);
@@ -103,6 +108,34 @@ export class CalComponent {
     addIcons({ add });
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.applyBoldToRedDays();
+      const root = this.dtRef.elementRef.nativeElement.shadowRoot;
+      if (root) {
+        this.mo = new MutationObserver(() => this.applyBoldToRedDays());
+        this.mo.observe(root, { childList: true, subtree: true, attributes: true });
+      }
+    }, 0);
+  }
+  applyBoldToRedDays() {
+    const root = this.dtRef.elementRef.nativeElement.shadowRoot as ShadowRoot;
+    if (!root) return;
+
+    const days = Array.from(root.querySelectorAll<HTMLButtonElement>('button[part="calendar-day"]'));
+    days.forEach(btn => {
+      const inline = btn.getAttribute('style') || '';
+      const computed = window.getComputedStyle(btn).color;
+      // robust checks for the red color
+      if (inline.includes('rgb(255, 0, 0)') || computed === 'rgb(255, 0, 0)' || computed === 'red') {
+        // either set inline style:
+        btn.style.fontWeight = '700';
+        // or add a class *and* inject a style tag into the shadowRoot if you prefer
+      } else {
+        btn.style.fontWeight = '';
+      }
+    });
+  }
   async onAddEvent() {
     console.log('onAddEvent:', this.addEventForm.value);
     const { type = CalEventType.SEE_BLOOD, afterSunset = false } = this.addEventForm.value;
@@ -149,6 +182,8 @@ export class CalComponent {
       animated: true,
     };
   }
-
+  ngOnDestroy() {
+    this.mo?.disconnect();
+  }
 }
 
