@@ -127,14 +127,13 @@ export class CalService {
     date.setDate(date.getDate() + 4);
 
     rtn.push({
-      type: CalEventType.BETWEEN_BLOOD_AND_HEFSEK,
+      type: CalEventType.CAN_START_CHECK_HEFSEK,
       date: date.toISOString().split('T')[0],
       textColor: '#ff8800ff', // Red
       border: '1px solid #ff8800ff',
       backgroundColor: '#ffe6e6', // Light red background
       details: [
-        'הפסק טהרה',
-        'מחר מתחילים לספור 7 נקיים',
+        'היום אפשר להתחיל לבדוק הפסק טהרה'
       ],
       ona,
       approach
