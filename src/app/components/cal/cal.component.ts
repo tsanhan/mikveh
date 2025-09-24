@@ -32,7 +32,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CalEvent, CalEventType, EventDto } from 'src/app/interfaces/cal';
+import { InputEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
 import { hebDateToHebrew, simpleDateToHebrew } from 'src/app/utils/date.util';
 
@@ -69,8 +69,7 @@ export class CalComponent implements AfterViewInit, OnDestroy {
   );
 
   highlightedDates$ = this.cal.highlightedDates$;
-  public CalEventTypeEnum = CalEventType;
-
+  public InputEventTypeEnum = InputEventType;
   // detailsToList$ = this.highlightedDates$.pipe(
   //   map((highlightedDates: EventDto[]) => {
   //     const selectedDate = this.selectedDate$.getValue();
@@ -100,7 +99,7 @@ export class CalComponent implements AfterViewInit, OnDestroy {
     })
   )
   addEventForm = new FormGroup({
-    type: new FormControl<CalEventType>(CalEventType.SEE_BLOOD, { nonNullable: true, validators: [Validators.required] }),
+    type: new FormControl<InputEventType>(InputEventType.SEE_BLOOD, { nonNullable: true, validators: [Validators.required] }),
     afterSunset: new FormControl<boolean>(false, { nonNullable: true, validators: [Validators.required] }),
   });
   // highlightedDatesFunc = this.cal.highlightedDatesFunc;
@@ -138,10 +137,9 @@ export class CalComponent implements AfterViewInit, OnDestroy {
   }
   async onAddEvent() {
     console.log('onAddEvent:', this.addEventForm.value);
-    const { type = CalEventType.SEE_BLOOD, afterSunset = false } = this.addEventForm.value;
     const date = this.selectedDate$.getValue();
-
-    await this.cal.addEvent(type, date, afterSunset);
+    const {type, afterSunset} = this.addEventForm.getRawValue();
+    await this.cal.addEvent(date, type, afterSunset );
     this.addEventForm.reset();
 
   }

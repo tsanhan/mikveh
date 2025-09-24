@@ -1,37 +1,39 @@
 import { Approach } from "./approaches";
 
-export interface CalEvent {
-  type: CalEventType;
+export interface CachedCalEvent {
+  type: InputEventType;
   hDateSunsetAwareString: string;
+  gregorianDateString?: string; // for easier debugging
   afterSunset: boolean;
 }
 
-
-
-export enum CalEventType {
-  SEE_BLOOD = 'blood',
-  CAN_START_CHECK_HEFSEK='can start hefsek',
-  SEVEN_CLEAN='seven cleans',
-  MIKVEH_DAY='mikveh day',
-  BETWEEN_MIKVEH_DAY_AND_PRISHA='mikveh to prisha',
-  OTHER = 'other',
+export enum InputEventType {
+  SEE_BLOOD = 'see blood',
+  HEFSEK_TAHARA = 'hefsek tahara',
 }
 
+export enum DayType {
+  MAAYAN_PATUAH = 'maayan patuach',
+  CAN_START_CHECK_HEFSEK = 'can start hefsek',
+  SEVEN_CLEAN = 'seven cleans',
+  MIKVEH_DAY = 'mikveh day',
+  MUTERET = 'muteret',
+  PRISHA = 'prisha',
+}
 
 export interface EventDto {
-  type: CalEventType,
+  type: DayType | InputEventType,
   date: string;
   textColor: string;
   border: string;
   backgroundColor: string;
   details: string[];
   approach: Approach;
-  ona: Ona;
 }
 
 export enum Ona {
   OnaBenonit = 'עונה בינונית',
-  Clali = 'כללי'
-
+  VesetHahodesh = 'וסת החודש',
+  Haflaga = 'הפלגה',
 }
 

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { map, share, shareReplay } from 'rxjs';
-import { CalEvent, CalEventType, EventDto, Ona } from '../interfaces/cal';
+import { CachedCalEvent, DayType, EventDto, InputEventType, Ona } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
@@ -18,9 +18,9 @@ export class CalService {
   calEvents$ = this.cache.calEvents$;
 
   highlightedDates$ = this.calEvents$.pipe(
-    map((calEvents: CalEvent[]) => {
+    map((calEvents: CachedCalEvent[]) => {
       const events = [...calEvents];
-      const rtn:EventDto[] = events.flatMap((calEvent: CalEvent, index: number, entries: CalEvent[]) => this.eventDto(calEvent, entries, index));
+      const rtn:EventDto[] = events.flatMap((calEvent: CachedCalEvent, index: number, entries: CachedCalEvent[]) => this.eventDto(calEvent, entries, index));
       return rtn;
     }),
 
@@ -30,43 +30,45 @@ export class CalService {
   constructor() { }
 
 
-  async addEvent(type: CalEventType, date: Date, afterSunset: boolean) {
+  async addEvent( date: Date, type: InputEventType, afterSunset: boolean) {
+    afterSunset = type === InputEventType.HEFSEK_TAHARA ? false : afterSunset; // hefsek is always during the day
     const hdate = dateToHDate(date, afterSunset);
-    const events: CalEvent[] = this.cache.getCalEvents();
-    const getTheBloodOnes: CalEvent[] = events.filter(x => x.type === CalEventType.SEE_BLOOD);
+    // const events: CachedCalEvent[] = this.cache.getCalEvents();
+    // const getTheBloodOnes: CachedCalEvent[] = events.filter(x => x.type === InputEventType.SEE_BLOOD);
 
-    // 1. sfarad : if see blood during the first 4 days,
-    if (type === CalEventType.SEE_BLOOD) {
+    // // 1. sfarad : if see blood during the first 4 days,
+    // if (type === InputEventType.SEE_BLOOD) {
 
-      let isTooClose = getTheBloodOnes.some(x => {
-        const subject = hDateStringToHDate(x.hDateSunsetAwareString);
-        const delta = hdate.deltaDays(subject);
+    //   let isTooClose = getTheBloodOnes.some(x => {
+    //     const subject = hDateStringToHDate(x.hDateSunsetAwareString);
+    //     const delta = hdate.deltaDays(subject);
 
-        switch (this.approach.approach$.getValue().name) {
-          case ApproachName.SEPHARDI:
-            return delta >= 0 && delta <= 3;
-          case ApproachName.CHABAD:
-          case ApproachName.ASHKENAZI:
-            return delta >= 0 && delta <= 4;
-          default:
-            return false;
-        }
-      });
+    //     switch (this.approach.approach$.getValue().name) {
+    //       case ApproachName.SEPHARDI:
+    //         return delta >= 0 && delta <= 3;
+    //       case ApproachName.CHABAD:
+    //       case ApproachName.ASHKENAZI:
+    //         return delta >= 0 && delta <= 4;
+    //       default:
+    //         return false;
+    //     }
+    //   });
 
-      if (isTooClose) {
-        return;
-      }
-    }
+    //   if (isTooClose) {
+    //     return;
+    //   }
+    // }
 
-    const event: CalEvent = {
+    const event: CachedCalEvent = {
       type,
       hDateSunsetAwareString: hdate.toString(),
       afterSunset,
+      gregorianDateString: date.toISOString().split('T')[0],
     };
     this.cache.setCalEvent(event);
   }
 
-  private eventDto(event: CalEvent, allevents: CalEvent[], index: number): EventDto[] {
+  private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number): EventDto[] {
     const { hDateSunsetAwareString, type } = event;
     const date = getDateParam(hDateSunsetAwareString);
 
@@ -77,7 +79,7 @@ export class CalService {
     let followingEventsChabadOnaBenonit: EventDto[] = [];
 
     switch (type) {
-      case CalEventType.SEE_BLOOD:
+      case InputEventType.SEE_BLOOD:
         textColor = '#ff0000'; // Red
         border = '1px solid #ff0000';
         backgroundColor = '#ffe6e6'; // Light red background
@@ -87,11 +89,6 @@ export class CalService {
         ];
 
         followingEventsChabadOnaBenonit = this.buildFollowingEventsChabadOnaBenonit(event, allevents, index);
-        break;
-      case CalEventType.OTHER:
-        textColor = '#000000'; // Black
-        border = '1px solid #000000';
-        backgroundColor = '#ffffff'; // White background
         break;
       default:
         textColor = '#000000'; // Fallback text color
@@ -108,7 +105,6 @@ export class CalService {
         textColor,
         backgroundColor,
         details,
-        ona: Ona.Clali,
         approach: this.approach.approach$.getValue(),
       },
       ...followingEventsChabadOnaBenonit
@@ -117,9 +113,8 @@ export class CalService {
 
 
 
-  private buildFollowingEventsChabadOnaBenonit(event: CalEvent, allevents: CalEvent[], index: number): EventDto[] {
+  private buildFollowingEventsChabadOnaBenonit(event: CachedCalEvent, allevents: CachedCalEvent[], index: number): EventDto[] {
     let approach: Approach = this.cache.getApproach(ApproachName.CHABAD);
-    let ona: Ona = Ona.OnaBenonit;
     const rtn: EventDto[] = [];
     const date: Date = hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
 
@@ -127,7 +122,7 @@ export class CalService {
     date.setDate(date.getDate() + 4);
 
     rtn.push({
-      type: CalEventType.CAN_START_CHECK_HEFSEK,
+      type: DayType.CAN_START_CHECK_HEFSEK,
       date: date.toISOString().split('T')[0],
       textColor: '#ff8800ff', // Red
       border: '1px solid #ff8800ff',
@@ -135,7 +130,6 @@ export class CalService {
       details: [
         'היום אפשר להתחיל לבדוק הפסק טהרה'
       ],
-      ona,
       approach
     });
 
@@ -144,10 +138,10 @@ export class CalService {
       date.setDate(date.getDate() + 1);
 
       const hebDate = dateToHDate(date, false);
-      const another = allevents.find((eventObj: CalEvent, eventIndex: number, events: CalEvent[]) =>
+      const another = allevents.find((eventObj: CachedCalEvent, eventIndex: number, events: CachedCalEvent[]) =>
         index !== eventIndex &&
         eventObj.hDateSunsetAwareString === hebDate.toString() &&
-        eventObj.type === CalEventType.SEE_BLOOD
+        eventObj.type === InputEventType.SEE_BLOOD
       );
       let anotherline = '';
       if (another) {
@@ -163,7 +157,7 @@ export class CalService {
 
 
       const toAddtoRtn:EventDto = {
-        type: CalEventType.SEVEN_CLEAN,
+        type: DayType.SEVEN_CLEAN,
         date: date.toISOString().split('T')[0],
         textColor: '#a1a05cff',
         backgroundColor: '#fff3e6', // Light orange background
@@ -171,12 +165,11 @@ export class CalService {
           `היום ה${i} של ספירת 7 נקיים`,
         ],
         border: '1px solid #a1a05cff',
-        ona,
         approach
       }
       anotherline!! && toAddtoRtn.details.push(anotherline);
       if (i === 7) {
-        toAddtoRtn.type = CalEventType.MIKVEH_DAY;
+        toAddtoRtn.type = DayType.MIKVEH_DAY;
         toAddtoRtn.textColor = '#00ff00'; // Green for the last day
         toAddtoRtn.border = '1px solid #00ff00';
         toAddtoRtn.backgroundColor = '#e6ffe6'; // Light green background
@@ -192,7 +185,7 @@ export class CalService {
     const nextMonthsDate = hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
     nextMonthsDate.setDate(nextMonthsDate.getDate() + 29);
     rtn.push({
-      type: CalEventType.BETWEEN_MIKVEH_DAY_AND_PRISHA,
+      type: DayType.MUTERET,
       date: nextMonthsDate.toISOString().split('T')[0],
       textColor: '#ff006aff',
       border: '1px solid #ff006aff',
@@ -200,7 +193,6 @@ export class CalService {
       details: [
         'היום ה-30, יש לבדוק',
       ],
-      ona,
       approach
     });
 

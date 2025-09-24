@@ -40,11 +40,12 @@ filteredByApproach {{detailsToList$ | async | json}} -->
         <form [formGroup]="addEventForm" (ngSubmit)="onAddEvent(); modal.dismiss()">
           <ion-item>
             <ion-select formControlName="type" label="ראייה" label-placement="fixed" placeholder="מה ראיתי">
-              <ion-select-option [value]="CalEventTypeEnum.SEE_BLOOD">דם</ion-select-option>
+              <ion-select-option [value]="InputEventTypeEnum.SEE_BLOOD">דם</ion-select-option>
+              <ion-select-option [value]="InputEventTypeEnum.HEFSEK_TAHARA">הפסק טהרה</ion-select-option>
             </ion-select>
           </ion-item>
 
-          <ion-item>
+          <ion-item *ngIf="addEventForm.get('type')?.value === InputEventTypeEnum.SEE_BLOOD">
             <ion-radio-group formControlName="afterSunset" value="false">
               <ion-radio [value]="false">לפני שקיעה</ion-radio><br />
               <ion-radio [value]="true">אחרי שקיעה</ion-radio><br />
