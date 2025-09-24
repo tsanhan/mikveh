@@ -123,12 +123,7 @@ export class CalComponent implements AfterViewInit, OnDestroy {
     days.forEach(btn => {
       const inline = btn.getAttribute('style') || '';
       const computed = window.getComputedStyle(btn).color;
-      // robust checks for the red color
-      console.log(btn.getAttribute('aria-label'));
-      const a = btn.getAttribute('aria-label')?.includes("יום חמישי, 25 בספטמבר");
-      if(a) {
-        console.log('btn', btn, 'inline', inline, 'computed', computed);
-      }
+    
       if (inline.includes('rgb(255, 0, 0)') || computed === 'rgb(255, 0, 0)' || computed === 'red') {
         // either set inline style:
         btn.style.fontWeight = '700';
