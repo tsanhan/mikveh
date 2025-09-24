@@ -92,10 +92,9 @@ export class CalComponent implements AfterViewInit, OnDestroy {
     switchMap(async ([highlightedDates, selectedDate, approach]) => {
       const dateTofind = selectedDate.toISOString().split('T')[0];
       const eventsOnThisDate = highlightedDates.filter(item => item.date === dateTofind);
-      const filteredByApproach = eventsOnThisDate.filter(x => x.approach.name == approach.name);
-      console.log(filteredByApproach);
+      console.log(eventsOnThisDate);
 
-      return filteredByApproach;
+      return eventsOnThisDate;
     })
   )
   addEventForm = new FormGroup({
