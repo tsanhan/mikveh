@@ -80,47 +80,38 @@ export class CalService {
 
     switch (type) {
       case InputEventType.SEE_BLOOD:
-        textColor = '#ff0000'; // Red
-        border = '1px solid #ff0000';
-        backgroundColor = '#ffe6e6'; // Light red background
-        details = [
-          'נראה דם',
-          'עוד 4 ימים הפסק טהרה',
-        ];
-
-        followingEventsChabadOnaBenonit = this.buildFollowingEventsChabadOnaBenonit(event, allevents, index);
-        break;
-      default:
-        textColor = '#000000'; // Fallback text color
-        border = '1px solid #000000'; // Fallback border color
-        backgroundColor = '#ffffff'; // Fallback background color
-        break;
+        {
+          switch (approach.name) {
+            case ApproachName.ASHKENAZI:
+            case ApproachName.CHABAD:
+              followingEventsChabadOnaBenonit = this.buildEventsToHefsek(event, allevents, index);
+              break;
+            case ApproachName.SEPHARDI:
+              followingEventsChabadOnaBenonit = this.buildEventsToHefsek(event, allevents, index, 4);
+              break;
+          }
+        }
+      break;
     }
 
     return [
-      // {
-      //   type,
-      //   border,
-      //   textColor,
-      //   backgroundColor,
-      //   details,
-      // },
       ...followingEventsChabadOnaBenonit
     ];
   }
 
 
-  private buildFollowingEventsChabadOnaBenonit(event: CachedCalEvent, allevents: CachedCalEvent[], index: number): EventDto[] {
+  private buildEventsToHefsek(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, numOfDays = 5): EventDto[] {
     const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
    
     const rtn: EventDto[] = [];
-    const date: Date = hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
+    const date: Date = hDateSunsetAwareStringToDate(hDateSunsetAwareString);
 
     // מעיין פתוח
-    for (let i = 4; i > 3; i--) {
+    for (let i = numOfDays; i > 0; i--) {
+
       rtn.push({
         type: DayType.MAAYAN_PATUAH,
-        date:getDateParam(hDateSunsetAwareString),
+        date: date.toISOString().split('T')[0],
         textColor : '#ff0000', // Red
         border : '1px solid #ff0000',
         backgroundColor : '#ffe6e6', // Light red background
@@ -143,67 +134,67 @@ export class CalService {
     });
 
     // add 1 after הפסק טהרה for ספירת 7 נקיים
-    for (let i = 1; i <= 7; i++) {
-      date.setDate(date.getDate() + 1);
+    // for (let i = 1; i <= 7; i++) {
+    //   date.setDate(date.getDate() + 1);
 
-      const hebDate = dateToHDate(date, false);
-      const another = allevents.find((eventObj: CachedCalEvent, eventIndex: number, events: CachedCalEvent[]) =>
-        index !== eventIndex &&
-        eventObj.hDateSunsetAwareString === hebDate.toString() &&
-        eventObj.type === InputEventType.SEE_BLOOD
-      );
-      let anotherline = '';
-      if (another) {
-        const indexOfAnother = allevents.indexOf(another);
-        allevents.splice(indexOfAnother, 1); // remove the found event to avoid duplicates
-        console.log('removing from allevents', another);
+    //   const hebDate = dateToHDate(date, false);
+    //   const another = allevents.find((eventObj: CachedCalEvent, eventIndex: number, events: CachedCalEvent[]) =>
+    //     index !== eventIndex &&
+    //     eventObj.hDateSunsetAwareString === hebDate.toString() &&
+    //     eventObj.type === InputEventType.SEE_BLOOD
+    //   );
+    //   let anotherline = '';
+    //   if (another) {
+    //     const indexOfAnother = allevents.indexOf(another);
+    //     allevents.splice(indexOfAnother, 1); // remove the found event to avoid duplicates
+    //     console.log('removing from allevents', another);
 
-        i = 1;
-        anotherline
-          = `היה דם ביום הזה, מתחילים לספור מחדש מ${another.hDateSunsetAwareString}`;
+    //     i = 1;
+    //     anotherline
+    //       = `היה דם ביום הזה, מתחילים לספור מחדש מ${another.hDateSunsetAwareString}`;
 
-      }
-
-
-      const toAddtoRtn: EventDto = {
-        type: DayType.SEVEN_CLEAN,
-        date: date.toISOString().split('T')[0],
-        textColor: '#a1a05cff',
-        backgroundColor: '#fff3e6', // Light orange background
-        details: [
-          `היום ה${i} של ספירת 7 נקיים`,
-        ],
-        border: '1px solid #a1a05cff',
-
-      }
-      anotherline!! && toAddtoRtn.details.push(anotherline);
-      if (i === 7) {
-        toAddtoRtn.type = DayType.MIKVEH_DAY;
-        toAddtoRtn.textColor = '#00ff00'; // Green for the last day
-        toAddtoRtn.border = '1px solid #00ff00';
-        toAddtoRtn.backgroundColor = '#e6ffe6'; // Light green background
-        toAddtoRtn.details.push('היום ה-7 נקיים, היום בערב אפשר לטבול');
-      }
+    //   }
 
 
+    //   const toAddtoRtn: EventDto = {
+    //     type: DayType.SEVEN_CLEAN,
+    //     date: date.toISOString().split('T')[0],
+    //     textColor: '#a1a05cff',
+    //     backgroundColor: '#fff3e6', // Light orange background
+    //     details: [
+    //       `היום ה${i} של ספירת 7 נקיים`,
+    //     ],
+    //     border: '1px solid #a1a05cff',
 
-      rtn.push(toAddtoRtn);
-    }
+    //   }
+    //   !!anotherline && toAddtoRtn.details.push(anotherline);
+    //   if (i === 7) {
+    //     toAddtoRtn.type = DayType.MIKVEH_DAY;
+    //     toAddtoRtn.textColor = '#00ff00'; // Green for the last day
+    //     toAddtoRtn.border = '1px solid #00ff00';
+    //     toAddtoRtn.backgroundColor = '#e6ffe6'; // Light green background
+    //     toAddtoRtn.details.push('היום ה-7 נקיים, היום בערב אפשר לטבול');
+    //   }
 
 
-    const nextMonthsDate = hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
-    nextMonthsDate.setDate(nextMonthsDate.getDate() + 29);
-    rtn.push({
-      type: DayType.MUTERET,
-      date: nextMonthsDate.toISOString().split('T')[0],
-      textColor: '#ff006aff',
-      border: '1px solid #ff006aff',
-      backgroundColor: '#ffe6e6', // Light red background
-      details: [
-        'היום ה-30, יש לבדוק',
-      ]
 
-    });
+    //   rtn.push(toAddtoRtn);
+    // }
+
+
+    // const nextMonthsDate = hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
+    // nextMonthsDate.setDate(nextMonthsDate.getDate() + 29);
+    // rtn.push({
+    //   type: DayType.MUTERET,
+    //   date: nextMonthsDate.toISOString().split('T')[0],
+    //   textColor: '#ff006aff',
+    //   border: '1px solid #ff006aff',
+    //   backgroundColor: '#ffe6e6', // Light red background
+    //   details: [
+    //     'היום ה-30, יש לבדוק',
+    //   ]
+
+    // });
 
     return rtn;
 

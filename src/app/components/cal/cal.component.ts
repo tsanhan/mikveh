@@ -119,11 +119,16 @@ export class CalComponent implements AfterViewInit, OnDestroy {
     const root = this.dtRef.elementRef.nativeElement.shadowRoot as ShadowRoot;
     if (!root) return;
 
-    const days = Array.from(root.querySelectorAll<HTMLButtonElement>('button[part="calendar-day"]'));
+    const days = Array.from(root.querySelectorAll<HTMLButtonElement>('button[part*="calendar-day"]'));
     days.forEach(btn => {
       const inline = btn.getAttribute('style') || '';
       const computed = window.getComputedStyle(btn).color;
       // robust checks for the red color
+      console.log(btn.getAttribute('aria-label'));
+      const a = btn.getAttribute('aria-label')?.includes("יום חמישי, 25 בספטמבר");
+      if(a) {
+        console.log('btn', btn, 'inline', inline, 'computed', computed);
+      }
       if (inline.includes('rgb(255, 0, 0)') || computed === 'rgb(255, 0, 0)' || computed === 'red') {
         // either set inline style:
         btn.style.fontWeight = '700';
@@ -147,7 +152,7 @@ export class CalComponent implements AfterViewInit, OnDestroy {
 
   async onDateChange(event: CustomEvent) {
     console.log('onDateChange:', event);
-    const date = new Date(event.detail.value);
+    const date = new Date(event.detail.value.split('T')[0] + 'T12:00:00'); // noon to avoid timezone issues
     this.selectedDate$.next(date);
 
   }
