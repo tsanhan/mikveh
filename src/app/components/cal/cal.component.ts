@@ -86,10 +86,9 @@ export class CalComponent implements AfterViewInit, OnDestroy {
 
   detailsToList$ = combineLatest([
     this.highlightedDates$.pipe(tap(highlightedDates => console.log('Highlighted Dates:', highlightedDates))),
-    this.selectedDate$.pipe(tap(date => console.log('Selected date:', date))),
-    this.approach$.pipe(tap(approach => console.log('Approach:', approach)))
+    this.selectedDate$.pipe(tap(date => console.log('Selected date:', date)))
   ]).pipe(
-    switchMap(async ([highlightedDates, selectedDate, approach]) => {
+    switchMap(async ([highlightedDates, selectedDate]) => {
       const dateTofind = selectedDate.toISOString().split('T')[0];
       const eventsOnThisDate = highlightedDates.filter(item => item.date === dateTofind);
       console.log(eventsOnThisDate);
