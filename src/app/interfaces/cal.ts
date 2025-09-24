@@ -3,7 +3,7 @@ import { Approach } from "./approaches";
 export interface CachedCalEvent {
   type: InputEventType;
   hDateSunsetAwareString: string;
-  gregorianDateString?: string; // for easier debugging
+  gregorianDateString: string; // for easier debugging
   afterSunset: boolean;
 }
 
@@ -28,7 +28,6 @@ export interface EventDto {
   border: string;
   backgroundColor: string;
   details: string[];
-  approach: Approach;
 }
 
 export enum Ona {

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { map, share, shareReplay } from 'rxjs';
+import { combineLatest, map, share, shareReplay } from 'rxjs';
 import { CachedCalEvent, DayType, EventDto, InputEventType, Ona } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
@@ -17,20 +17,19 @@ export class CalService {
 
   calEvents$ = this.cache.calEvents$;
 
-  highlightedDates$ = this.calEvents$.pipe(
-    map((calEvents: CachedCalEvent[]) => {
+  highlightedDates$ = combineLatest([this.calEvents$, this.approach.approach$]).pipe(
+    map(([calEvents, approach]: [CachedCalEvent[], Approach]) => {
       const events = [...calEvents];
-      const rtn:EventDto[] = events.flatMap((calEvent: CachedCalEvent, index: number, entries: CachedCalEvent[]) => this.eventDto(calEvent, entries, index));
+      const rtn: EventDto[] = events.flatMap((calEvent: CachedCalEvent, index: number, entries: CachedCalEvent[]) => this.eventDto(calEvent, entries, index, approach));
       return rtn;
-    }),
-
+    })
   );
 
 
   constructor() { }
 
 
-  async addEvent( date: Date, type: InputEventType, afterSunset: boolean) {
+  async addEvent(date: Date, type: InputEventType, afterSunset: boolean) {
     afterSunset = type === InputEventType.HEFSEK_TAHARA ? false : afterSunset; // hefsek is always during the day
     const hdate = dateToHDate(date, afterSunset);
     // const events: CachedCalEvent[] = this.cache.getCalEvents();
@@ -68,15 +67,16 @@ export class CalService {
     this.cache.setCalEvent(event);
   }
 
-  private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number): EventDto[] {
-    const { hDateSunsetAwareString, type } = event;
-    const date = getDateParam(hDateSunsetAwareString);
+  private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, approach: Approach): EventDto[] {
+    const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
 
     let textColor: string;
     let border: string;
     let backgroundColor: string;
     let details: string[] = [];
     let followingEventsChabadOnaBenonit: EventDto[] = [];
+
+
 
     switch (type) {
       case InputEventType.SEE_BLOOD:
@@ -98,28 +98,38 @@ export class CalService {
     }
 
     return [
-      {
-        type,
-        date,
-        border,
-        textColor,
-        backgroundColor,
-        details,
-        approach: this.approach.approach$.getValue(),
-      },
+      // {
+      //   type,
+      //   border,
+      //   textColor,
+      //   backgroundColor,
+      //   details,
+      // },
       ...followingEventsChabadOnaBenonit
     ];
   }
 
 
-
   private buildFollowingEventsChabadOnaBenonit(event: CachedCalEvent, allevents: CachedCalEvent[], index: number): EventDto[] {
-    let approach: Approach = this.cache.getApproach(ApproachName.CHABAD);
+    const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
+   
     const rtn: EventDto[] = [];
     const date: Date = hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
 
-    // add 4 days for הפסק טהרה.  if event was on sunday, the next event will be on thursday
-    date.setDate(date.getDate() + 4);
+    // מעיין פתוח
+    for (let i = 4; i > 3; i--) {
+      rtn.push({
+        type: DayType.MAAYAN_PATUAH,
+        date:getDateParam(hDateSunsetAwareString),
+        textColor : '#ff0000', // Red
+        border : '1px solid #ff0000',
+        backgroundColor : '#ffe6e6', // Light red background
+        details : [
+          `עוד ${i} ימים אפשר להתחיל לבדוק הפסק טהרה`,
+        ]
+      })
+      date.setDate(date.getDate() + 1);
+    }
 
     rtn.push({
       type: DayType.CAN_START_CHECK_HEFSEK,
@@ -129,8 +139,7 @@ export class CalService {
       backgroundColor: '#ffe6e6', // Light red background
       details: [
         'היום אפשר להתחיל לבדוק הפסק טהרה'
-      ],
-      approach
+      ]
     });
 
     // add 1 after הפסק טהרה for ספירת 7 נקיים
@@ -148,7 +157,7 @@ export class CalService {
         const indexOfAnother = allevents.indexOf(another);
         allevents.splice(indexOfAnother, 1); // remove the found event to avoid duplicates
         console.log('removing from allevents', another);
-        
+
         i = 1;
         anotherline
           = `היה דם ביום הזה, מתחילים לספור מחדש מ${another.hDateSunsetAwareString}`;
@@ -156,7 +165,7 @@ export class CalService {
       }
 
 
-      const toAddtoRtn:EventDto = {
+      const toAddtoRtn: EventDto = {
         type: DayType.SEVEN_CLEAN,
         date: date.toISOString().split('T')[0],
         textColor: '#a1a05cff',
@@ -165,7 +174,7 @@ export class CalService {
           `היום ה${i} של ספירת 7 נקיים`,
         ],
         border: '1px solid #a1a05cff',
-        approach
+
       }
       anotherline!! && toAddtoRtn.details.push(anotherline);
       if (i === 7) {
@@ -192,8 +201,8 @@ export class CalService {
       backgroundColor: '#ffe6e6', // Light red background
       details: [
         'היום ה-30, יש לבדוק',
-      ],
-      approach
+      ]
+
     });
 
     return rtn;

@@ -139,6 +139,9 @@ export class CalComponent implements AfterViewInit, OnDestroy {
     console.log('onAddEvent:', this.addEventForm.value);
     const date = this.selectedDate$.getValue();
     const {type, afterSunset} = this.addEventForm.getRawValue();
+    // get current value from detailsToList$ 
+    const data = await firstValueFrom(this.detailsToList$);
+    console.log('Current detailsToList$ data:', data);
     await this.cal.addEvent(date, type, afterSunset );
     this.addEventForm.reset();
 
