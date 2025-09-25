@@ -101,8 +101,8 @@ export class CalService {
         'הפסק טהרה',
       ]
     });
-    date.setDate(date.getDate() + 1);
     for (let i = 1; i <= 7; i++) {
+      date.setDate(date.getDate() + 1);
       rtn.push({
         type: DayType.SEVEN_CLEAN,
         date: date.toISOString().split('T')[0],
@@ -113,10 +113,9 @@ export class CalService {
           `היום ה${i} של ספירת 7 נקיים`,
         ]
       })
-      date.setDate(date.getDate() + 1);
+      if(i===7) rtn[i].details.push('בערב אפשר לטבול');
     }
-
-
+    
     return rtn;
   }
 
