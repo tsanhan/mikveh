@@ -113,30 +113,30 @@ export class CalService {
           `היום ה${i} של ספירת 7 נקיים`,
         ]
       })
-      if(i===7) rtn[i].details.push('בערב אפשר לטבול');
+      if (i === 7) rtn[i].details.push('בערב אפשר לטבול');
     }
-    
+
     return rtn;
   }
 
-  private buildPrishaEventVesetHaHodesh(event: CachedCalEvent, approach: Approach): EventDto{
+  private buildPrishaEventVesetHaHodesh(event: CachedCalEvent, approach: Approach): EventDto {
     const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
     let hDateVesetHaHodesh: HDate = hDateStringToHDate(hDateSunsetAwareString);
     hDateVesetHaHodesh = hDateVesetHaHodesh.add(1, 'MONTHS')
     const dateVesetHaHodesh = hDateVesetHaHodesh.greg();
 
-   
+
     const rtn: EventDto = {
-        type: DayType.PRISHA,
-        date: dateVesetHaHodesh.toISOString().split('T')[0],
-        textColor: '#ff006aff',
-        border: '1px solid #ff006aff',
-        backgroundColor: '#ffe6e6', // Light red background
-        details: [
-          'פרישה - וסט החודש',
-        ]
-      }
-    ;
+      type: DayType.PRISHA,
+      date: dateVesetHaHodesh.toISOString().split('T')[0],
+      textColor: '#ff006aff',
+      border: '1px solid #ff006aff',
+      backgroundColor: '#ffe6e6', // Light red background
+      details: [
+        'פרישה - וסט החודש',
+      ]
+    }
+      ;
     if (approach.name === ApproachName.ASHKENAZI) rtn.details.push('ראוי לחשוש עונה אחת לפני');
 
     return rtn;
@@ -157,19 +157,19 @@ export class CalService {
 
         break;
     }
-    const rtn: EventDto = 
-      {
-        type: DayType.PRISHA,
-        date: dateBenonit.toISOString().split('T')[0],
-        textColor: '#ff006aff',
-        border: '1px solid #ff006aff',
-        backgroundColor: '#ffe6e6', // Light red background
-        details: [
-          'פרישה - עונה בינונית',
-        ]
-      }
+    const rtn: EventDto =
+    {
+      type: DayType.PRISHA,
+      date: dateBenonit.toISOString().split('T')[0],
+      textColor: '#ff006aff',
+      border: '1px solid #ff006aff',
+      backgroundColor: '#ffe6e6', // Light red background
+      details: [
+        'פרישה - עונה בינונית',
+      ]
+    }
 
-    ;
+      ;
     if (approach.name === ApproachName.ASHKENAZI) rtn.details.push('ראוי לחשוש עונה אחת לפני');
 
     return rtn;
