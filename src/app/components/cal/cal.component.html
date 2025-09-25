@@ -17,7 +17,7 @@
 selectedHDateHeb {{selectedHDateHeb$ | async }}
 filteredByApproach {{detailsToList$ | async | json}} -->
 <!--  -->
-{{this.selectedDate$ | async | date:'d LLLL':'':'he'}}
+<!-- {{this.selectedDate$ | async | date:'d LLLL':'':'he'}} -->
 
 @for (item of detailsToList$ | async; track item.date) {
 <ion-list  lines="none">
