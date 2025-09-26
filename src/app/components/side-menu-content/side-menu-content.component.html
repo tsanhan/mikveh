@@ -5,18 +5,6 @@
         size="large"
         shape="round"
         color="light"
-        (click)="page.set('time')"
-        [ngClass]="{ active: page() === 'time' }"
-      >
-        <ion-icon slot="icon-only" name="time-outline" />
-      </ion-button>
-      <div [ngClass]="{ active: page() === 'time' }">זמני היום</div>
-    </div>
-    <div class="button">
-      <ion-button
-        size="large"
-        shape="round"
-        color="light"
         (click)="page.set('cal')"
         [ngClass]="{ active: page() === 'cal' }"
       >
@@ -24,6 +12,19 @@
       </ion-button>
       <div [ngClass]="{ active: page() === 'cal' }">יומן</div>
     </div>
+    <div class="button">
+      <ion-button
+        size="large"
+        shape="round"
+        color="light"
+        (click)="page.set('time')"
+        [ngClass]="{ active: page() === 'time' }"
+      >
+        <ion-icon slot="icon-only" name="time-outline" />
+      </ion-button>
+      <div [ngClass]="{ active: page() === 'time' }">זמני היום</div>
+    </div>
+    
     <div class="button">
       <ion-button
         size="large"
@@ -46,7 +47,7 @@
       >
         <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
       </ion-button>
-      <div>שאלה לרבנית/לרב</div>
+      <div>שאלה</div>
     </div>
 
     <!-- <ion-fab class="whatsapp" slot="fixed" vertical="top" horizontal="end">

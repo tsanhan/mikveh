@@ -30,18 +30,20 @@ import { LocationService } from 'src/app/services/location.service';
 
 
 import { addIcons } from 'ionicons';
-import { add } from 'ionicons/icons';
+import { add, closeOutline } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { InputEventType } from 'src/app/interfaces/cal';
+import { EventDto, InputEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
 import { hebDateToHebrew, simpleDateToHebrew } from 'src/app/utils/date.util';
+
+import * as colors from '../../../assets/data/colors.json';
 
 @Component({
   selector: 'app-cal',
   templateUrl: './cal.component.html',
   styleUrls: ['./cal.component.scss'],
   standalone: true,
-  imports: [CommonModule,IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe, JsonPipe, IonSelectOption, IonSelect, IonButton, IonLabel, NgIf],
+  imports: [CommonModule, IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe, JsonPipe, IonSelectOption, IonSelect, IonButton, IonLabel, NgIf],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalComponent implements AfterViewInit, OnDestroy {
@@ -68,7 +70,14 @@ export class CalComponent implements AfterViewInit, OnDestroy {
     map((date: HDate) => hebDateToHebrew(date))
   );
 
-  highlightedDates$ = this.cal.highlightedDates$;
+  highlightedDates$ = this.cal.highlightedDates$.pipe(
+    map((events: EventDto[]) => events.map((event: EventDto) =>
+    ({
+        ...event,
+        backgroundColor: (colors as any)[event.type] || 'transparent',
+      })
+    ))
+  );
   public InputEventTypeEnum = InputEventType;
   // detailsToList$ = this.highlightedDates$.pipe(
   //   map((highlightedDates: EventDto[]) => {
@@ -102,7 +111,8 @@ export class CalComponent implements AfterViewInit, OnDestroy {
   });
   // highlightedDatesFunc = this.cal.highlightedDatesFunc;
   constructor(private el: ElementRef) {
-    addIcons({ add });
+    addIcons({ add,closeOutline });
+
   }
 
   ngAfterViewInit() {
@@ -110,7 +120,13 @@ export class CalComponent implements AfterViewInit, OnDestroy {
       this.applyBoldToRedDays();
       const root = this.dtRef.elementRef.nativeElement.shadowRoot;
       if (root) {
-        this.mo = new MutationObserver(() => this.applyBoldToRedDays());
+        let lastElState = {};
+        this.mo = new MutationObserver((el: any) => {
+          if (JSON.stringify(lastElState) != JSON.stringify(el)) {
+            lastElState = el;
+            this.applyBoldToRedDays()
+          }
+        });
         this.mo.observe(root, { childList: true, subtree: true, attributes: true });
       }
     }, 0);
@@ -119,28 +135,38 @@ export class CalComponent implements AfterViewInit, OnDestroy {
     const root = this.dtRef.elementRef.nativeElement.shadowRoot as ShadowRoot;
     if (!root) return;
 
-    const days = Array.from(root.querySelectorAll<HTMLButtonElement>('button[part*="calendar-day"]'));
+    root.querySelectorAll<HTMLButtonElement>('button.calendar-day ion-icon').forEach(icon => icon.remove());
+    const days =root.querySelectorAll<HTMLButtonElement>('button.calendar-day')
     days.forEach(btn => {
-      const inline = btn.getAttribute('style') || '';
-      const computed = window.getComputedStyle(btn).color;
-    
-      if (inline.includes('rgb(255, 0, 0)') || computed === 'rgb(255, 0, 0)' || computed === 'red') {
-        // either set inline style:
-        btn.style.fontWeight = '700';
-        // or add a class *and* inject a style tag into the shadowRoot if you prefer
-      } else {
-        btn.style.fontWeight = '';
+      const backgroundColor = window.getComputedStyle(btn).backgroundColor;
+      const className = (colors as any)[backgroundColor];
+      if(className) {
+        //create an element with that class name to get the color
+        const iconEl = document.createElement('ion-icon');
+        iconEl.setAttribute('slot', 'icon-only');
+        iconEl.setAttribute('name', 'close-outline');
+        
+        iconEl.style.position = 'absolute';
+        iconEl.style.top = '-4px';
+        iconEl.style.left = '-3px';
+        iconEl.style.background = backgroundColor
+        iconEl.style.borderRadius = '50%';
+        iconEl.style.padding = '2px';
+
+        iconEl.classList.add(className);
+        btn.appendChild(iconEl);
       }
+    
     });
   }
   async onAddEvent() {
     console.log('onAddEvent:', this.addEventForm.value);
     const date = this.selectedDate$.getValue();
-    const {type, afterSunset} = this.addEventForm.getRawValue();
+    const { type, afterSunset } = this.addEventForm.getRawValue();
     // get current value from detailsToList$ 
     const data = await firstValueFrom(this.detailsToList$);
     console.log('Current detailsToList$ data:', data);
-    await this.cal.addEvent(date, type, afterSunset );
+    await this.cal.addEvent(date, type, afterSunset);
     this.addEventForm.reset();
 
   }

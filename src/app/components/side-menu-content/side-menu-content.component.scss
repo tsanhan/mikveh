@@ -22,9 +22,10 @@
     align-items: center;
     justify-content: flex-start;
     flex: 1;
-    & .active{
-      font-weight: bold;
-    }
+    // & 
+    // .active{
+    //   font-weight: bold;
+    // }
 
     & div {
       text-align: center;
@@ -34,11 +35,11 @@
 
 
 ion-button{
-  --background: rgb(242 209 206) !important;
+  --background: #fff1f2 !important;
   --color: rgb(0 0 0);
-  --ion-color-base: rgb(242 209 206) !important;
+  --ion-color-base: #fff1f2 !important;
   &.active{
-    --ion-color-base: rgb(227 166 166) !important;
+    --ion-color-base: #f9d9da !important;
   }
   &::part(native) {
     height: auto;

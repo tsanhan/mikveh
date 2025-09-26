@@ -125,9 +125,6 @@ ion-modal ion-toolbar {
 }
 
 
-ion-datetime.host-class::part(calendar-day)   {
-  font-weight: bold;
-}
 
 ion-list {
   --background: #fff1f2;
@@ -135,4 +132,12 @@ ion-list {
   border-radius: 16px;
   box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px;
 }
+
+// if state is mahzor, add a red asterisk after the day number
+
+ion-datetime::part(calendar-day) {
+  position: relative;
+}
+
+
 

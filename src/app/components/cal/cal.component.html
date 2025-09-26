@@ -1,9 +1,10 @@
 <div class="ion-datetime">
 
-  <ion-datetime  #dt color="rose" [style]="{direction: 'ltr'}" locale="he-IL" presentation="date"
+  <ion-datetime #dt color="rose" [style]="{direction: 'ltr'}" locale="he-IL" presentation="date"
     (ionChange)="onDateChange($event)" [value]="israelTime" [highlightedDates]="highlightedDates$ | async">
-
   </ion-datetime>
+
+
   <ion-fab>
     <ion-fab-button size="small" id="open-add-event-modal">
       <ion-icon name="add"></ion-icon>
@@ -11,6 +12,7 @@
   </ion-fab>
 
 </div>
+
 <!-- {{selectedDateData$ | async | json}} -->
 
 <!-- selectedDate {{selectedDate$ | async }}
@@ -20,7 +22,7 @@ filteredByApproach {{detailsToList$ | async | json}} -->
 <!-- {{this.selectedDate$ | async | date:'d LLLL':'':'he'}} -->
 
 @for (item of detailsToList$ | async; track item.date) {
-<ion-list  lines="none">
+<ion-list lines="none">
   @for ( detail of item.details; track detail) {
   <ion-item>
     <ion-label>{{detail}}</ion-label>

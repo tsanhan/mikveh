@@ -8,15 +8,15 @@ export interface CachedCalEvent {
 }
 
 export enum InputEventType {
-  SEE_BLOOD = 'see blood',
-  HEFSEK_TAHARA = 'hefsek tahara',
+  SEE_BLOOD = 'seeBlood',
+  HEFSEK_TAHARA = 'hefsekTahara',
 }
 
 export enum DayType {
-  MAAYAN_PATUAH = 'maayan patuach',
-  CAN_START_CHECK_HEFSEK = 'can start hefsek',
-  SEVEN_CLEAN = 'seven cleans',
-  MIKVEH_DAY = 'mikveh day',
+  MAHZOR = 'mahzor',
+  CAN_START_CHECK_HEFSEK = 'canStartHefsek',
+  SEVEN_CLEAN = 'sevenCleans',
+  MIKVEH_DAY = 'mikvehDay',
   MUTERET = 'muteret',
   PRISHA = 'prisha',
 }
@@ -24,9 +24,6 @@ export enum DayType {
 export interface EventDto {
   type: DayType | InputEventType,
   date: string;
-  textColor: string;
-  border: string;
-  backgroundColor: string;
   details: string[];
 }
 

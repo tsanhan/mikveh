@@ -47,10 +47,6 @@ export class CalService {
   private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, approach: Approach): EventDto[] {
     const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
 
-    let textColor: string;
-    let border: string;
-    let backgroundColor: string;
-    let details: string[] = [];
     let followingEventsChabadOnaBenonit: EventDto[] = [];
 
 
@@ -94,27 +90,35 @@ export class CalService {
     rtn.push({
       type: InputEventType.HEFSEK_TAHARA,
       date: date.toISOString().split('T')[0],
-      textColor: '#a1a05cff',
-      backgroundColor: '#e6f0ff', // Light blue background
-      border: '1px solid #a1a05cff',
       details: [
         'הפסק טהרה',
       ]
     });
     for (let i = 1; i <= 7; i++) {
       date.setDate(date.getDate() + 1);
-      rtn.push({
-        type: DayType.SEVEN_CLEAN,
-        date: date.toISOString().split('T')[0],
-        textColor: '#3f4076ff',
-        backgroundColor: '#fff3e6', // Light orange background
-        border: '1px solid #8f9bddff',
-        details: [
-          `היום ה${i} של ספירת 7 נקיים`,
-        ]
-      })
-      if (i === 7) rtn[i].details.push('בערב אפשר לטבול');
+      switch (i) {
+        case 7:
+          rtn.push({
+            type: DayType.MIKVEH_DAY,
+            date: date.toISOString().split('T')[0],
+            details: [
+              `היום ה${i} של ספירת 7 נקיים`,
+              'בערב אפשר לטבול'
+            ]
+          });
+          break;
+        default:
+          rtn.push({
+            type: DayType.SEVEN_CLEAN,
+            date: date.toISOString().split('T')[0],
+            details: [
+              `היום ה${i} של ספירת 7 נקיים`,
+            ]
+          });
+          break;
+      }
     }
+
 
     return rtn;
   }
@@ -129,9 +133,6 @@ export class CalService {
     const rtn: EventDto = {
       type: DayType.PRISHA,
       date: dateVesetHaHodesh.toISOString().split('T')[0],
-      textColor: '#ff006aff',
-      border: '1px solid #ff006aff',
-      backgroundColor: '#ffe6e6', // Light red background
       details: [
         'פרישה - וסט החודש',
       ]
@@ -161,9 +162,6 @@ export class CalService {
     {
       type: DayType.PRISHA,
       date: dateBenonit.toISOString().split('T')[0],
-      textColor: '#ff006aff',
-      border: '1px solid #ff006aff',
-      backgroundColor: '#ffe6e6', // Light red background
       details: [
         'פרישה - עונה בינונית',
       ]
@@ -187,11 +185,8 @@ export class CalService {
     for (let i = numOfDays; i > 0; i--) {
 
       rtn.push({
-        type: DayType.MAAYAN_PATUAH,
+        type: DayType.MAHZOR,
         date: date.toISOString().split('T')[0],
-        textColor: '#ff0000', // Red
-        border: '1px solid #ff0000',
-        backgroundColor: '#ffe6e6', // Light red background
         details: [
           `עוד ${i} ימים אפשר להתחיל לבדוק הפסק טהרה`,
         ]
@@ -202,78 +197,10 @@ export class CalService {
     rtn.push({
       type: DayType.CAN_START_CHECK_HEFSEK,
       date: date.toISOString().split('T')[0],
-      textColor: '#ff8800ff', // Red
-      border: '1px solid #ff8800ff',
-      backgroundColor: '#ffe6e6', // Light red background
       details: [
         'היום אפשר להתחיל לבדוק הפסק טהרה'
       ]
     });
-
-
-    // add 1 after הפסק טהרה for ספירת 7 נקיים
-    // for (let i = 1; i <= 7; i++) {
-    //   date.setDate(date.getDate() + 1);
-
-    //   const hebDate = dateToHDate(date, false);
-    //   const another = allevents.find((eventObj: CachedCalEvent, eventIndex: number, events: CachedCalEvent[]) =>
-    //     index !== eventIndex &&
-    //     eventObj.hDateSunsetAwareString === hebDate.toString() &&
-    //     eventObj.type === InputEventType.SEE_BLOOD
-    //   );
-    //   let anotherline = '';
-    //   if (another) {
-    //     const indexOfAnother = allevents.indexOf(another);
-    //     allevents.splice(indexOfAnother, 1); // remove the found event to avoid duplicates
-    //     console.log('removing from allevents', another);
-
-    //     i = 1;
-    //     anotherline
-    //       = `היה דם ביום הזה, מתחילים לספור מחדש מ${another.hDateSunsetAwareString}`;
-
-    //   }
-
-
-    //   const toAddtoRtn: EventDto = {
-    //     type: DayType.SEVEN_CLEAN,
-    //     date: date.toISOString().split('T')[0],
-    //     textColor: '#a1a05cff',
-    //     backgroundColor: '#fff3e6', // Light orange background
-    //     details: [
-    //       `היום ה${i} של ספירת 7 נקיים`,
-    //     ],
-    //     border: '1px solid #a1a05cff',
-
-    //   }
-    //   !!anotherline && toAddtoRtn.details.push(anotherline);
-    //   if (i === 7) {
-    //     toAddtoRtn.type = DayType.MIKVEH_DAY;
-    //     toAddtoRtn.textColor = '#00ff00'; // Green for the last day
-    //     toAddtoRtn.border = '1px solid #00ff00';
-    //     toAddtoRtn.backgroundColor = '#e6ffe6'; // Light green background
-    //     toAddtoRtn.details.push('היום ה-7 נקיים, היום בערב אפשר לטבול');
-    //   }
-
-
-
-    //   rtn.push(toAddtoRtn);
-    // }
-
-
-    // const nextMonthsDate = hDateSunsetAwareStringToDate(event.hDateSunsetAwareString);
-    // nextMonthsDate.setDate(nextMonthsDate.getDate() + 29);
-    // rtn.push({
-    //   type: DayType.MUTERET,
-    //   date: nextMonthsDate.toISOString().split('T')[0],
-    //   textColor: '#ff006aff',
-    //   border: '1px solid #ff006aff',
-    //   backgroundColor: '#ffe6e6', // Light red background
-    //   details: [
-    //     'היום ה-30, יש לבדוק',
-    //   ]
-
-    // });
-
     return rtn;
 
 

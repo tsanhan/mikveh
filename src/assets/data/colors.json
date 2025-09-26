@@ -1,0 +1,14 @@
+{
+    "mahzor": "rgb(241, 140, 142)",
+    "canStartHefsek": "rgb(236, 158, 105)",
+    "hefsekTahara": "rgb(236, 158, 106)",
+    "sevenCleans": "rgb(241, 209, 181)",
+    "mikvehDay": "rgb(82, 130, 149)",
+    "prisha": "rgb(255, 241, 168)",
+    "rgb(241, 140, 142)": "mahzor",
+    "rgb(236, 158, 105)": "canStartHefsek",
+    "rgb(236, 158, 106)": "hefsekTahara",
+    "rgb(241, 209, 181)": "sevenCleans",
+    "rgb(82, 130, 149)": "mikvehDay",
+    "rgb(255, 241, 168)": "prisha"
+}

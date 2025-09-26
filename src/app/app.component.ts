@@ -9,7 +9,7 @@ import { IonApp, IonRouterOutlet , IonButtons,
   IonMenuToggle, IonIcon } from '@ionic/angular/standalone';
 import { TopButtonsComponent } from "./components/top-buttons/top-buttons.component";
 import { addIcons } from 'ionicons';
-import { closeOutline } from 'ionicons/icons';
+import { arrowForwardOutline, closeOutline } from 'ionicons/icons';
 import { SideMenuContentComponent } from "./components/side-menu-content/side-menu-content.component";
 
 
@@ -37,7 +37,7 @@ export class AppComponent {
    *
    */
   constructor() {
-    addIcons({ closeOutline });
+    addIcons({ closeOutline, arrowForwardOutline });
 
   }
 }
