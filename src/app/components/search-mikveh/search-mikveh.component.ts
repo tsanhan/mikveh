@@ -1,6 +1,6 @@
 import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, inject, OnInit, QueryList, Signal, ViewChild, ViewChildren, ChangeDetectionStrategy, signal } from '@angular/core';
-import { IonSearchbar, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { IonSearchbar, IonButton, IonIcon, IonList, IonItem, IonSkeletonText } from '@ionic/angular/standalone';
 import { BehaviorSubject, catchError, combineLatest, interval, map, Observable, shareReplay, tap, throttle } from 'rxjs';
 import { DalService } from 'src/app/services/dal.service';
 import { GoogleMap, MapMarker, MapAdvancedMarker } from '@angular/google-maps';
@@ -26,20 +26,20 @@ import { TelHighlightPipe } from 'src/app/pipes/tel-highlight.pipe';
     GoogleMap,
     MapAdvancedMarker,
     DatePipe,
+    IonList,
     TranslateHebPipe,
-    TelHighlightPipe
-  ],
+    TelHighlightPipe, IonItem, IonSkeletonText],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchMikvehComponent implements OnInit {
   dal = inject(DalService);
   location = inject(LocationService);
   events = inject(EventsService);
-
+  mikvehsLoading = signal(true);
 
   @ViewChild('googleMap', { static: true }) map!: GoogleMap;
   @ViewChildren('dynamicElement') dynamicElements!: QueryList<ElementRef>;
-  @ViewChild('warpper',{ static: true }) warpper!: ElementRef;
+  @ViewChild('wrapper',{ static: true }) wrapper!: ElementRef;
 
   center$: Observable<google.maps.LatLngLiteral> = this.location.mapCenter$;
   isLoading = signal<boolean>(true);
@@ -54,6 +54,7 @@ export class SearchMikvehComponent implements OnInit {
     this.keyStroke,
     this.center$,
   ]).pipe(
+    tap(() => this.isLoading.set(true)),
     throttle(() => interval(5000)),
     map(([results, key, center]) => {
       const filtered = results.filter((result:IMikveh) => {
@@ -142,7 +143,7 @@ export class SearchMikvehComponent implements OnInit {
     // const element:ElementRef = elements.find((element) => element.nativeElement.id === $event.id) as ElementRef;
     // element.nativeElement.focus();
     // element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', alignToTop: true });
-    this.warpper.nativeElement.scrollTo({ behavior: 'smooth', top: 0});
+    this.wrapper.nativeElement.scrollTo({ behavior: 'smooth', top: 0});
     $event['expanded'] = true;
 
     console.log($event);

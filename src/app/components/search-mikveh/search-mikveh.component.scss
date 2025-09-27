@@ -12,6 +12,7 @@ ion-searchbar {
       padding-top: 0.8rem;
       padding-bottom: 0.8rem;
     }
+
     & input.searchbar-input {
       padding-inline-start: 2.875rem !important;
     }
@@ -21,20 +22,23 @@ ion-searchbar {
     }
   }
 }
+
 .title {
   font-weight: bold;
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
-.warpper {
+
+.wrapper {
   display: flex;
-      flex-direction: column;
-      width: 73.5vw;
-      font-size: 0.75rem;
-      min-height: 35vh;
-      flex: 4 1 34vh;
-      margin-bottom: 0.5rem;
-    overflow: scroll;
+  flex-direction: column;
+  width: 73.5vw;
+  font-size: 0.75rem;
+  min-height: 35vh;
+  flex: 4 1 34vh;
+  margin-bottom: 0.5rem;
+  overflow: scroll;
+
   & .mikveh {
     display: flex;
     background: #f2d1ce;
@@ -46,10 +50,12 @@ ion-searchbar {
 
     transition: all 0.3s ease-in-out;
     height: min-content;
+
     &.expanded {
       // border-radius: 0.5rem;
       height: fit-content;
     }
+
     & .details {
       display: flex;
       flex-direction: column;
@@ -75,6 +81,7 @@ ion-searchbar {
 
           & a {
             text-decoration: none;
+
             &::after {
               content: '📞';
               margin-left: 0.5rem;
@@ -83,12 +90,12 @@ ion-searchbar {
         }
 
         & .openHours {
+
           & .midWeekHours,
           .fridayOrErevHagSummer,
           .motzaeiShabbatOrHagSummer,
           .fridayOrErevHagWinter,
-          .motzaeiShabbatOrHagWinter
-           {
+          .motzaeiShabbatOrHagWinter {
             & span {
               font-weight: bold;
             }
@@ -100,8 +107,10 @@ ion-searchbar {
             font-weight: bold;
             margin-top: 0.5rem;
           }
+
           & a {
             text-decoration: none;
+
             &::after {
               content: '📞';
               margin-left: 0.5rem;
@@ -119,6 +128,7 @@ ion-searchbar {
     & .buttons {
       display: flex;
       align-self: baseline;
+
       & ion-button {
         --background: #d07c80;
         --background-hover: #d07c80;
@@ -178,9 +188,9 @@ ion-searchbar {
 
 :host {
   display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
 }
 
 google-map {
@@ -193,4 +203,18 @@ google-map {
       border-radius: 1rem;
     }
   }
+}
+
+ion-skeleton-text {
+  width: -webkit-fill-available;
+  height: 4rem;
+  border-radius: 2rem;
+  width: 74.5vw;
+}
+
+.skeleton-wrapper {
+  overflow: scroll;
+  min-height: 35vh;
+  margin-bottom: 0.5rem;
+
 }

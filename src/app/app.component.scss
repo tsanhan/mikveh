@@ -1,6 +1,8 @@
+@import 'variables';
+
 .top-buttons {
   height: 7vh;
-  background: #f3d1ce;
+  background: $app;
   z-index: 9;
 }
 
@@ -20,13 +22,13 @@ ion-header {
   box-shadow: none;
 }
 ion-toolbar{
-  --background: #f3c3c3;
-  --border-color: #f3c3c3;
+  --background: $app;
+  --border-color: $app;
   --color: black;
 }
 
 .ion-padding{
-  --background: #f3c3c3;
+  --background: $app;
 }
 ion-content {
 

@@ -1,7 +1,12 @@
-:host {
-  background: #F4D1CD;
+@import 'variables';
 
+:host {
+  background: $app;
+  ion-grid {
+    background: $app;
+  }
 }
+
 
 ion-img {
   display: inline-flex;
