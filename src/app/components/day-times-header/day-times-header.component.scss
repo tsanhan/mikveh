@@ -1,9 +1,9 @@
 @import 'variables';
 
 :host {
-  background: $app;
+  background: var(--app);
   ion-grid {
-    background: $app;
+    background: var(--app);
   }
 }
 

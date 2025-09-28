@@ -1,8 +1,8 @@
-<swiper-container style="background: #F4D1CD; --swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
+<swiper-container
   class="mySwiper" thumbs-swiper=".mySwiper2" space-between="10">
   @for(topic of topics$ | async; track topic; let idx = $index) {
-  <swiper-slide style="background: #F4D1CD;">
-    <ion-card style="background: #F4D1CD;">
+  <swiper-slide >
+    <ion-card >
       <img class="img" [src]="'assets/images/srips/'+(idx+1)+'.png'" />
       <div class="card-header">
         <div [ngStyle]="{
@@ -16,7 +16,7 @@
         color: 'black'}" class="card-subtitle">{{topic.subtitle}}</div>
       </div>
 
-      <div class="content" style="background: #F4D1CD;">
+      <div class="content">
         @if (this.approachKey$ | async; as approachKey) {
           @for(contentObj of topic.content[approachKey]; track contentObj; let i = $index){
           <div>
@@ -43,7 +43,7 @@
               @case ('table') {
                 <ion-grid>
                   <ion-row>
-                    <ion-col *ngFor="let header of contentObj.data[0]" style="background-color: #b15d54; color: #F4D1CD;">{{header}}</ion-col>
+                    <ion-col *ngFor="let header of contentObj.data[0]">{{header}}</ion-col>
                   </ion-row>
                   <ion-row *ngFor="let row of contentObj.data.slice(1)">
                     <ion-col *ngFor="let cell of row">{{cell}}</ion-col>

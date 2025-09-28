@@ -2,7 +2,7 @@
 
 .top-buttons {
   height: 7vh;
-  background: $app;
+  background: var(--app);
   z-index: 9;
 }
 
@@ -22,13 +22,13 @@ ion-header {
   box-shadow: none;
 }
 ion-toolbar{
-  --background: $app;
-  --border-color: $app;
+  --background: var(--app);
+  --border-color: var(--app);
   --color: black;
 }
 
 .ion-padding{
-  --background: $app;
+  --background: var(--app);
 }
 ion-content {
 

@@ -3,7 +3,7 @@
 @import 'variables';
 
 :host {
-  background: #F4D1CD;
+  background: var(--app);
 }
 
 // img {
@@ -65,7 +65,7 @@ ion-fab.shita-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: $app;
+  background: var(--app);
   margin: 0rem 1rem 0 1rem;
   padding: 0.5rem;
 }

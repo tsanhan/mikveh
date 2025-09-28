@@ -7,11 +7,11 @@ ion-content::part(scroll)::before{
 
 }
 ion-content {
-  --background:#F4D1CD;
+  --background: var(--app);
 }
-ion-footer::part(background) {
-  background: #F4D1CD;
-}
+// ion-footer::part(background) {
+//   background: #b3372a;
+// }
 
 ion-footer {
   height: 11vh;

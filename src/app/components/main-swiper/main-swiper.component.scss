@@ -1,6 +1,8 @@
+@import 'variables';
+
 :host {
   display: block;
-  background: #F4D1CD;
+  background: var(--app);
 }
 
 
@@ -17,6 +19,8 @@ swiper-slide {
   justify-content: center;
   align-items: center;
   height: fit-content;
+  background: var(--app);
+
 }
 
 swiper-slide img {
@@ -32,6 +36,9 @@ swiper-container {
   margin-left: auto;
   margin-right: auto;
   display: inherit;
+  background: var(--app);
+  --swiper-navigation-color: #fff;
+  --swiper-pagination-color: #fff
 }
 
 swiper-slide {
@@ -67,23 +74,22 @@ ion-avatar {
 
 
 ion-card {
-  --background: #f4d1cd;
+  --background: var(--app);
   margin: 0;
   box-shadow: 0 0 0 0 !important;
   -webkit-box-shadow: 0 0 0 0 !important;
 
 }
 
-ion-card-title {
+ion-card-title {}
 
-}
-
-ion-card-subtitle{
+ion-card-subtitle {
   font-family: 'VarelaRound';
   text-align: center;
   font-size: 0.75rem;
   color: black;
 }
+
 .content {
   overflow: scroll;
   // height: -webkit-fill-available;
@@ -94,6 +100,7 @@ ion-card-subtitle{
   font-size: 1rem;
   color: black;
   padding: 0 1.5rem;
+  background: var(--app);
 
 
   /* Firefox */
@@ -112,7 +119,8 @@ ion-img::part(image) {
 
 ion-col {
 
-  border: solid 1px #eb938a;
-
+  border: solid 1px var(--app);
+  background-color: var(--app);
+  color: var(--app);
   text-align: center;
 }

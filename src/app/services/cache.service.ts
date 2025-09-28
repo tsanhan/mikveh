@@ -4,7 +4,7 @@ import * as locations from '../../assets/data/locations.json';
 import * as topicsJson from '../../assets/data/topics.json';
 import { Location } from '../interfaces/locations';
 import { IMikveh } from '../interfaces/mikveh.interface';
-import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
+import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
 import { ApproachService } from './approach.service';
 import { CachedCalEvent } from '../interfaces/cal';
 import { Approach } from '../interfaces/approaches';
@@ -29,6 +29,7 @@ export class CacheService {
   private _calEventsStorage: Storage = new Storage();
   private _calEvents$ = new BehaviorSubject<CachedCalEvent[]>([]);
   public calEvents$ = this._calEvents$.asObservable().pipe(
+    map(events => events.sort((a,b) => new Date(b.gregorianDateString).getTime() - new Date(a.gregorianDateString).getTime())),
     shareReplay(1)
   );
   
