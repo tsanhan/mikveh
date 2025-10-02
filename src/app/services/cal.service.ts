@@ -61,7 +61,6 @@ export class CalService {
           case ApproachName.SEPHARDI:
             followingEventsChabadOnaBenonit = this.buildEventsToHefsek(event, allevents, index, 4);
             break;
-
         }
         followingEventsChabadOnaBenonit.push(this.buildPrishaEventOnaBenonit(event, approach));
         followingEventsChabadOnaBenonit.push(this.buildPrishaEventVesetHaHodesh(event, approach));

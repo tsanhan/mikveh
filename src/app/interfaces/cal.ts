@@ -10,6 +10,7 @@ export interface CachedCalEvent {
 export enum InputEventType {
   SEE_BLOOD = 'seeBlood',
   HEFSEK_TAHARA = 'hefsekTahara',
+  KETEM = 'ketem',
 }
 
 export enum DayType {
