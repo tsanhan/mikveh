@@ -47,7 +47,7 @@
     "@ng-icons/jam-icons": "^27.3.1",
     "@ng-icons/tabler-icons": "^30.3.0",
     "@ng-icons/tdesign-icons": "^32.1.0",
-    "@schematics/angular": "^19.2.17",
+    "@schematics/angular": "^20.3.4",
     "@types/google.maps": "^3.58.1",
     "capacitor-native-settings": "^6.0.1",
     "dayjs": "^1.11.13",
