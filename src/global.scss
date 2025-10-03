@@ -26,22 +26,11 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 * {
-  direction: rtl ;
-  text-align: right;
+  direction: rtl;
 
-$app: #F3C3C3;
-$button: #F5E5E5;
-$icon: #1E1E1E;
-$buttons: #FFF1F2;
-$colorPlus:#D67E7E;
---app: #F3C3C3;
---button: #F5E5E5;
---icon: #1E1E1E;
---buttons: #FFF1F2;
---colorPlus:#D67E7E;
+  --app: #F3C3C3;
+  --button: #F5E5E5;
+  --icon: #1E1E1E;
+  --buttons: #FFF1F2;
+  --colorPlus: #D67E7E;
 }
-
-
-
-/* Importing Bootstrap SCSS file. */
-@import 'bootstrap/scss/bootstrap';

@@ -35,13 +35,15 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { EventDto, InputEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
 import { hebDateToHebrew, simpleDateToHebrew } from 'src/app/utils/date.util';
-import { 	NgbCalendar,
-	NgbCalendarHebrew,
-	NgbDate,
-	NgbDatepickerI18n,
-	NgbDatepickerI18nHebrew,
-	NgbDatepickerModule,
-	NgbDateStruct, } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbCalendar,
+  NgbCalendarHebrew,
+  NgbDate,
+  NgbDatepickerI18n,
+  NgbDatepickerI18nHebrew,
+  NgbDatepickerModule,
+  NgbDateStruct,
+} from '@ng-bootstrap/ng-bootstrap';
 
 import * as colors from '../../../assets/data/colors.json';
 
@@ -49,21 +51,39 @@ import * as colors from '../../../assets/data/colors.json';
   selector: 'app-cal',
   templateUrl: './cal.component.html',
   styleUrls: ['./cal.component.scss'],
-  imports: [CommonModule, IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, AsyncPipe, DatePipe,
+  imports: [CommonModule,
+    // IonText,
+    // IonRadioGroup,
+    // IonRadio,
+    ReactiveFormsModule,
+    // IonModal,
+    // IonContent,
+    // IonToolbar,
+    // IonTitle,
+    // IonList,
+    // IonItem,
+    // IonIcon,
+    // IonFabButton,
+    // IonFab,
+    // AsyncPipe,
+    // DatePipe,
     NgbDatepickerModule,
     FormsModule,
-    IonSelectOption, IonSelect, IonButton],
-    providers: [
-      { provide: NgbCalendar, useClass: NgbCalendarHebrew },
-		{ provide: NgbDatepickerI18n, useClass: NgbDatepickerI18nHebrew },
+    // IonSelectOption, 
+    // IonSelect,
+    //  IonButton
     ],
+  providers: [
+    { provide: NgbCalendar, useClass: NgbCalendarHebrew },
+    { provide: NgbDatepickerI18n, useClass: NgbDatepickerI18nHebrew },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalComponent implements OnDestroy {
   model: NgbDateStruct;
   i18n = inject(NgbDatepickerI18n);
-	calendar = inject(NgbCalendar);
-	date: { year: number; month: number };
+  calendar = inject(NgbCalendar);
+  date: { year: number; month: number };
 
   @ViewChild('dt', { static: true }) dtRef!: any;
   private mo?: MutationObserver;
@@ -135,10 +155,10 @@ export class CalComponent implements OnDestroy {
 
   }
   public dayTemplateData(date: NgbDateStruct) {
-		return {
-			gregorian: (this.calendar as NgbCalendarHebrew).toGregorian(date as NgbDate),
-		};
-	}
+    return {
+      gregorian: (this.calendar as NgbCalendarHebrew).toGregorian(date as NgbDate),
+    };
+  }
   // ngAfterViewInit() {
   //   setTimeout(() => {
   //     this.applyBoldToRedDays();

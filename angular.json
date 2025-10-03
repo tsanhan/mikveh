@@ -37,7 +37,8 @@
             ],
             "styles": [
               "src/global.scss",
-              "src/theme/variables.scss"
+              "src/theme/variables.scss",
+              "bootstrap/scss/bootstrap.scss"
             ],
             "scripts": [],
             "stylePreprocessorOptions": {
@@ -122,7 +123,8 @@
             ],
             "styles": [
               "src/global.scss",
-              "src/theme/variables.scss"
+              "src/theme/variables.scss",
+              "bootstrap/scss/bootstrap.scss"
             ],
             "scripts": [],
             "stylePreprocessorOptions": {

@@ -126,16 +126,42 @@ ion-modal ion-toolbar {
 
 
 
-ion-list {
-  --background: #fff1f2;
-  --background-rgb: 255, 241, 242;
-  border-radius: 16px;
-  box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px;
+// ion-list {
+//   --background: #fff1f2;
+//   --background-rgb: 255, 241, 242;
+//   border-radius: 16px;
+//   box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px;
+// }
+
+// // if state is mahzor, add a red asterisk after the day number
+
+:host {
+  width: 100%;
 }
 
-// if state is mahzor, add a red asterisk after the day number
+ngb-datepicker {
 
+  width: -webkit-fill-available;
 
+  &.rtl {
+    direction: rtl;
+  }
+
+  & .ngb-dp-header {
+    & ngb-datepicker-navigation {
+
+      & .ngb-dp-arrow {
+        flex: none;
+      }
+    }
+  }
+
+}
+
+ngb-datepicker-navigation {
+  direction: ltr;
+  justify-content: space-between;
+}
 
 .hebrew-day {
   text-align: right;
