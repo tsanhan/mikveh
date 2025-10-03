@@ -21,7 +21,7 @@
     "@angular/core": "^19.2.15",
     "@angular/fire": "^19.2.0",
     "@angular/forms": "^19.2.15",
-    "@angular/google-maps": "^18.2.14",
+    "@angular/google-maps": "^19.2.19",
     "@angular/platform-browser": "^19.2.15",
     "@angular/platform-browser-dynamic": "^19.2.15",
     "@angular/router": "^19.2.15",
