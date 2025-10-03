@@ -19,13 +19,16 @@ import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { ApproachService } from 'src/app/services/approach.service';
 
 @Component({
-  selector: 'app-main-swiper',
-  standalone: true,
-  imports: [CommonModule, IonAvatar, IonText, IonImg, IonGrid, IonCol, IonRow, AsyncPipe  ],
-  templateUrl: './main-swiper.component.html',
-  styleUrl: './main-swiper.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    selector: 'app-main-swiper',
+    imports: [CommonModule, 
+      // IonAvatar, 
+      // IonText,
+      //  IonImg,
+        IonGrid, IonCol, IonRow, AsyncPipe],
+    templateUrl: './main-swiper.component.html',
+    styleUrl: './main-swiper.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MainSwiperComponent {
   cache = inject(CacheService);

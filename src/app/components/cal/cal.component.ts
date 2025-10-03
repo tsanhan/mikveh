@@ -39,12 +39,13 @@ import { hebDateToHebrew, simpleDateToHebrew } from 'src/app/utils/date.util';
 import * as colors from '../../../assets/data/colors.json';
 
 @Component({
-  selector: 'app-cal',
-  templateUrl: './cal.component.html',
-  styleUrls: ['./cal.component.scss'],
-  standalone: true,
-  imports: [CommonModule, IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe, JsonPipe, IonSelectOption, IonSelect, IonButton, IonLabel, NgIf],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-cal',
+    templateUrl: './cal.component.html',
+    styleUrls: ['./cal.component.scss'],
+    imports: [CommonModule, IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe,
+      //  JsonPipe,
+        IonSelectOption, IonSelect, IonButton, IonLabel, NgIf],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalComponent implements AfterViewInit, OnDestroy {
   @ViewChild('dt', { static: true }) dtRef!: any;

@@ -32,23 +32,22 @@ import { CacheService } from 'src/app/services/cache.service';
 
 
 @Component({
-  selector: 'app-top-buttons',
-  standalone: true,
-  imports: [
-    IonButtons,
-    IonImg,
-    IonFabList,
-    IonFabButton,
-    IonFab,
-    IonText,
-    CommonModule,
-    IonImg,
-    AsyncPipe,
-    IonMenuButton,
-  ],
-  templateUrl: './top-buttons.component.html',
-  styleUrl: './top-buttons.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-top-buttons',
+    imports: [
+        IonButtons,
+        IonImg,
+        IonFabList,
+        IonFabButton,
+        IonFab,
+        IonText,
+        CommonModule,
+        IonImg,
+        AsyncPipe,
+        IonMenuButton,
+    ],
+    templateUrl: './top-buttons.component.html',
+    styleUrl: './top-buttons.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TopButtonsComponent {
   cache = inject(CacheService);

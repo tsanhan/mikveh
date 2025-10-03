@@ -21,13 +21,11 @@ import { EventsService } from 'src/app/services/events.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { cityToHebrewName } from 'src/app/utils/location.util';
 @Component({
-  selector: 'app-day-times',
-  templateUrl: './day-times.component.html',
-  styleUrls: ['./day-times.component.scss'],
-  standalone: true,
-  imports: [DatePipe, IonImg, IonIcon, AsyncPipe, NgIcon, NgIcon],
-  viewProviders: [provideIcons({ tablerCandle, bootstrapStars })]
-
+    selector: 'app-day-times',
+    templateUrl: './day-times.component.html',
+    styleUrls: ['./day-times.component.scss'],
+    imports: [DatePipe, IonImg, IonIcon, AsyncPipe, NgIcon, NgIcon],
+    viewProviders: [provideIcons({ tablerCandle, bootstrapStars })]
 })
 export class DayTimesComponent {
   events = inject(EventsService);

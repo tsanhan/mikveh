@@ -13,20 +13,19 @@ import { CacheService } from 'src/app/services/cache.service';
 register();
 
 @Component({
-  selector: 'app-approaches',
-  templateUrl: './approaches.component.html',
-  styleUrls: ['./approaches.component.scss'],
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [CacheService],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    MainSwiperComponent,
-    FooterSwiperComponent,
-    DayTimesHeaderComponent,
-    TopButtonsComponent,
-    IonContent
-  ],
+    selector: 'app-approaches',
+    templateUrl: './approaches.component.html',
+    styleUrls: ['./approaches.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [CacheService],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [
+        MainSwiperComponent,
+        FooterSwiperComponent,
+        DayTimesHeaderComponent,
+        // TopButtonsComponent,
+        IonContent
+    ]
 })
 export class ApproachesComponent{
   cache = inject(CacheService);

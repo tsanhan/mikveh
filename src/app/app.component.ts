@@ -14,23 +14,21 @@ import { SideMenuContentComponent } from "./components/side-menu-content/side-me
 
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-  standalone: true,
-  imports: [IonIcon, IonButton,
-    IonApp,
-    IonRouterOutlet,
-    TopButtonsComponent,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonMenu,
-    IonMenuButton,
-    IonTitle,
-    IonToolbar,
-    IonMenuToggle, SideMenuContentComponent],
-
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    styleUrls: ['app.component.scss'],
+    imports: [IonIcon, IonButton,
+        IonApp,
+        IonRouterOutlet,
+        TopButtonsComponent,
+        // IonButtons,
+        IonContent,
+        IonHeader,
+        IonMenu,
+        // IonMenuButton,
+        // IonTitle,
+        IonToolbar,
+        IonMenuToggle, SideMenuContentComponent]
 })
 export class AppComponent {
   /**

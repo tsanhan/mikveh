@@ -24,20 +24,19 @@ import { DayTimesComponent } from '../day-times/day-times.component';
 import { SearchMikvehComponent } from '../search-mikveh/search-mikveh.component';
 import { CalComponent } from "../cal/cal.component";
 @Component({
-  selector: 'app-side-menu-content',
-  templateUrl: './side-menu-content.component.html',
-  styleUrls: ['./side-menu-content.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    IonButton,
-    IonIcon,
-    DayTimesComponent,
-    SearchMikvehComponent,
-    CalComponent
-],
-  viewProviders: [provideIcons({ bootstrapClock })],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-side-menu-content',
+    templateUrl: './side-menu-content.component.html',
+    styleUrls: ['./side-menu-content.component.scss'],
+    imports: [
+        CommonModule,
+        IonButton,
+        IonIcon,
+        DayTimesComponent,
+        SearchMikvehComponent,
+        CalComponent
+    ],
+    viewProviders: [provideIcons({ bootstrapClock })],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SideMenuContentComponent implements OnInit {
   page: WritableSignal<'time' | 'search' | 'cal'> = signal('time');

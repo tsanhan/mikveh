@@ -18,18 +18,18 @@ import { EventsService } from 'src/app/services/events.service';
 import { map } from 'rxjs';
 
 @Component({
-  selector: 'app-day-times-header',
-  templateUrl: './day-times-header.component.html',
-  styleUrls: ['./day-times-header.component.scss'],
-  standalone: true,
-  imports: [IonText, IonImg, IonGrid, IonCol, IonRow, DatePipe, AsyncPipe],
-  viewProviders: [
-    provideIcons({
-      tdesignSunRising,
-      tdesignSunFall,
-
-    }),
-  ],
+    selector: 'app-day-times-header',
+    templateUrl: './day-times-header.component.html',
+    styleUrls: ['./day-times-header.component.scss'],
+    imports: [IonText, IonImg, IonGrid, IonCol, IonRow,
+      //  DatePipe,
+        AsyncPipe],
+    viewProviders: [
+        provideIcons({
+            tdesignSunRising,
+            tdesignSunFall,
+        }),
+    ]
 })
 export class DayTimesHeaderComponent {
   cache = inject(CacheService);

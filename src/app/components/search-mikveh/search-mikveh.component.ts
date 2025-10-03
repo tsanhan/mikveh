@@ -15,21 +15,22 @@ import { TelHighlightPipe } from 'src/app/pipes/tel-highlight.pipe';
 
 
 @Component({
-  selector: 'app-search-mikveh',
-  templateUrl: './search-mikveh.component.html',
-  styleUrls: ['./search-mikveh.component.scss'],
-  standalone: true,
-  imports: [IonIcon, IonButton,
-    CommonModule,
-    IonSearchbar,
-    AsyncPipe,
-    GoogleMap,
-    MapAdvancedMarker,
-    DatePipe,
-    IonList,
-    TranslateHebPipe,
-    TelHighlightPipe, IonItem, IonSkeletonText],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-search-mikveh',
+    templateUrl: './search-mikveh.component.html',
+    styleUrls: ['./search-mikveh.component.scss'],
+    imports: [IonIcon, IonButton,
+        CommonModule,
+        IonSearchbar,
+        AsyncPipe,
+        GoogleMap,
+        MapAdvancedMarker,
+        DatePipe,
+        // IonList,
+        TranslateHebPipe,
+        TelHighlightPipe, 
+        // IonItem,
+         IonSkeletonText],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchMikvehComponent implements OnInit {
   dal = inject(DalService);

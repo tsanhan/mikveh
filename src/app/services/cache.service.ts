@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Storage,  } from '@ionic/storage-angular';
-import * as locations from '../../assets/data/locations.json';
-import * as topicsJson from '../../assets/data/topics.json';
+import locations from '../../assets/data/locations.json';
+import topicsJson from '../../assets/data/topics.json';
 import { Location } from '../interfaces/locations';
 import { IMikveh } from '../interfaces/mikveh.interface';
-import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
+import { BehaviorSubject, map, Observable, shareReplay, tap } from 'rxjs';
 import { ApproachService } from './approach.service';
 import { CachedCalEvent } from '../interfaces/cal';
 import { Approach } from '../interfaces/approaches';
@@ -42,7 +42,7 @@ export class CacheService {
   //#endregion
 
   //#region Topics
-  private _topics$ = new BehaviorSubject<any[]>(Array.from({...topicsJson}));
+  private _topics$ = new BehaviorSubject<any[]>(Array.from(topicsJson));
   public topics$ = this._topics$.asObservable();
   //#endregion
 
