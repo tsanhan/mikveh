@@ -31,23 +31,40 @@ import { LocationService } from 'src/app/services/location.service';
 
 import { addIcons } from 'ionicons';
 import { add, closeOutline } from 'ionicons/icons';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventDto, InputEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
 import { hebDateToHebrew, simpleDateToHebrew } from 'src/app/utils/date.util';
+import { 	NgbCalendar,
+	NgbCalendarHebrew,
+	NgbDate,
+	NgbDatepickerI18n,
+	NgbDatepickerI18nHebrew,
+	NgbDatepickerModule,
+	NgbDateStruct, } from '@ng-bootstrap/ng-bootstrap';
 
 import * as colors from '../../../assets/data/colors.json';
 
 @Component({
-    selector: 'app-cal',
-    templateUrl: './cal.component.html',
-    styleUrls: ['./cal.component.scss'],
-    imports: [CommonModule, IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, IonDatetime, AsyncPipe, DatePipe,
-      //  JsonPipe,
-        IonSelectOption, IonSelect, IonButton, IonLabel, NgIf],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-cal',
+  templateUrl: './cal.component.html',
+  styleUrls: ['./cal.component.scss'],
+  imports: [CommonModule, IonText, IonRadioGroup, IonRadio, ReactiveFormsModule, IonModal, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonIcon, IonFabButton, IonFab, AsyncPipe, DatePipe,
+    NgbDatepickerModule,
+    FormsModule,
+    IonSelectOption, IonSelect, IonButton],
+    providers: [
+      { provide: NgbCalendar, useClass: NgbCalendarHebrew },
+		{ provide: NgbDatepickerI18n, useClass: NgbDatepickerI18nHebrew },
+    ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalComponent implements AfterViewInit, OnDestroy {
+export class CalComponent implements OnDestroy {
+  model: NgbDateStruct;
+  i18n = inject(NgbDatepickerI18n);
+	calendar = inject(NgbCalendar);
+	date: { year: number; month: number };
+
   @ViewChild('dt', { static: true }) dtRef!: any;
   private mo?: MutationObserver;
 
@@ -74,9 +91,9 @@ export class CalComponent implements AfterViewInit, OnDestroy {
   highlightedDates$ = this.cal.highlightedDates$.pipe(
     map((events: EventDto[]) => events.map((event: EventDto) =>
     ({
-        ...event,
-        backgroundColor: (colors as any)[event.type] || 'transparent',
-      })
+      ...event,
+      backgroundColor: (colors as any)[event.type] || 'transparent',
+    })
     ))
   );
   public InputEventTypeEnum = InputEventType;
@@ -112,54 +129,60 @@ export class CalComponent implements AfterViewInit, OnDestroy {
   });
   // highlightedDatesFunc = this.cal.highlightedDatesFunc;
   constructor(private el: ElementRef) {
-    addIcons({ add,closeOutline });
+    addIcons({ add, closeOutline });
+    this.dayTemplateData = this.dayTemplateData.bind(this);
+
 
   }
+  public dayTemplateData(date: NgbDateStruct) {
+		return {
+			gregorian: (this.calendar as NgbCalendarHebrew).toGregorian(date as NgbDate),
+		};
+	}
+  // ngAfterViewInit() {
+  //   setTimeout(() => {
+  //     this.applyBoldToRedDays();
+  //     const root = this.dtRef.elementRef.nativeElement.shadowRoot;
+  //     if (root) {
+  //       let lastElState = {};
+  //       this.mo = new MutationObserver((el: any) => {
+  //         if (JSON.stringify(lastElState) != JSON.stringify(el)) {
+  //           lastElState = el;
+  //           this.applyBoldToRedDays()
+  //         }
+  //       });
+  //       this.mo.observe(root, { childList: true, subtree: true, attributes: true });
+  //     }
+  //   }, 0);
+  // }
+  // applyBoldToRedDays() {
+  //   const root = this.dtRef.elementRef.nativeElement.shadowRoot as ShadowRoot;
+  //   if (!root) return;
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.applyBoldToRedDays();
-      const root = this.dtRef.elementRef.nativeElement.shadowRoot;
-      if (root) {
-        let lastElState = {};
-        this.mo = new MutationObserver((el: any) => {
-          if (JSON.stringify(lastElState) != JSON.stringify(el)) {
-            lastElState = el;
-            this.applyBoldToRedDays()
-          }
-        });
-        this.mo.observe(root, { childList: true, subtree: true, attributes: true });
-      }
-    }, 0);
-  }
-  applyBoldToRedDays() {
-    const root = this.dtRef.elementRef.nativeElement.shadowRoot as ShadowRoot;
-    if (!root) return;
+  //   root.querySelectorAll<HTMLButtonElement>('button.calendar-day ion-icon').forEach(icon => icon.remove());
+  //   const days =root.querySelectorAll<HTMLButtonElement>('button.calendar-day')
+  //   days.forEach(btn => {
+  //     const backgroundColor = window.getComputedStyle(btn).backgroundColor;
+  //     const className = (colors as any)[backgroundColor];
+  //     if(className) {
+  //       //create an element with that class name to get the color
+  //       const iconEl = document.createElement('ion-icon');
+  //       iconEl.setAttribute('slot', 'icon-only');
+  //       iconEl.setAttribute('name', 'close-outline');
 
-    root.querySelectorAll<HTMLButtonElement>('button.calendar-day ion-icon').forEach(icon => icon.remove());
-    const days =root.querySelectorAll<HTMLButtonElement>('button.calendar-day')
-    days.forEach(btn => {
-      const backgroundColor = window.getComputedStyle(btn).backgroundColor;
-      const className = (colors as any)[backgroundColor];
-      if(className) {
-        //create an element with that class name to get the color
-        const iconEl = document.createElement('ion-icon');
-        iconEl.setAttribute('slot', 'icon-only');
-        iconEl.setAttribute('name', 'close-outline');
-        
-        iconEl.style.position = 'absolute';
-        iconEl.style.top = '-4px';
-        iconEl.style.left = '-3px';
-        iconEl.style.background = backgroundColor
-        iconEl.style.borderRadius = '50%';
-        iconEl.style.padding = '2px';
+  //       iconEl.style.position = 'absolute';
+  //       iconEl.style.top = '-4px';
+  //       iconEl.style.left = '-3px';
+  //       iconEl.style.background = backgroundColor
+  //       iconEl.style.borderRadius = '50%';
+  //       iconEl.style.padding = '2px';
 
-        iconEl.classList.add(className);
-        btn.appendChild(iconEl);
-      }
-    
-    });
-  }
+  //       iconEl.classList.add(className);
+  //       btn.appendChild(iconEl);
+  //     }
+
+  //   });
+  // }
   async onAddEvent() {
     console.log('onAddEvent:', this.addEventForm.value);
     const date = this.selectedDate$.getValue();

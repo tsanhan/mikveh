@@ -1,4 +1,3 @@
-
 /* This sets the CSS variables for the rose color */
 :host {
   --ion-color-rose: #831843;
@@ -70,10 +69,11 @@
 }
 
 .ion-datetime {
-position: relative;
+  position: relative;
 }
+
 ion-datetime {
-  
+
   margin: auto;
   --background: #fff1f2;
   --background-rgb: 255, 241, 242;
@@ -135,9 +135,32 @@ ion-list {
 
 // if state is mahzor, add a red asterisk after the day number
 
-ion-datetime::part(calendar-day) {
-  position: relative;
+
+
+.hebrew-day {
+  text-align: right;
+  padding: 0.25rem 0.65rem 0.25rem 0.25rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+  height: 2.75rem;
+  width: 2.75rem;
 }
 
+.hebrew-day:hover,
+.hebrew-day.focused {
+  background-color: #e6e6e6;
+}
 
+.hebrew-day.selected {
+  background-color: #007bff;
+  color: white;
+}
 
+.outside {
+  color: lightgray;
+}
+
+.gregorian-num {
+  font-size: 0.5rem;
+  direction: ltr;
+}
