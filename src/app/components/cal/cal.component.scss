@@ -139,21 +139,84 @@ ion-modal ion-toolbar {
   width: 100%;
 }
 
+// :host ::ng-deep .ngb-dp-header{
+//   background:rgb(85, 156, 227);
+// }
 ngb-datepicker {
 
   width: -webkit-fill-available;
+  background: var(--buttons);
+  border-radius: 16px;
+  box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px;
+  padding: 0.2rem;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color: #881337;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+  text-align: left;
 
   &.rtl {
     direction: rtl;
   }
 
-  & .ngb-dp-header {
-    & ngb-datepicker-navigation {
+  & ::ng-deep {
+    & .ngb-dp-header {
+      display: none;
+    }
 
-      & .ngb-dp-arrow {
-        flex: none;
+    & .ngb-dp-content {
+      & .ltr {
+        direction: ltr;
+      }
+
+      & .nav {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      & ngb-datepicker-navigation {
+        direction: ltr;
+        justify-content: space-evenly;
+
+        & .ngb-dp-arrow {
+          flex: none;
+        }
+
+        & select {
+          padding: 0 2.5rem;
+        }
+
+      }
+
+      & .ngb-dp-month,
+      .custom-month-grid {
+        width: 100%;
+
+        & ngb-datepicker-month {
+          width: 100%;
+          border: none !important;
+
+          & .ngb-dp-week {
+            justify-content: space-between;
+
+            & .ngb-dp-day {
+              height: 2.5rem;
+
+
+              & .hebrew-day {
+                border-radius: 16px;
+              }
+            }
+          }
+        }
       }
     }
+
+
+
+
   }
 
 }
@@ -161,6 +224,8 @@ ngb-datepicker {
 ngb-datepicker-navigation {
   direction: ltr;
   justify-content: space-between;
+  
+
 }
 
 .hebrew-day {

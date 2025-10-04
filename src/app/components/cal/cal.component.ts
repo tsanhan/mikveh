@@ -39,6 +39,7 @@ import {
   NgbCalendar,
   NgbCalendarHebrew,
   NgbDate,
+  NgbDatepicker,
   NgbDatepickerI18n,
   NgbDatepickerI18nHebrew,
   NgbDatepickerModule,
@@ -159,6 +160,22 @@ export class CalComponent implements OnDestroy {
       gregorian: (this.calendar as NgbCalendarHebrew).toGregorian(date as NgbDate),
     };
   }
+  onDateSelect(event: any | NgbDateStruct) {
+    console.log('onDateSelect:', event);
+  };
+  test(date: NgbDate) {
+    console.log('test called with date:', date);
+    
+  }
+  navigate(datepicker: NgbDatepicker, number: number) {
+		const { state, calendar } = datepicker;
+		datepicker.navigateTo(calendar.getNext(state.firstDate, 'm', number));
+	}
+
+	today(datepicker: NgbDatepicker) {
+		const { calendar } = datepicker;
+		datepicker.navigateTo(calendar.getToday());
+	}
   // ngAfterViewInit() {
   //   setTimeout(() => {
   //     this.applyBoldToRedDays();
