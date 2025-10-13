@@ -13,7 +13,8 @@
 
 </div>
 <ngb-datepicker class="hebrew rtl" #dp [(ngModel)]="model" [displayMonths]="1" [firstDayOfWeek]="7" [dayTemplate]="dt"
-  [dayTemplateData]="dayTemplateData" [contentTemplate]="c" (ngModelChange)="onDateSelect($event)" navigation="none" [weekdays]="'short'">
+  [dayTemplateData]="dayTemplateData" [contentTemplate]="c" (ngModelChange)="onDateSelect($event)" navigation="none"
+  [weekdays]="'short'">
 
 </ngb-datepicker>
 <ng-template #c let-dp>
@@ -22,18 +23,25 @@
     <div class="custom-month-grid">
       @for (month of dp.state.months; track month) {
       <div>
-        <div class="nav">
-          <div class="text-primary p-1 fw-bold ">{{ dp.i18n.getMonthShortName(month.month) }}
+        <div class="nav height">
+          <div class="text-dark fw-bold ">{{ dp.i18n.getMonthShortName(month.month) }}
             {{i18n.getYearNumerals(month.year)}}
           </div>
           <div class="btn-group d-flex justify-content-end mb-2 ltr" role="group">
-            <button type="button" class="btn btn-sm btn-clear-primary" (click)="navigate(dp, -1)">></button>
-            <button type="button" class="btn btn-sm btn-clear-primary" (click)="today(dp)">●</button>
-            <button type="button" class="btn btn-sm btn-clear-primary" (click)="navigate(dp, 1)"><</button>
+            <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, -1)">
+              <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+            </ion-button>
+            <!-- <button type="button" class="btn btn-sm btn-clear-primary" (click)="navigate(dp, -1)"></button> -->
+            <!-- <button type="button" class="btn btn-sm btn-clear-primary" (click)="today(dp)">●</button> -->
+            <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, 1)">
+              <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+            <!-- <button type="button" class="btn btn-sm btn-clear-primary" (click)="navigate(dp, 1)">
+              <</button> -->
           </div>
-          
+
         </div>
-        <ngb-datepicker-month class="border rounded" [month]="month" ></ngb-datepicker-month>
+        <ngb-datepicker-month class="border rounded" [month]="month"></ngb-datepicker-month>
       </div>
       }
     </div>
@@ -41,13 +49,15 @@
 </ng-template>
 <ng-template #dt let-date let-data="data" let-selected="selected" let-currentMonth="currentMonth">
   <div class="hebrew-day" [class.outside]="date.month !== currentMonth" [class.selected]="selected">
-    <div class="gregorian-num">{{ data.gregorian.day + '/' + data.gregorian.month }}</div>
+    <div class="gregorian-num">{{ data.gregorian.day + '.' + data.gregorian.month }}</div>
     <div class="hebrew-num">{{ i18n.getDayNumerals(date) }}</div>
-
+    {{test(data)}}
   </div>
 </ng-template>
 
-<pre>Model: {{ model | json }}</pre>
+<div>
+  <pre>Model: {{ model | json }}</pre>
+</div>
 
 <!-- {{selectedDateData$ | async | json}} -->
 

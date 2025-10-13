@@ -1,25 +1,31 @@
-.content{
+.content {
   display: flex;
   flex-direction: column;
   height: -webkit-fill-available;
   justify-content: flex-start;
   overflow: hidden;
 }
+
 .data {
   display: flex;
-    justify-content: center;
-    height: -webkit-fill-available;
-    align-items: stretch;
+  justify-content: center;
+  height: -webkit-fill-available;
+  align-items: stretch;
+  overflow: scroll;
 }
-.buttons{
+
+.buttons {
   display: flex;
   flex-direction: row;
   justify-content: center;
   margin: 0 0rem 0.5rem;
-  & .button{
+  overflow: hidden;
+  height: 6rem;
+
+  & .button {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0rem;
     align-items: center;
     justify-content: flex-start;
     flex: 1;
@@ -35,19 +41,21 @@
 }
 
 
-ion-button{
+ion-button {
   --background: #fff1f2 !important;
   --color: rgb(0 0 0);
   --ion-color-base: #fff1f2 !important;
-  &.active{
+
+  &.active {
     --ion-color-base: #f9d9da !important;
   }
+
   &::part(native) {
     height: auto;
   }
 
 }
 
-ion-icon{
+ion-icon {
   color: rgb(0 0 0);
 }

@@ -30,7 +30,7 @@ import { LocationService } from 'src/app/services/location.service';
 
 
 import { addIcons } from 'ionicons';
-import { add, closeOutline } from 'ionicons/icons';
+import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventDto, InputEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
@@ -47,6 +47,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 
 import * as colors from '../../../assets/data/colors.json';
+import { CustomDatepickerI18n } from 'src/app/services/CustomDatepickerI18n.service';
 
 @Component({
   selector: 'app-cal',
@@ -63,7 +64,7 @@ import * as colors from '../../../assets/data/colors.json';
     // IonTitle,
     // IonList,
     // IonItem,
-    // IonIcon,
+    IonIcon,
     // IonFabButton,
     // IonFab,
     // AsyncPipe,
@@ -72,11 +73,11 @@ import * as colors from '../../../assets/data/colors.json';
     FormsModule,
     // IonSelectOption, 
     // IonSelect,
-    //  IonButton
-    ],
+    IonButton
+  ],
   providers: [
     { provide: NgbCalendar, useClass: NgbCalendarHebrew },
-    { provide: NgbDatepickerI18n, useClass: NgbDatepickerI18nHebrew },
+    { provide: NgbDatepickerI18n, useClass: CustomDatepickerI18n },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -150,8 +151,11 @@ export class CalComponent implements OnDestroy {
   });
   // highlightedDatesFunc = this.cal.highlightedDatesFunc;
   constructor(private el: ElementRef) {
-    addIcons({ add, closeOutline });
+    addIcons({ add, closeOutline, chevronBackOutline, chevronForwardOutline });
     this.dayTemplateData = this.dayTemplateData.bind(this);
+    const today = new HDate(new Date());
+    const { dd: day, yy: year, mm } = today;
+    this.model = { year, month: (mm + 6) % 12, day };
 
 
   }
@@ -165,17 +169,17 @@ export class CalComponent implements OnDestroy {
   };
   test(date: NgbDate) {
     console.log('test called with date:', date);
-    
+
   }
   navigate(datepicker: NgbDatepicker, number: number) {
-		const { state, calendar } = datepicker;
-		datepicker.navigateTo(calendar.getNext(state.firstDate, 'm', number));
-	}
+    const { state, calendar } = datepicker;
+    datepicker.navigateTo(calendar.getNext(state.firstDate, 'm', number));
+  }
 
-	today(datepicker: NgbDatepicker) {
-		const { calendar } = datepicker;
-		datepicker.navigateTo(calendar.getToday());
-	}
+  today(datepicker: NgbDatepicker) {
+    const { calendar } = datepicker;
+    datepicker.navigateTo(calendar.getToday());
+  }
   // ngAfterViewInit() {
   //   setTimeout(() => {
   //     this.applyBoldToRedDays();
