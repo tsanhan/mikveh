@@ -6,7 +6,12 @@
   --ion-color-rose-contrast-rgb: 255, 255, 255;
   --ion-color-rose-shade: #73153b;
   --ion-color-rose-tint: #8f2f56;
+  scrollbar-width: none;
+  overflow: hidden auto;
+
 }
+
+
 
 /* This overrides the global CSS variables for both modes */
 :host.ios,
@@ -89,20 +94,6 @@ ion-datetime {
 //   color: #da5296;
 // }
 
-ion-fab-button {
-  --background: var(--ion-color-rose);
-  --background-activated: var(--ion-color-rose);
-  --background-hover: var(--ion-color-rose);
-  --border-radius: 15px;
-  --box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-  --color: white;
-}
-
-ion-fab {
-  position: absolute;
-  bottom: 0rem;
-  right: 1rem;
-}
 
 
 
@@ -147,11 +138,12 @@ ngb-datepicker {
   width: -webkit-fill-available;
   background: var(--buttons);
   border-radius: 16px;
-  box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px;
+  // box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px;
+  border-color: transparent;
   padding: 0.2rem;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  color: #881337;
+  font-family: open-sans, sans-serif;
+  color: black;
   font-size: 1rem;
   line-height: 1.5;
   font-weight: 400;
@@ -202,17 +194,20 @@ ngb-datepicker {
             justify-content: space-between;
             background-color: transparent;
             border: none;
+
             & .ngb-dp-weekday {
               text-decoration: none;
               color: #bfb5b5;
               font-style: normal;
             }
+
             & .ngb-dp-day {
               height: 2.5rem;
               width: 2.5rem;
 
               & .hebrew-day {
                 border-radius: 50%;
+                line-height: 0.8rem;
 
                 &.selected {
                   background-color: var(--selected);
@@ -265,11 +260,64 @@ ngb-datepicker-navigation {
 }
 
 .gregorian-num {
-  font-size: 0.5rem;
+  font-size: 0.7rem;
   direction: ltr;
-  font-weight: 900;
+  font-weight: 600;
 }
+
+.hebrew-num {
+  font-size: large;
+  font-weight: 100;
+}
+
 
 .height {
   height: 2rem;
+}
+
+.details {
+  margin-top: 1rem;
+  min-height: 4rem;
+  width: -webkit-fill-available;
+  background: var(--buttons);
+  border-radius: 16px;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  color: black;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+  border-color: transparent;
+
+  display: flex;
+  flex-direction: row;
+
+  & .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    & .date {
+      color: var(--soft-head);
+      font-family: 'Open Sans', sans-serif;
+
+      & .soft-head-greg {
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  & .add-btn {
+    align-items: center;
+    display: flex;
+    & ion-button {
+      
+      --background: var(--color-plus);
+      color: black;
+
+    }
+
+  }
 }

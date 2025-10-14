@@ -1,20 +1,21 @@
-<div class="ion-datetime">
+<!-- <div class="ion-datetime">
 
-  <!-- <ion-datetime #dt color="rose" [style]="{direction: 'ltr'}" locale="he-IL" presentation="date"
+  <ion-datetime #dt color="rose" [style]="{direction: 'ltr'}" locale="he-IL" presentation="date"
     (ionChange)="onDateChange($event)" [value]="israelTime" [highlightedDates]="highlightedDates$ | async">
-  </ion-datetime> -->
+  </ion-datetime>
 
-  <!-- 
+  
   <ion-fab>
     <ion-fab-button size="small" id="open-add-event-modal">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
-  </ion-fab> -->
+  </ion-fab>
 
-</div>
-<ngb-datepicker class="hebrew rtl" #dp [(ngModel)]="model" [displayMonths]="1" [firstDayOfWeek]="7" [dayTemplate]="dt"
-  [dayTemplateData]="dayTemplateData" [contentTemplate]="c" (ngModelChange)="onDateSelect($event)" navigation="none"
-  [weekdays]="'short'">
+</div> -->
+
+<ngb-datepicker class="hebrew rtl" #dp [ngModel]="selectedHebDate$ | async" [displayMonths]="1" [firstDayOfWeek]="7"
+  [dayTemplate]="dt" [dayTemplateData]="dayTemplateData" [contentTemplate]="c" (ngModelChange)="onDateSelect($event)"
+  navigation="none" [weekdays]="'short'">
 
 </ngb-datepicker>
 <ng-template #c let-dp>
@@ -51,12 +52,32 @@
   <div class="hebrew-day" [class.outside]="date.month !== currentMonth" [class.selected]="selected">
     <div class="gregorian-num">{{ data.gregorian.day + '.' + data.gregorian.month }}</div>
     <div class="hebrew-num">{{ i18n.getDayNumerals(date) }}</div>
-    {{test(data)}}
+    <!-- {{test(data)}} -->
   </div>
 </ng-template>
 
+<div class="details">
+  <div class="content">
+    <div class="date">
+      <span class="soft-head-heb">
+        {{ selectedHDateHeb$ | async }}
+      </span>
+      <span class="soft-head-greg">
+        {{ selectedGregDate$ | async }}
+      </span>
+    </div>
+    <div class="text">
+      loram ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
+    </div>
+  </div>
+  <div class="add-btn">
+    <ion-button shape="round">
+      <ion-icon slot="icon-only" name="add"></ion-icon>
+    </ion-button>
+  </div>
+</div>
 <div>
-  <pre>Model: {{ model | json }}</pre>
+  <pre>Model: {{ selectedHebDate$ | async | json }}</pre>
 </div>
 
 <!-- {{selectedDateData$ | async | json}} -->

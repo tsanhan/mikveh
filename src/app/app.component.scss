@@ -38,3 +38,12 @@ ion-content {
 
   --padding-top: 0;
 }
+
+ion-content::part(scroll) {
+  /* This is the actual scroll container */
+  scrollbar-width: none; /* Firefox — hide scrollbar */
+}
+
+ion-content::part(scroll)::-webkit-scrollbar {
+  display: none; /* WebKit browsers */
+}

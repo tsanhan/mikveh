@@ -41,7 +41,6 @@ import {
   NgbDate,
   NgbDatepicker,
   NgbDatepickerI18n,
-  NgbDatepickerI18nHebrew,
   NgbDatepickerModule,
   NgbDateStruct,
 } from '@ng-bootstrap/ng-bootstrap';
@@ -82,7 +81,12 @@ import { CustomDatepickerI18n } from 'src/app/services/CustomDatepickerI18n.serv
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalComponent implements OnDestroy {
-  model: NgbDateStruct;
+  nowHDate = new HDate(new Date());
+  selectedHebDate$ = new BehaviorSubject<NgbDateStruct>({
+    year: this.nowHDate.yy,
+    month: (this.nowHDate.mm + 6) % 12,
+    day: this.nowHDate.dd,
+  });
   i18n = inject(NgbDatepickerI18n);
   calendar = inject(NgbCalendar);
   date: { year: number; month: number };
@@ -95,7 +99,7 @@ export class CalComponent implements OnDestroy {
   loc = inject(LocationService);
   modalCtrl = inject(ModalController);
   approach = inject(ApproachService);
-
+  
   fb = inject(FormBuilder)
   israelTime = this.events.localISOString(new Date());
   approach$ = this.approach.approach$.pipe(share());
@@ -105,10 +109,31 @@ export class CalComponent implements OnDestroy {
     map(([location, date]) => this.events.locationToSunsetTime(location, date))
   )
 
-  selectedHDateHeb$: Observable<string> = this.selectedDate$.pipe(
-    map((date: Date) => simpleDateToHebrew(date)),
+  // selectedHDateHeb$: Observable<string> = this.selectedDate$.pipe(
+  //   map((date: Date) => simpleDateToHebrew(date)),
+  //   map((date: HDate) => hebDateToHebrew(date))
+  // );
+  selectedDateHDate$: Observable<HDate> = this.selectedHebDate$.pipe(
+    map((heb: NgbDateStruct) => new HDate(heb.day, (heb.month + 6) % 12, heb.year))
+  )
+  selectedHDateHeb$: Observable<string> = this.selectedDateHDate$.pipe(
     map((date: HDate) => hebDateToHebrew(date))
   );
+
+  selectedGregDate$: Observable<string> = this.selectedDateHDate$.pipe(
+    map((date: HDate) => date.greg()),
+    // map tp format dd.mm.yyyy
+    map((date: Date) => {
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      return `${day.toString().padStart(2, '0')}.${month.toString().padStart(2, '0')}.${year}`;
+    }
+    )
+  );
+
+  
+
 
   highlightedDates$ = this.cal.highlightedDates$.pipe(
     map((events: EventDto[]) => events.map((event: EventDto) =>
@@ -153,11 +178,6 @@ export class CalComponent implements OnDestroy {
   constructor(private el: ElementRef) {
     addIcons({ add, closeOutline, chevronBackOutline, chevronForwardOutline });
     this.dayTemplateData = this.dayTemplateData.bind(this);
-    const today = new HDate(new Date());
-    const { dd: day, yy: year, mm } = today;
-    this.model = { year, month: (mm + 6) % 12, day };
-
-
   }
   public dayTemplateData(date: NgbDateStruct) {
     return {
@@ -165,8 +185,10 @@ export class CalComponent implements OnDestroy {
     };
   }
   onDateSelect(event: any | NgbDateStruct) {
-    console.log('onDateSelect:', event);
+    console.trace('onDateSelect:', event);
+    this.selectedHebDate$.next(event as NgbDateStruct);
   };
+
   test(date: NgbDate) {
     console.log('test called with date:', date);
 
