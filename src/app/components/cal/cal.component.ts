@@ -5,6 +5,8 @@ import {
   ElementRef,
   inject,
   OnDestroy,
+  signal,
+  Signal,
   ViewChild,
 } from '@angular/core';
 import { IonDatetime, AlertOptions, ModalController, IonButton, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonTitle, IonToolbar, IonContent, IonModal, IonSelectOption, IonSelect, IonRadio, IonRadioGroup, IonText } from '@ionic/angular/standalone';
@@ -81,6 +83,7 @@ import { CustomDatepickerI18n } from 'src/app/services/CustomDatepickerI18n.serv
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalComponent implements OnDestroy {
+  showEventModal = signal(false);
   nowHDate = new HDate(new Date());
   selectedHebDate$ = new BehaviorSubject<NgbDateStruct>({
     year: this.nowHDate.yy,

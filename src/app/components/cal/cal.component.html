@@ -13,11 +13,16 @@
 
 </div> -->
 
-<ngb-datepicker class="hebrew rtl" #dp [ngModel]="selectedHebDate$ | async" [displayMonths]="1" [firstDayOfWeek]="7"
+@if(!showEventModal()){
+  <ngb-datepicker class="hebrew rtl" #dp [ngModel]="selectedHebDate$ | async" [displayMonths]="1" [firstDayOfWeek]="7"
   [dayTemplate]="dt" [dayTemplateData]="dayTemplateData" [contentTemplate]="c" (ngModelChange)="onDateSelect($event)"
   navigation="none" [weekdays]="'short'">
 
 </ngb-datepicker>
+} @else {
+  
+}
+
 <ng-template #c let-dp>
   <div class="p-2">
 
@@ -71,13 +76,13 @@
     </div>
   </div>
   <div class="add-btn">
-    <ion-button shape="round">
+    <ion-button shape="round" (click)="showEventModal.set(true)">
       <ion-icon slot="icon-only" name="add"></ion-icon>
     </ion-button>
   </div>
 </div>
 <div>
-  <pre>Model: {{ selectedHebDate$ | async | json }}</pre>
+  <pre>Model: {{ showEventModal()}}</pre>
 </div>
 
 <!-- {{selectedDateData$ | async | json}} -->
