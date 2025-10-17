@@ -1,0 +1,88 @@
+:host {
+    margin-top: 1rem;
+    min-height: 4rem;
+    width: -webkit-fill-available;
+    background: var(--buttons);
+    border-radius: 16px;
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+    color: black;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 400;
+    border-color: transparent;
+
+    display: flex;
+    flex-direction: column;
+
+    & .headline {
+        margin-bottom: 0.5rem;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    & .buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+
+        & ion-chip {
+            --background: var(--color-plus);
+            color: black;
+
+        }
+    }
+}
+
+ion-radio-group ::ng-deep {
+    width: 100%;
+
+    & .radio-group-wrapper {
+        display: flex;
+        width: 100%;
+        gap: 0.4rem;
+        justify-content: flex-start;
+
+        & .label-text-wrapper {}
+
+        & .native-wrapper {
+            display: none;
+        }
+    }
+
+    & ion-radio {
+        background: var(--color-plus);
+        padding: 0px 0.5rem 1px 0.5rem;
+        border-radius: 4rem;
+
+        &.icon {
+            padding: 0;
+                height: 1.6rem;
+                
+        }
+
+        &.radio-checked {
+            background: var(--app);
+        }
+
+        & ion-button {
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+
+
+    }
+}
+
+ion-radio::part(container) {
+    display: none;
+}
+
+ion-radio::part(label) {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    color: black;
+    margin-inline: 0;
+}

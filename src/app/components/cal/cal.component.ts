@@ -49,32 +49,19 @@ import {
 
 import * as colors from '../../../assets/data/colors.json';
 import { CustomDatepickerI18n } from 'src/app/services/CustomDatepickerI18n.service';
+import { CalAddEventComponent } from '../cal-add-event/cal-add-event.component';
 
 @Component({
   selector: 'app-cal',
   templateUrl: './cal.component.html',
   styleUrls: ['./cal.component.scss'],
   imports: [CommonModule,
-    // IonText,
-    // IonRadioGroup,
-    // IonRadio,
     ReactiveFormsModule,
-    // IonModal,
-    // IonContent,
-    // IonToolbar,
-    // IonTitle,
-    // IonList,
-    // IonItem,
     IonIcon,
-    // IonFabButton,
-    // IonFab,
-    // AsyncPipe,
-    // DatePipe,
     NgbDatepickerModule,
     FormsModule,
-    // IonSelectOption, 
-    // IonSelect,
-    IonButton
+    IonButton,
+    CalAddEventComponent
   ],
   providers: [
     { provide: NgbCalendar, useClass: NgbCalendarHebrew },
