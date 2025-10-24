@@ -24,12 +24,28 @@
     & .buttons {
         display: flex;
         flex-direction: row;
-        gap: 0.5rem;
-
+        gap: 0.2rem;
+        justify-content: flex-end;
+        
         & ion-chip {
             --background: var(--color-plus);
             color: black;
 
+        }
+
+        & .cancel-btn {
+            --background: var(--app);
+            --border-color: var(--app);
+            color: black;
+        }
+        & .save-btn {
+            --background: var(--color-plus);
+            color: black;
+            box-shadow: none;
+        }
+
+        & ion-button::part(native) {
+            box-shadow: none;
         }
     }
 }
@@ -82,7 +98,9 @@ ion-radio::part(container) {
 
 ion-radio::part(label) {
     font-family: 'Open Sans', sans-serif;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: black;
     margin-inline: 0;
+    padding: 3px 0px;
+    
 }

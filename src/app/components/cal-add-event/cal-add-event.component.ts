@@ -1,7 +1,7 @@
 import { addIcons } from 'ionicons';
 import { IonButton, IonIcon, IonChip, IonRadioGroup, IonRadio, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit } from '@angular/core';
-import { heart, heartOutline, logoApple, pencilOutline } from 'ionicons/icons';
+import { Component, EventEmitter, OnInit, Output, output } from '@angular/core';
+import { heart, heartOutline, logoApple, pencilOutline, add } from 'ionicons/icons';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { featherEdit3 } from '@ng-icons/feather-icons';
 
@@ -18,12 +18,20 @@ import { featherEdit3 } from '@ng-icons/feather-icons';
 
 })
 export class CalAddEventComponent  implements OnInit {
-  
+  @Output('onClose') closeAddEvent = new EventEmitter();
   constructor() { 
     addIcons({ logoApple, pencilOutline,heart, featherEdit3  });
 
   }
 
   ngOnInit() {}
+
+  cancelAddEvent() {
+    this.closeAddEvent.emit();
+  }
+
+  addEvent() {
+    this.closeAddEvent.emit();
+  }
 
 }

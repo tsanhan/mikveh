@@ -8,11 +8,13 @@
     <ion-radio value="TVILA">טבילה</ion-radio>
     <ion-radio value="HEARA" class="icon">
       <ion-button shape="round" size="small" fill="clear">
-        
-
         <ion-icon slot="icon-only" src="assets/icon/edit-3.svg">.</ion-icon>
       </ion-button>
     </ion-radio>
   </ion-radio-group>
+</div>
+<div class="buttons">
+  <ion-button class="cancel-btn" size="small" expand="block" shape="round" fill="outline" (click)="cancelAddEvent()">ביטול</ion-button>
+  <ion-button class="save-btn" size="small" expand="block" shape="round" (click)="addEvent()">שמירה</ion-button>
 </div>
 <!-- <ng-icon name="edit-3" >.</ng-icon> -->
