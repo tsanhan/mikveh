@@ -20,7 +20,7 @@
 
 </ngb-datepicker>
 } @else {
-  <app-cal-add-event (onClose)="showEventModal.set(false)"></app-cal-add-event>
+  <app-cal-add-event [hdate]=" selectedDateHDate$ | async" (onClose)="showEventModal.set(false)"></app-cal-add-event>
 }
 
 <ng-template #c let-dp>
@@ -76,7 +76,7 @@
     </div>
   </div>
   <div class="add-btn">
-    <ion-button shape="round" (click)="showEventModal.set(true)">
+    <ion-button shape="round" (click)="showAddEvent()">
       <ion-icon slot="icon-only" name="add"></ion-icon>
     </ion-button>
   </div>

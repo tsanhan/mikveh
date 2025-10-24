@@ -98,7 +98,7 @@ export class CalComponent implements OnDestroy {
   sunsetForDate$ = combineLatest([this.loc.closestCity$, this.selectedDate$]).pipe(
     map(([location, date]) => this.events.locationToSunsetTime(location, date))
   )
-
+  
   // selectedHDateHeb$: Observable<string> = this.selectedDate$.pipe(
   //   map((date: Date) => simpleDateToHebrew(date)),
   //   map((date: HDate) => hebDateToHebrew(date))
@@ -121,9 +121,6 @@ export class CalComponent implements OnDestroy {
     }
     )
   );
-
-  
-
 
   highlightedDates$ = this.cal.highlightedDates$.pipe(
     map((events: EventDto[]) => events.map((event: EventDto) =>
@@ -169,20 +166,22 @@ export class CalComponent implements OnDestroy {
     addIcons({ add, closeOutline, chevronBackOutline, chevronForwardOutline });
     this.dayTemplateData = this.dayTemplateData.bind(this);
   }
+  
   public dayTemplateData(date: NgbDateStruct) {
     return {
       gregorian: (this.calendar as NgbCalendarHebrew).toGregorian(date as NgbDate),
     };
   }
+
   onDateSelect(event: any | NgbDateStruct) {
     console.trace('onDateSelect:', event);
     this.selectedHebDate$.next(event as NgbDateStruct);
   };
 
-  test(date: NgbDate) {
-    console.log('test called with date:', date);
-
+  showAddEvent() {
+    this.showEventModal.set(true)
   }
+
   navigate(datepicker: NgbDatepicker, number: number) {
     const { state, calendar } = datepicker;
     datepicker.navigateTo(calendar.getNext(state.firstDate, 'm', number));
@@ -252,7 +251,6 @@ export class CalComponent implements OnDestroy {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value.split('T')[0] + 'T12:00:00'); // noon to avoid timezone issues
     this.selectedDate$.next(date);
-
   }
 
 

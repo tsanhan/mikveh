@@ -2,19 +2,71 @@
   הוספה
 </div>
 <div class="buttons">
-  <ion-radio-group value="HEFSEK_TAHARA" class="d-flex flex-row gap-2">
-    <ion-radio value="REIYA">ראיה</ion-radio>
-    <ion-radio value="HEFSEK_TAHARA">הפסק טהרה</ion-radio>
-    <ion-radio value="TVILA">טבילה</ion-radio>
+  <ion-radio-group [formControl]="eventTypeFC" [value]="InputEventTypeEnum.REIYA" class="d-flex flex-row gap-2">
+    <ion-radio [value]="InputEventTypeEnum.REIYA">ראייה</ion-radio>
+    <ion-radio [value]="InputEventTypeEnum.HEFSEK_TAHARA">הפסק טהרה</ion-radio>
+    <!-- <ion-radio value="TVILA">טבילה</ion-radio> -->
+    <!-- 
     <ion-radio value="HEARA" class="icon">
       <ion-button shape="round" size="small" fill="clear">
         <ion-icon slot="icon-only" src="assets/icon/edit-3.svg">.</ion-icon>
       </ion-button>
-    </ion-radio>
+    </ion-radio> 
+    -->
   </ion-radio-group>
 </div>
+<div class="text">
+  @switch (eventTypeFC.value) {
+    @case (InputEventTypeEnum.REIYA) {
+    <div>
+      בחרי את סוג הראיה
+    </div>
+    }
+    @case (InputEventTypeEnum.HEFSEK_TAHARA) {
+      הפסק טהרה - סימנים שהטומאה הסתיימה
+    }
+  }
+</div>
+@switch (eventTypeFC.value) {
+  @case (InputEventTypeEnum.REIYA) {
+  <div class="buttons">
+    <ion-radio-group [formControl]="eventSpecificTypeFC" [value]="InputSpecificEventTypeEnum.VESET" class="d-flex flex-row gap-2">
+      <ion-radio [value]="InputSpecificEventTypeEnum.VESET">ווסט</ion-radio>
+      <ion-radio [value]="InputSpecificEventTypeEnum.KETEM_TAME">כתם טמא</ion-radio>
+      <ion-radio [value]="InputSpecificEventTypeEnum.BDIKA_TMEA">בדיקה טמאה</ion-radio>
+    </ion-radio-group>
+  </div>
+  }
+}
+<div class="text">
+  @switch (eventTypeFC.value) {
+    @case (InputEventTypeEnum.REIYA) {
+    <div>
+      בחרי את עונת הראיה
+    </div>
+    <div class="subtitle">
+      <span>זמני</span>
+      {{hdate ? hdate.toString() : ''}}
+    </div>
+    }
+  }
+</div>
+@switch (eventTypeFC.value) {
+  @case (InputEventTypeEnum.REIYA) {
+  <div class="buttons">
+    <ion-radio-group [formControl]="eventOnaFC" [value]="InputEventOnaEnum.YOM" class="d-flex flex-row gap-2">
+      <ion-radio [value]="InputEventOnaEnum.YOM">יום</ion-radio>
+      <ion-radio [value]="InputEventOnaEnum.LAYLA">לילה</ion-radio>
+    </ion-radio-group>
+  </div>
+  }
+}
 <div class="buttons">
-  <ion-button class="cancel-btn" size="small" expand="block" shape="round" fill="outline" (click)="cancelAddEvent()">ביטול</ion-button>
-  <ion-button class="save-btn" size="small" expand="block" shape="round" (click)="addEvent()">שמירה</ion-button>
+  <ion-button class="cancel-btn" size="small" expand="block" shape="round" fill="outline"
+    (click)="cancelAddEvent()">ביטול</ion-button>
+  <ion-button class="save-btn" size="small" expand="block" shape="round" (click)="addEvent()">
+    <ion-icon name="checkmark-outline"></ion-icon>
+    הוספה
+  </ion-button>
 </div>
 <!-- <ng-icon name="edit-3" >.</ng-icon> -->

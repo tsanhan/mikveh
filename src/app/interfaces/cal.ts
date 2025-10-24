@@ -7,11 +7,23 @@ export interface CachedCalEvent {
   afterSunset: boolean;
 }
 
+export enum InputEventOna {
+  YOM = 'yom',
+  LAYLA = 'layla'
+}
+
 export enum InputEventType {
   SEE_BLOOD = 'seeBlood',
   HEFSEK_TAHARA = 'hefsekTahara',
-  KETEM = 'ketem',
+  REIYA = 'reiya',
 }
+
+export enum InputSpecificEventType {
+  KETEM_TAME = 'ketemTame',
+  BDIKA_TMEA = 'bdikaTmea',
+  VESET = 'veset',
+}
+
 
 export enum DayType {
   MAHZOR = 'mahzor',
