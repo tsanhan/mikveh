@@ -14,13 +14,13 @@
 </div> -->
 
 @if(!showEventModal()){
-  <ngb-datepicker class="hebrew rtl" #dp [ngModel]="selectedHebDate$ | async" [displayMonths]="1" [firstDayOfWeek]="7"
+<ngb-datepicker class="hebrew rtl" #dp [ngModel]="selectedHebDate$ | async" [displayMonths]="1" [firstDayOfWeek]="7"
   [dayTemplate]="dt" [dayTemplateData]="dayTemplateData" [contentTemplate]="c" (ngModelChange)="onDateSelect($event)"
   navigation="none" [weekdays]="'short'">
 
 </ngb-datepicker>
 } @else {
-  <app-cal-add-event [hdate]=" selectedDateHDate$ | async" (onClose)="showEventModal.set(false)"></app-cal-add-event>
+<app-cal-add-event [selectedHDateHeb]="selectedHDateHeb$| async" [hdate]=" selectedDateHDate$ | async" (onClose)="showEventModal.set(false)"></app-cal-add-event>
 }
 
 <ng-template #c let-dp>

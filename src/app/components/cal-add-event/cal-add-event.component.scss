@@ -49,6 +49,12 @@
             box-shadow: none;
         }
     }
+
+    & .text {
+        & .subtitle {
+            font-size: small;
+        }
+    }
 }
 
 ion-radio-group ::ng-deep {

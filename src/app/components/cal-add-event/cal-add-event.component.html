@@ -45,8 +45,10 @@
       בחרי את עונת הראיה
     </div>
     <div class="subtitle">
-      <span>זמני</span>
-      {{hdate ? hdate.toString() : ''}}
+      <span>זמני
+        {{selectedHDateHeb}}:
+      </span>
+      <span>זריחה: {{sunriseByDate$ | async }} שקיעה: {{sunsetByDate$ | async }}</span>
     </div>
     }
   }

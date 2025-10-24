@@ -77,6 +77,29 @@ export class EventsService {
     map((zmanim) => getDayString(zmanim)),
   );
 
+  sunriseByDate = (date: Date): Observable<string> => {
+    return this.location.closestCity$.pipe(
+      map((loc: Location) => {
+        const sr = new Zmanim(loc, date, true).sunrise();
+        const hour = sr.getHours(); // Get the hour
+        const minutes = sr.getMinutes().toString().padStart(2, '0');
+        const formattedTime = `${hour}:${minutes}`;
+        return formattedTime;
+      })
+    );
+  }
+
+  sunsetByDate = (date: Date): Observable<string> => {
+    return this.location.closestCity$.pipe(
+      map((loc: Location) => {
+        const ss = new Zmanim(loc, date, true).sunset();
+        const hour = ss.getHours(); // Get the hour
+        const minutes = ss.getMinutes().toString().padStart(2, '0');
+        const formattedTime = `${hour}:${minutes}`;
+        return formattedTime;
+      })
+    );
+  }
 
   sunriseDate$ = this.location.closestCity$.pipe(
     map((loc: Location) => {
