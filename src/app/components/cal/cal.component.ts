@@ -34,9 +34,9 @@ import { LocationService } from 'src/app/services/location.service';
 import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EventDto, InputEventType } from 'src/app/interfaces/cal';
+import { EventDto, InputEvent, InputEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
-import { hebDateToHebrew, simpleDateToHebrew } from 'src/app/utils/date.util';
+import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate, simpleDateToHebrew } from 'src/app/utils/date.util';
 import {
   NgbCalendar,
   NgbCalendarHebrew,
@@ -72,11 +72,7 @@ import { CalAddEventComponent } from '../cal-add-event/cal-add-event.component';
 export class CalComponent implements OnDestroy {
   showEventModal = signal(false);
   nowHDate = new HDate(new Date());
-  selectedHebDate$ = new BehaviorSubject<NgbDateStruct>({
-    year: this.nowHDate.yy,
-    month: (this.nowHDate.mm + 6) % 12,
-    day: this.nowHDate.dd,
-  });
+  selectedHebDate$ = new BehaviorSubject<NgbDateStruct>(HDateToNgbDateStruct(this.nowHDate));
   i18n = inject(NgbDatepickerI18n);
   calendar = inject(NgbCalendar);
   date: { year: number; month: number };
@@ -104,7 +100,7 @@ export class CalComponent implements OnDestroy {
   //   map((date: HDate) => hebDateToHebrew(date))
   // );
   selectedDateHDate$: Observable<HDate> = this.selectedHebDate$.pipe(
-    map((heb: NgbDateStruct) => new HDate(heb.day, (heb.month + 6) % 12, heb.year))
+    map((heb: NgbDateStruct) => NgbDateStructToHDate(heb))
   )
   selectedHDateHeb$: Observable<string> = this.selectedDateHDate$.pipe(
     map((date: HDate) => hebDateToHebrew(date))
@@ -258,6 +254,9 @@ export class CalComponent implements OnDestroy {
 
   }
 
+  onCloseCalAddEvent(event: InputEvent | null) {
+    this.showEventModal.set(false);
+  }
   generateAlertOptions(): AlertOptions {
     return {
       header: 'Custom Alert',

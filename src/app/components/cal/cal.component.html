@@ -20,7 +20,7 @@
 
 </ngb-datepicker>
 } @else {
-<app-cal-add-event [selectedHDateHeb]="selectedHDateHeb$| async" [hdate]=" selectedDateHDate$ | async" (onClose)="showEventModal.set(false)"></app-cal-add-event>
+<app-cal-add-event [selectedHDateHeb]="selectedHDateHeb$| async" [hdate]=" selectedDateHDate$ | async" (onClose)="onCloseCalAddEvent($event)"></app-cal-add-event>
 }
 
 <ng-template #c let-dp>

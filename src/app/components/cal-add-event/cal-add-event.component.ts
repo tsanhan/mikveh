@@ -5,10 +5,12 @@ import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular
 import { heart, logoApple, pencilOutline, checkmarkOutline } from 'ionicons/icons';
 import { provideIcons } from '@ng-icons/core';
 import { featherEdit3 } from '@ng-icons/feather-icons';
-import { InputEventOna, InputEventType, InputSpecificEventType } from 'src/app/interfaces/cal';
+import { InputEvent, InputEventOna, InputEventType, InputSpecificEventType } from 'src/app/interfaces/cal';
 import { HDate } from '@hebcal/core';
 import { EventsService } from 'src/app/services/events.service';
 import { AsyncPipe } from '@angular/common';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { HDateToNgbDateStruct, NgbDateStructToHDate } from 'src/app/utils/date.util';
 
 @Component({
   selector: 'app-cal-add-event',
@@ -24,7 +26,7 @@ import { AsyncPipe } from '@angular/common';
   viewProviders: [provideIcons({ featherEdit3 })]
 })
 export class CalAddEventComponent  implements OnInit {
-  @Output('onClose') closeAddEvent = new EventEmitter();
+  @Output('onClose') closeAddEvent = new EventEmitter<InputEvent |null>();
   @Input('hdate') hdate?: HDate | null;
   @Input('selectedHDateHeb') selectedHDateHeb?: string | null;
 
@@ -56,7 +58,14 @@ export class CalAddEventComponent  implements OnInit {
   }
 
   addEvent() {
-    this.closeAddEvent.emit();
+    const date = HDateToNgbDateStruct(this.hdate as HDate);
+    const eventToEmit: InputEvent = {
+      date,
+      type: this.eventTypeFC.value,
+      ona: this.eventOnaFC.value,
+      specificType: this.eventSpecificTypeFC.value,
+    };
+    this.closeAddEvent.emit(eventToEmit);
   }
 
 }

@@ -1,5 +1,6 @@
 import { HDate, HebrewDateEvent, Location, Zmanim } from "@hebcal/core";
 import days from '../../assets/data/days.json';
+import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * 
@@ -127,3 +128,38 @@ export function getDateParam(hDateSunsetAwareString: string): string {
     const date = newDate.toISOString().split('T')[0];
     return date;
 }
+
+/**
+ * 
+ * @param heb NgbDateStruct with hebrew date
+ * @returns HDate object
+ * @example
+ * ```ts
+ * const heb: NgbDateStruct = { day: 10, month: 1, year: 5785 };
+ * const hDate = NgbDateStructToHDate(heb);
+ * console.log(hDate); // Outputs: HDate { day: 10, mm: 7, year: 5785 }
+ * ```
+ */
+export function NgbDateStructToHDate(heb: NgbDateStruct): HDate {
+    return new HDate(heb.day, (heb.month + 6) % 12, heb.year);
+}
+
+/**
+ * 
+ * @param heb HDate object
+ * @returns NgbDateStruct with hebrew date
+ * @example
+ * ```ts
+ * const hDate = new HDate(10, 7, 5785);
+ * const heb = HDateToNgbDateStruct(hDate);
+ * console.log(heb); // Outputs: { day: 10, month: 1, year: 5785 }
+ * ```
+ */
+export function HDateToNgbDateStruct(heb: HDate): NgbDateStruct {
+    return {
+        day: heb.getDate(),
+        month: (heb.getMonth() + 6) % 12,
+        year: heb.getFullYear(),
+    };
+}
+
