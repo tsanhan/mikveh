@@ -48,7 +48,7 @@
       <span>זמני
         {{selectedHDateHeb}}:
       </span>
-      <span>זריחה: {{sunriseByDate$ | async }} שקיעה: {{sunsetByDate$ | async }}</span>
+      <span>זריחה: {{sunriseByDate(hdate) | async }} שקיעה: {{sunsetByDate(hdate) | async }}</span>
     </div>
     }
   }

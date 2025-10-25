@@ -27,7 +27,7 @@ import { HDateToNgbDateStruct, NgbDateStructToHDate } from 'src/app/utils/date.u
 })
 export class CalAddEventComponent  implements OnInit {
   @Output('onClose') closeAddEvent = new EventEmitter<InputEvent |null>();
-  @Input('hdate') hdate?: HDate | null;
+  @Input('hdate') hdate!: HDate;
   @Input('selectedHDateHeb') selectedHDateHeb?: string | null;
 
   public InputEventTypeEnum = InputEventType;
@@ -38,9 +38,10 @@ export class CalAddEventComponent  implements OnInit {
   eventSpecificTypeFC: FormControl = new FormControl<InputSpecificEventType>(InputSpecificEventType.VESET, { nonNullable: true });
   eventOnaFC: FormControl = new FormControl<InputEventOna>(InputEventOna.YOM, { nonNullable: true });
 
+  
   events = inject(EventsService);
-  sunriseByDate$ = this.events.sunriseByDate(this.hdate?.greg() as Date);
-  sunsetByDate$ = this.events.sunsetByDate(this.hdate?.greg() as Date);
+  sunriseByDate = (hdate: HDate) => this.events.sunriseByDate(hdate.greg() as Date);
+  sunsetByDate = (hdate: HDate) => this.events.sunsetByDate(hdate?.greg() as Date);
 
   constructor() { 
     addIcons({ logoApple, pencilOutline,heart, featherEdit3, checkmarkOutline  });

@@ -102,6 +102,7 @@ export class CalComponent implements OnDestroy {
   selectedDateHDate$: Observable<HDate> = this.selectedHebDate$.pipe(
     map((heb: NgbDateStruct) => NgbDateStructToHDate(heb))
   )
+  
   selectedHDateHeb$: Observable<string> = this.selectedDateHDate$.pipe(
     map((date: HDate) => hebDateToHebrew(date))
   );
