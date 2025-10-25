@@ -51,6 +51,7 @@ export class CalAddEventComponent  implements OnInit {
   }
 
   cancelAddEvent() {
+    
     this.closeAddEvent.emit();
   }
 

@@ -1,20 +1,20 @@
 import { inject, Injectable } from '@angular/core';
-import { Storage,  } from '@ionic/storage-angular';
+import { Storage, } from '@ionic/storage-angular';
 import locations from '../../assets/data/locations.json';
 import topicsJson from '../../assets/data/topics.json';
 import { Location } from '../interfaces/locations';
 import { IMikveh } from '../interfaces/mikveh.interface';
 import { BehaviorSubject, map, Observable, shareReplay, tap } from 'rxjs';
 import { ApproachService } from './approach.service';
-import { CachedCalEvent } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, InputEvent } from '../interfaces/cal';
 import { Approach } from '../interfaces/approaches';
-
+import { get, set } from 'lodash';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CacheService {
-  storage =  inject(Storage)
+  storage = inject(Storage)
   mikvehStorage = inject(Storage)
   calEventsStorage = inject(Storage)
 
@@ -22,21 +22,25 @@ export class CacheService {
 
   private _storage: Storage = new Storage();
   private _mikvehStorage: Storage = new Storage();
-  
+
   //#region Mikveh
-  
+
   //#region calEvents
   private _calEventsStorage: Storage = new Storage();
   private _calEvents$ = new BehaviorSubject<CachedCalEvent[]>([]);
+  private _inputEvents$ = new BehaviorSubject<CachedInputEvent>({});
+
   public calEvents$ = this._calEvents$.asObservable().pipe(
-    map(events => events.sort((a,b) => new Date(b.gregorianDateString).getTime() - new Date(a.gregorianDateString).getTime())),
+    map(events => events.sort((a, b) => new Date(b.gregorianDateString).getTime() - new Date(a.gregorianDateString).getTime())),
     shareReplay(1)
   );
-  
+
+  public inputEvents$ = this._inputEvents$.asObservable();
+
   //#endregion
 
   //#region Location
-  private locations$:BehaviorSubject<any>;
+  private locations$: BehaviorSubject<any>;
   private _location$: BehaviorSubject<Location>;
   public location$: Observable<Location>;
   //#endregion
@@ -61,8 +65,8 @@ export class CacheService {
   constructor() {
     console.log(this._topics$.getValue());
     this.locations$ = new BehaviorSubject(locations);
-    this._location$= new BehaviorSubject<Location>(this.locations$.getValue()['Jerusalem']);
-    this.location$= this._location$.asObservable();
+    this._location$ = new BehaviorSubject<Location>(this.locations$.getValue()['Jerusalem']);
+    this.location$ = this._location$.asObservable();
 
 
     this.init();
@@ -75,24 +79,31 @@ export class CacheService {
 
 
     const loc = await this._storage.get('location');
-    if(!loc) {
-      await this._storage.set('location', {...this._location$.getValue()});
+    if (!loc) {
+      await this._storage.set('location', { ...this._location$.getValue() });
     } else {
       this._location$.next(loc);
     }
 
     const app = await this._storage.get('approach');
-    if(!app) {
-      await this._storage.set('approach', {...this.approach.approach$.getValue()});
+    if (!app) {
+      await this._storage.set('approach', { ...this.approach.approach$.getValue() });
     } else {
       this.approach.approach$.next(app);
     }
 
     const calEvents = await this._calEventsStorage.get('calEvents');
-    if(!calEvents) {
+    if (!calEvents) {
       await this._calEventsStorage.set('calEvents', []);
     } else {
       this._calEvents$.next(calEvents);
+    }
+
+    const inputEvents = await this._calEventsStorage.get('inputEvents');
+    if (!inputEvents) {
+      await this._calEventsStorage.set('inputEvents', {});
+    } else {
+      this._inputEvents$.next(inputEvents);
     }
 
     // const dm = await this._storage.get('darkMode');
@@ -112,7 +123,7 @@ export class CacheService {
 
   public setApproach(key: string) {
     const approach = this.approach.approaches$.getValue()[key];
-    this.approach.approach$.next({...approach});
+    this.approach.approach$.next({ ...approach });
     this._storage.set('approach', approach);
   }
 
@@ -123,13 +134,13 @@ export class CacheService {
   public setDarkMode(darkMode: boolean) {
     this._darkMode$.next(darkMode);
     this._storage.set('darkMode', darkMode);
-    document.body.classList[darkMode ? 'add':'remove']('dark');
+    document.body.classList[darkMode ? 'add' : 'remove']('dark');
   }
 
-  public storeMikvehResults(data:IMikveh[]) {
+  public storeMikvehResults(data: IMikveh[]) {
     this._mikvehStorage.set('mikvehs', data);
   }
-  public getMikvehResults():Promise<IMikveh[]> {
+  public getMikvehResults(): Promise<IMikveh[]> {
     return this._mikvehStorage.get('mikvehs');
   }
 
@@ -140,10 +151,22 @@ export class CacheService {
     this._calEventsStorage.set('calEvents', currentEvents);
   }
 
+  public setInputEvent(event: InputEvent) {
+    const currentEvents = this._inputEvents$.getValue();
+    const { day, month, year } = event.date;
+    const events: Omit<InputEvent, 'date'>[] = get(currentEvents, [year, month, day]) || [];
+    events.push({...event});
+    set(currentEvents, [year, month, day], [...events]);
+
+    this._inputEvents$.next(currentEvents);
+    this._calEventsStorage.set('inputEvents', currentEvents);
+
+  }
+
   public getCalEvents(): CachedCalEvent[] {
     const currentEvents = this._calEvents$.getValue();
     return currentEvents;
   }
 
-  
+
 }

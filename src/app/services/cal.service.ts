@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { combineLatest, map, share, shareReplay } from 'rxjs';
-import { CachedCalEvent, DayType, EventDto, InputEventType, Ona } from '../interfaces/cal';
+import { combineLatest, map } from 'rxjs';
+import { CachedCalEvent, DayType, EventDto, InputEvent, InputEventType } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { ApproachService } from './approach.service';
-import { dateToHDate, getDateParam, hDateStringToHDate, hDateSunsetAwareStringToDate } from '../utils/date.util';
+import { hDateStringToHDate, hDateSunsetAwareStringToDate } from '../utils/date.util';
 import { HDate } from '@hebcal/core';
 
 @Injectable({
@@ -30,22 +30,26 @@ export class CalService {
   constructor() { }
 
 
-  async addEvent(date: Date, type: InputEventType, afterSunset: boolean) {
-    afterSunset = type === InputEventType.HEFSEK_TAHARA ? false : afterSunset; // hefsek is always during the day
-    const hdate = dateToHDate(date, afterSunset);
+  // async addEvent(date: Date, type: InputEventType, afterSunset: boolean) {
+  //   afterSunset = type === InputEventType.HEFSEK_TAHARA ? false : afterSunset; // hefsek is always during the day
+  //   const hdate = dateToHDate(date, afterSunset);
 
 
-    const event: CachedCalEvent = {
-      type,
-      hDateSunsetAwareString: hdate.toString(),
-      afterSunset,
-      gregorianDateString: date.toISOString().split('T')[0],
-    };
-    this.cache.setCalEvent(event);
+  //   const event: CachedCalEvent = {
+  //     type,
+  //     hDateSunsetAwareString: hdate.toString(),
+  //     afterSunset,
+  //     gregorianDateString: date.toISOString().split('T')[0],
+  //   };
+  //   this.cache.setCalEvent(event);
+  // }
+
+  async addEvent(event: InputEvent) {
+    this.cache.setInputEvent(event);
   }
 
   private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, approach: Approach): EventDto[] {
-    const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
+    const { type } = event;
 
     let followingEventsChabadOnaBenonit: EventDto[] = [];
 
@@ -82,7 +86,7 @@ export class CalService {
   }
 
   private buildEvents7CleanToPrisha(event: CachedCalEvent, allevents: CachedCalEvent[], index: number): EventDto[] {
-    const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
+    const { hDateSunsetAwareString } = event;
     const rtn: EventDto[] = [];
     const date: Date = hDateSunsetAwareStringToDate(hDateSunsetAwareString);
     // add 1 after הפסק טהרה for ספירת 7 נקיים
@@ -123,7 +127,7 @@ export class CalService {
   }
 
   private buildPrishaEventVesetHaHodesh(event: CachedCalEvent, approach: Approach): EventDto {
-    const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
+    const { hDateSunsetAwareString } = event;
     let hDateVesetHaHodesh: HDate = hDateStringToHDate(hDateSunsetAwareString);
     hDateVesetHaHodesh = hDateVesetHaHodesh.add(1, 'MONTHS')
     const dateVesetHaHodesh = hDateVesetHaHodesh.greg();
@@ -143,7 +147,7 @@ export class CalService {
   }
 
   private buildPrishaEventOnaBenonit(event: CachedCalEvent, approach: Approach): EventDto {
-    const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
+    const { hDateSunsetAwareString, afterSunset } = event;
     const dateBenonit: Date = hDateSunsetAwareStringToDate(hDateSunsetAwareString);
 
     switch (approach.name) {
@@ -173,7 +177,7 @@ export class CalService {
   }
 
   private buildEventsToHefsek(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, numOfDays = 5): EventDto[] {
-    const { hDateSunsetAwareString, type, afterSunset, gregorianDateString } = event;
+    const { hDateSunsetAwareString } = event;
 
     const rtn: EventDto[] = [];
     const date: Date = hDateSunsetAwareStringToDate(hDateSunsetAwareString);
