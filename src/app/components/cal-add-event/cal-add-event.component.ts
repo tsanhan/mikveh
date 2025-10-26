@@ -45,17 +45,14 @@ export class CalAddEventComponent  implements OnInit {
   sunriseByDate = (hdate: HDate) => this.events.sunriseByDate(hdate.greg() as Date);
   sunsetByDate = (hdate: HDate) => this.events.sunsetByDate(hdate?.greg() as Date);
 
-  cal = inject(CalService);
-  highlightedInputEvents$ = this.cal.highlightedInputEvents$;
+
 
   constructor() { 
     addIcons({ logoApple, pencilOutline,heart, featherEdit3, checkmarkOutline  });
   }
 
   ngOnInit() {
-    this.highlightedInputEvents$.subscribe(events => {
-      console.log('highlightedInputEvents$', events);
-    });
+   
   }
 
   cancelAddEvent() {

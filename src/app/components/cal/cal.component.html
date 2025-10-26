@@ -1,18 +1,3 @@
-<!-- <div class="ion-datetime">
-
-  <ion-datetime #dt color="rose" [style]="{direction: 'ltr'}" locale="he-IL" presentation="date"
-    (ionChange)="onDateChange($event)" [value]="israelTime" [highlightedDates]="highlightedDates$ | async">
-  </ion-datetime>
-
-  
-  <ion-fab>
-    <ion-fab-button size="small" id="open-add-event-modal">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
-</div> -->
-
 @if(!showEventModal()){
 <ngb-datepicker class="hebrew rtl" #dp [ngModel]="selectedHebDate$ | async" [displayMonths]="1" [firstDayOfWeek]="7"
   [dayTemplate]="dt" [dayTemplateData]="dayTemplateData" [contentTemplate]="c" (ngModelChange)="onDateSelect($event)"
@@ -20,12 +5,12 @@
 
 </ngb-datepicker>
 } @else {
-<app-cal-add-event [selectedHDateHeb]="selectedHDateHeb$ | async" [hdate]="(selectedDateHDate$ | async)!" (onClose)="onCloseCalAddEvent($event)"></app-cal-add-event>
+<app-cal-add-event [selectedHDateHeb]="selectedHDateHeb$ | async" [hdate]="(selectedDateHDate$ | async)!"
+  (onClose)="onCloseCalAddEvent($event)"></app-cal-add-event>
 }
 
 <ng-template #c let-dp>
   <div class="p-2">
-
     <div class="custom-month-grid">
       @for (month of dp.state.months; track month) {
       <div>
@@ -37,15 +22,10 @@
             <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, -1)">
               <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
             </ion-button>
-            <!-- <button type="button" class="btn btn-sm btn-clear-primary" (click)="navigate(dp, -1)"></button> -->
-            <!-- <button type="button" class="btn btn-sm btn-clear-primary" (click)="today(dp)">●</button> -->
             <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, 1)">
               <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
             </ion-button>
-            <!-- <button type="button" class="btn btn-sm btn-clear-primary" (click)="navigate(dp, 1)">
-              <</button> -->
           </div>
-
         </div>
         <ngb-datepicker-month class="border rounded" [month]="month"></ngb-datepicker-month>
       </div>
@@ -53,12 +33,14 @@
     </div>
   </div>
 </ng-template>
+
 <ng-template #dt let-date let-data="data" let-selected="selected" let-currentMonth="currentMonth">
-  <div class="hebrew-day" [class.outside]="date.month !== currentMonth" [class.selected]="selected">
-    <div class="gregorian-num">{{ data.gregorian.day + '.' + data.gregorian.month }}</div>
-    <div class="hebrew-num">{{ i18n.getDayNumerals(date) }}</div>
-    <!-- {{test(data)}} -->
-  </div>
+  @if(highlightedInputEvents$ | async; as inputEvents ) {
+    <div class="hebrew-day" [class.outside]="date.month !== currentMonth" [class.selected]="selected">
+      <div class="gregorian-num">{{ data.gregorian.day + '.' + data.gregorian.month }}</div>
+      <div class="hebrew-num">{{ i18n.getDayNumerals(date) }}</div>
+    </div>
+  }
 </ng-template>
 
 <div class="details">
@@ -84,59 +66,3 @@
 <div>
   <pre>Model: {{ showEventModal()}}</pre>
 </div>
-
-<!-- {{selectedDateData$ | async | json}} -->
-
-<!-- selectedDate {{selectedDate$ | async }}
-selectedHDateHeb {{selectedHDateHeb$ | async }}
-filteredByApproach {{detailsToList$ | async | json}} -->
-<!--  -->
-<!-- {{this.selectedDate$ | async | date:'d LLLL':'':'he'}} -->
-
-
-<!-- 
-@for (item of detailsToList$ | async; track item.date) {
-<ion-list lines="none">
-  @for ( detail of item.details; track detail) {
-  <ion-item>
-    <ion-label>{{detail}}</ion-label>
-  </ion-item>
-  }
-</ion-list>
-} -->
-<!-- 
-
-<ion-modal #modal trigger="open-add-event-modal">
-  <ng-template>
-    <ion-content>
-      <ion-toolbar>
-        <ion-title>{{selectedHDateHeb$ | async}} {{selectedDate$| async | date:'d לMMMM':'':'he'}}</ion-title>
-      </ion-toolbar>
-      <ion-list>
-        <form [formGroup]="addEventForm" (ngSubmit)="onAddEvent(); modal.dismiss()">
-          <ion-item>
-            <ion-select formControlName="type" label="ראייה" label-placement="fixed" placeholder="מה ראיתי">
-              <ion-select-option [value]="InputEventTypeEnum.SEE_BLOOD">דם</ion-select-option>
-              <ion-select-option [value]="InputEventTypeEnum.HEFSEK_TAHARA">הפסק טהרה</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item *ngIf="addEventForm.get('type')?.value === InputEventTypeEnum.SEE_BLOOD">
-            <ion-radio-group formControlName="afterSunset" value="false">
-              <ion-radio [value]="false">לפני שקיעה</ion-radio><br />
-              <ion-radio [value]="true">אחרי שקיעה</ion-radio><br />
-            </ion-radio-group>
-          </ion-item>
-          <ion-item>
-
-            <ion-text>
-              (<span>ב {{selectedDate$| async | date:'d לMMMM':'':'he'}}</span>
-              <span> השקיעה היא ב{{sunsetForDate$ | async}}</span>)
-            </ion-text>
-          </ion-item>
-          <ion-button type="submit" size="small">הוסיפי ראייה</ion-button>
-        </form>
-      </ion-list>
-    </ion-content>
-  </ng-template>
-</ion-modal> -->

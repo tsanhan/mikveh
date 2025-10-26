@@ -34,7 +34,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EventDto, InputEvent, InputEventType } from 'src/app/interfaces/cal';
+import { CachedInputEvent, EventDto, InputEvent, InputEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
 import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate, simpleDateToHebrew } from 'src/app/utils/date.util';
 import {
@@ -76,6 +76,7 @@ export class CalComponent  {
   i18n = inject(NgbDatepickerI18n);
   calendar = inject(NgbCalendar);
   cal = inject(CalService);
+  highlightedInputEvents$ = this.cal.highlightedInputEvents$;
 
   @ViewChild('dt', { static: true }) dtRef!: any;
   selectedDate$ = new BehaviorSubject<Date>(new Date());
@@ -143,6 +144,10 @@ export class CalComponent  {
     this.cal.addEvent(event as InputEvent);
     this.showEventModal.set(false);
     
+  }
+
+  test(param1: NgbDateStruct, param2: CachedInputEvent) {
+    console.log('test:', param1, param2);
   }
  
 }
