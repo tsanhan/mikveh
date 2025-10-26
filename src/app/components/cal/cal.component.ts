@@ -69,40 +69,23 @@ import { CalAddEventComponent } from '../cal-add-event/cal-add-event.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalComponent implements OnDestroy {
+export class CalComponent  {
   showEventModal = signal(false);
   nowHDate = new HDate(new Date());
   selectedHebDate$ = new BehaviorSubject<NgbDateStruct>(HDateToNgbDateStruct(this.nowHDate));
   i18n = inject(NgbDatepickerI18n);
   calendar = inject(NgbCalendar);
-  date: { year: number; month: number };
+  cal = inject(CalService);
 
   @ViewChild('dt', { static: true }) dtRef!: any;
-  private mo?: MutationObserver;
-
-  events = inject(EventsService);
-  cal = inject(CalService);
-  loc = inject(LocationService);
-  modalCtrl = inject(ModalController);
-  approach = inject(ApproachService);
-  
-  fb = inject(FormBuilder)
-  israelTime = this.events.localISOString(new Date());
-  approach$ = this.approach.approach$.pipe(share());
   selectedDate$ = new BehaviorSubject<Date>(new Date());
 
-  sunsetForDate$ = combineLatest([this.loc.closestCity$, this.selectedDate$]).pipe(
-    map(([location, date]) => this.events.locationToSunsetTime(location, date))
-  )
-  
-  // selectedHDateHeb$: Observable<string> = this.selectedDate$.pipe(
-  //   map((date: Date) => simpleDateToHebrew(date)),
-  //   map((date: HDate) => hebDateToHebrew(date))
-  // );
   selectedDateHDate$: Observable<HDate> = this.selectedHebDate$.pipe(
     map((heb: NgbDateStruct) => NgbDateStructToHDate(heb))
   )
   
+  inputEvents$ = this.cal.inputEvents$;
+
   selectedHDateHeb$: Observable<string> = this.selectedDateHDate$.pipe(
     map((date: HDate) => hebDateToHebrew(date))
   );
@@ -118,47 +101,8 @@ export class CalComponent implements OnDestroy {
     }
     )
   );
+ 
 
-  highlightedDates$ = this.cal.highlightedDates$.pipe(
-    map((events: EventDto[]) => events.map((event: EventDto) =>
-    ({
-      ...event,
-      backgroundColor: (colors as any)[event.type] || 'transparent',
-    })
-    ))
-  );
-  public InputEventTypeEnum = InputEventType;
-  // detailsToList$ = this.highlightedDates$.pipe(
-  //   map((highlightedDates: EventDto[]) => {
-  //     const selectedDate = this.selectedDate$.getValue();
-  //     const dateTofind = selectedDate.toISOString().split('T')[0];
-  //     return { highlightedDates, dateTofind };
-  //   }),
-  //   switchMap(({ highlightedDates, dateTofind }) => {
-  //     const eventsOnThisDate = highlightedDates.filter(item => item.date === dateTofind);
-  //     const approach = this.approach.approach$.getValue();
-  //     const filteredByApproach = eventsOnThisDate.filter(x => x.approach.name == approach.name);
-  //     return of(filteredByApproach);
-  //   })
-  // )
-
-  detailsToList$ = combineLatest([
-    this.highlightedDates$.pipe(tap(highlightedDates => console.log('Highlighted Dates:', highlightedDates))),
-    this.selectedDate$.pipe(tap(date => console.log('Selected date:', date)))
-  ]).pipe(
-    switchMap(async ([highlightedDates, selectedDate]) => {
-      const dateTofind = selectedDate.toISOString().split('T')[0];
-      const eventsOnThisDate = highlightedDates.filter(item => item.date === dateTofind);
-      console.log(eventsOnThisDate);
-
-      return eventsOnThisDate;
-    })
-  )
-  addEventForm = new FormGroup({
-    type: new FormControl<InputEventType>(InputEventType.SEE_BLOOD, { nonNullable: true, validators: [Validators.required] }),
-    afterSunset: new FormControl<boolean>(false, { nonNullable: true, validators: [Validators.required] }),
-  });
-  // highlightedDatesFunc = this.cal.highlightedDatesFunc;
   constructor(private el: ElementRef) {
     addIcons({ add, closeOutline, chevronBackOutline, chevronForwardOutline });
     this.dayTemplateData = this.dayTemplateData.bind(this);
@@ -188,102 +132,18 @@ export class CalComponent implements OnDestroy {
     const { calendar } = datepicker;
     datepicker.navigateTo(calendar.getToday());
   }
-  // ngAfterViewInit() {
-  //   setTimeout(() => {
-  //     this.applyBoldToRedDays();
-  //     const root = this.dtRef.elementRef.nativeElement.shadowRoot;
-  //     if (root) {
-  //       let lastElState = {};
-  //       this.mo = new MutationObserver((el: any) => {
-  //         if (JSON.stringify(lastElState) != JSON.stringify(el)) {
-  //           lastElState = el;
-  //           this.applyBoldToRedDays()
-  //         }
-  //       });
-  //       this.mo.observe(root, { childList: true, subtree: true, attributes: true });
-  //     }
-  //   }, 0);
-  // }
-  // applyBoldToRedDays() {
-  //   const root = this.dtRef.elementRef.nativeElement.shadowRoot as ShadowRoot;
-  //   if (!root) return;
-
-  //   root.querySelectorAll<HTMLButtonElement>('button.calendar-day ion-icon').forEach(icon => icon.remove());
-  //   const days =root.querySelectorAll<HTMLButtonElement>('button.calendar-day')
-  //   days.forEach(btn => {
-  //     const backgroundColor = window.getComputedStyle(btn).backgroundColor;
-  //     const className = (colors as any)[backgroundColor];
-  //     if(className) {
-  //       //create an element with that class name to get the color
-  //       const iconEl = document.createElement('ion-icon');
-  //       iconEl.setAttribute('slot', 'icon-only');
-  //       iconEl.setAttribute('name', 'close-outline');
-
-  //       iconEl.style.position = 'absolute';
-  //       iconEl.style.top = '-4px';
-  //       iconEl.style.left = '-3px';
-  //       iconEl.style.background = backgroundColor
-  //       iconEl.style.borderRadius = '50%';
-  //       iconEl.style.padding = '2px';
-
-  //       iconEl.classList.add(className);
-  //       btn.appendChild(iconEl);
-  //     }
-
-  //   });
-  // }
-  // async onAddEvent() {
-  //   console.log('onAddEvent:', this.addEventForm.value);
-  //   const date = this.selectedDate$.getValue();
-  //   const { type, afterSunset } = this.addEventForm.getRawValue();
-  //   // get current value from detailsToList$ 
-  //   const data = await firstValueFrom(this.detailsToList$);
-  //   console.log('Current detailsToList$ data:', data);
-  //   await this.cal.addEvent(date, type, afterSunset);
-  //   this.addEventForm.reset();
-
-  // }
-
+  
   async onDateChange(event: CustomEvent) {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value.split('T')[0] + 'T12:00:00'); // noon to avoid timezone issues
     this.selectedDate$.next(date);
   }
 
-
-  async openAddEventModal() {
-
-  }
-
   onCloseCalAddEvent(event: InputEvent | null) {
+    this.cal.addEvent(event as InputEvent);
     this.showEventModal.set(false);
+    
   }
-  generateAlertOptions(): AlertOptions {
-    return {
-      header: 'Custom Alert',
-      subHeader: 'This is a custom alert with aria attributes.',
-      message: 'This alert has custom aria attributes for accessibility.',
-      inputs: [
-        {
-          type: 'date',
-          name: 'dateInput',
-          placeholder: 'Select a date',
-          value: this.selectedDate$.getValue(),
-          attributes: {
-            'aria-label': 'Select a date',
-            'aria-required': 'true',
-          },
-        },
-      ],
-      buttons: ['OK'],
-      cssClass: 'custom-alert',
-      backdropDismiss: true,
-      keyboardClose: true,
-      animated: true,
-    };
-  }
-  ngOnDestroy() {
-    this.mo?.disconnect();
-  }
+ 
 }
 

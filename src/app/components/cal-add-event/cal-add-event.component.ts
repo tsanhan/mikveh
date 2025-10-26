@@ -11,6 +11,7 @@ import { EventsService } from 'src/app/services/events.service';
 import { AsyncPipe } from '@angular/common';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { HDateToNgbDateStruct, NgbDateStructToHDate } from 'src/app/utils/date.util';
+import { CalService } from 'src/app/services/cal.service';
 
 @Component({
   selector: 'app-cal-add-event',
@@ -30,6 +31,7 @@ export class CalAddEventComponent  implements OnInit {
   @Input('hdate') hdate!: HDate;
   @Input('selectedHDateHeb') selectedHDateHeb?: string | null;
 
+
   public InputEventTypeEnum = InputEventType;
   public InputSpecificEventTypeEnum = InputSpecificEventType;
   public InputEventOnaEnum = InputEventOna;
@@ -43,14 +45,17 @@ export class CalAddEventComponent  implements OnInit {
   sunriseByDate = (hdate: HDate) => this.events.sunriseByDate(hdate.greg() as Date);
   sunsetByDate = (hdate: HDate) => this.events.sunsetByDate(hdate?.greg() as Date);
 
+  cal = inject(CalService);
+  highlightedInputEvents$ = this.cal.highlightedInputEvents$;
+
   constructor() { 
     addIcons({ logoApple, pencilOutline,heart, featherEdit3, checkmarkOutline  });
   }
 
   ngOnInit() {
-    // this.eventTypeFC.valueChanges.subscribe(val => {
-    //   console.log('Event type changed to: ', val);
-    // });
+    this.highlightedInputEvents$.subscribe(events => {
+      console.log('highlightedInputEvents$', events);
+    });
   }
 
   cancelAddEvent() {

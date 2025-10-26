@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { combineLatest, map } from 'rxjs';
-import { CachedCalEvent, DayType, EventDto, InputEvent, InputEventType } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, DayType, EventDto, InputEvent, InputEventType } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
@@ -17,6 +17,7 @@ export class CalService {
   approach = inject(ApproachService);
 
   calEvents$ = this.cache.calEvents$;
+  inputEvents$ = this.cache.inputEvents$;
 
   highlightedDates$ = combineLatest([this.calEvents$, this.approach.approach$]).pipe(
     map(([calEvents, approach]: [CachedCalEvent[], Approach]) => {
@@ -26,25 +27,15 @@ export class CalService {
     })
   );
 
+  highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
+    map(([inputEvents, approach]: [CachedInputEvent, Approach]) => inputEvents)
+  );
+
 
   constructor() { }
 
 
-  // async addEvent(date: Date, type: InputEventType, afterSunset: boolean) {
-  //   afterSunset = type === InputEventType.HEFSEK_TAHARA ? false : afterSunset; // hefsek is always during the day
-  //   const hdate = dateToHDate(date, afterSunset);
-
-
-  //   const event: CachedCalEvent = {
-  //     type,
-  //     hDateSunsetAwareString: hdate.toString(),
-  //     afterSunset,
-  //     gregorianDateString: date.toISOString().split('T')[0],
-  //   };
-  //   this.cache.setCalEvent(event);
-  // }
-
-  async addEvent(event: InputEvent) {
+  addEvent(event: InputEvent) {
     this.cache.setInputEvent(event);
   }
 
