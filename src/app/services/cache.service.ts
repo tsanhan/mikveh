@@ -6,7 +6,7 @@ import { Location } from '../interfaces/locations';
 import { IMikveh } from '../interfaces/mikveh.interface';
 import { BehaviorSubject, map, Observable, shareReplay, tap } from 'rxjs';
 import { ApproachService } from './approach.service';
-import { CachedCalEvent, CachedInputEvent, InputEvent } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent } from '../interfaces/cal';
 import { Approach } from '../interfaces/approaches';
 import { get, set } from 'lodash';
 
@@ -28,7 +28,7 @@ export class CacheService {
   //#region calEvents
   private _calEventsStorage: Storage = new Storage();
   private _calEvents$ = new BehaviorSubject<CachedCalEvent[]>([]);
-  private _inputEvents$ = new BehaviorSubject<CachedInputEvent>({});
+  private _inputEvents$ = new BehaviorSubject<CachedInputEvent[]>([]);
 
   public calEvents$ = this._calEvents$.asObservable().pipe(
     map(events => events.sort((a, b) => new Date(b.gregorianDateString).getTime() - new Date(a.gregorianDateString).getTime())),
@@ -151,13 +151,9 @@ export class CacheService {
     this._calEventsStorage.set('calEvents', currentEvents);
   }
 
-  public setInputEvent(event: InputEvent) {
+  public setInputEvent(event: CachedInputEvent) {
     const currentEvents = this._inputEvents$.getValue();
-    const { day, month, year } = event.date;
-    const events: Omit<InputEvent, 'date'>[] = get(currentEvents, [year, month, day]) || [];
-    events.push({...event});
-    set(currentEvents, [year, month, day], [...events]);
-
+    currentEvents.push({...event});
     this._inputEvents$.next(currentEvents);
     this._calEventsStorage.set('inputEvents', currentEvents);
 

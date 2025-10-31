@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { combineLatest, map } from 'rxjs';
-import { CachedCalEvent, CachedInputEvent, DayType, EventDto, InputEvent, InputEventType } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, DayType, EventDto, InputEventType } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
@@ -28,14 +28,17 @@ export class CalService {
   );
 
   highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
-    map(([inputEvents, approach]: [CachedInputEvent, Approach]) => inputEvents)
+    map(([inputEvents, approach]: [CachedInputEvent[], Approach]) => {
+    
+      return inputEvents;
+    })
   );
 
 
   constructor() { }
 
 
-  addEvent(event: InputEvent) {
+  addEvent(event: CachedInputEvent) {
     this.cache.setInputEvent(event);
   }
 

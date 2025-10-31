@@ -1,13 +1,7 @@
 import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { Approach } from "./approaches";
 
-export interface CachedInputEvent {
-  [hebYear: number]: {
-    [hebMonth: number]: {
-      [hebDay: number]: InputEvent[];
-    }
-  }
-}
+
 
 export interface CachedCalEvent {
   type: InputEventType;
@@ -16,7 +10,8 @@ export interface CachedCalEvent {
   afterSunset: boolean;
 }
 
-export interface InputEvent {
+export interface CachedInputEvent {
+  simpleDate: Date;
   date: NgbDateStruct;
   type: InputEventType;
   ona: InputEventOna;
