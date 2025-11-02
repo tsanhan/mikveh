@@ -34,7 +34,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CachedInputEvent, EventDto, InputEventType } from 'src/app/interfaces/cal';
+import { CachedInputEvent, CalEvent, EventDto, InputEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
 import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate, simpleDateToHebrew } from 'src/app/utils/date.util';
 import {
@@ -50,6 +50,7 @@ import {
 import * as colors from '../../../assets/data/colors.json';
 import { CustomDatepickerI18n } from 'src/app/services/CustomDatepickerI18n.service';
 import { CalAddEventComponent } from '../cal-add-event/cal-add-event.component';
+import { get } from 'lodash';
 
 @Component({
   selector: 'app-cal',
@@ -146,6 +147,15 @@ export class CalComponent  {
     
   }
 
+  isNidaDay(date: NgbDateStruct, inputEvents: CalEvent) {
+    const { year, month, day } = date;
+    const eventsForDay = get(inputEvents,[year,month,day]) || [];
+    if(!eventsForDay.length) return 'standard-day';
+    if(eventsForDay.some(event => event.type === InputEventType.SEE_BLOOD))
+      return 'nida-day';
+    return '';
+    // return eventsForDay.some(event => event.type === InputEventType.SEE_BLOOD);
+  }
  
  
 }

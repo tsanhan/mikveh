@@ -1,7 +1,13 @@
 import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { Approach } from "./approaches";
 
-
+export interface CalEvent {
+  [hebYear: number]: {
+    [hebMonth: number]: {
+      [hebDay: number]: CachedInputEvent[];
+    }
+  }
+}
 
 export interface CachedCalEvent {
   type: InputEventType;

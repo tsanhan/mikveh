@@ -36,7 +36,14 @@
 
 <ng-template #dt let-date let-data="data" let-selected="selected" let-currentMonth="currentMonth">
   @if(highlightedInputEvents$ | async; as inputEvents ) {
-    <div class="hebrew-day" [class.outside]="date.month !== currentMonth" [class.selected]="selected">
+    <div  
+    [ngClass]="{
+      'hebrew-day': true,
+      'outside': date.month !== currentMonth,
+      selected
+    }"
+    [class]=" isNidaDay(date, inputEvents)"
+    >
       <div class="gregorian-num">{{ data.gregorian.day + '.' + data.gregorian.month }}</div>
       <div class="hebrew-num">{{ i18n.getDayNumerals(date) }}</div>
     </div>

@@ -8,7 +8,6 @@ import { BehaviorSubject, map, Observable, shareReplay, tap } from 'rxjs';
 import { ApproachService } from './approach.service';
 import { CachedCalEvent, CachedInputEvent } from '../interfaces/cal';
 import { Approach } from '../interfaces/approaches';
-import { get, set } from 'lodash';
 
 @Injectable({
   providedIn: 'root',
@@ -101,7 +100,7 @@ export class CacheService {
 
     const inputEvents = await this._calEventsStorage.get('inputEvents');
     if (!inputEvents) {
-      await this._calEventsStorage.set('inputEvents', {});
+      await this._calEventsStorage.set('inputEvents', []);
     } else {
       this._inputEvents$.next(inputEvents);
     }
@@ -151,7 +150,7 @@ export class CacheService {
     this._calEventsStorage.set('calEvents', currentEvents);
   }
 
-  public setInputEvent(event: CachedInputEvent) {
+  public setInputEvents(event: CachedInputEvent) {
     const currentEvents = this._inputEvents$.getValue();
     currentEvents.push({...event});
     this._inputEvents$.next(currentEvents);

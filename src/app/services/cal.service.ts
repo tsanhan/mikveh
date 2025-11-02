@@ -1,12 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { combineLatest, map } from 'rxjs';
-import { CachedCalEvent, CachedInputEvent, DayType, EventDto, InputEventType } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, CalEvent, DayType, EventDto, InputEventType } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { ApproachService } from './approach.service';
 import { hDateStringToHDate, hDateSunsetAwareStringToDate } from '../utils/date.util';
 import { HDate } from '@hebcal/core';
+import { get, set } from 'lodash';
 
 @Injectable({
   providedIn: 'root',
@@ -29,8 +30,17 @@ export class CalService {
 
   highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
     map(([inputEvents, approach]: [CachedInputEvent[], Approach]) => {
-    
-      return inputEvents;
+    const rtn: CalEvent = {};
+    for (const event of inputEvents) {
+      const { day, month, year } = event.date;
+      const events: CachedInputEvent[] = get(event, [year, month, day]) || [];
+      events.push({...event});
+      set(rtn, [year, month, day], [...events]);
+    }
+    // const events: Omit<InputEvent, 'date'>[] = get(currentEvents, [year, month, day]) || [];
+    // events.push({...event});
+    // set(currentEvents, [year, month, day], [...events]);
+      return rtn;
     })
   );
 
@@ -39,7 +49,7 @@ export class CalService {
 
 
   addEvent(event: CachedInputEvent) {
-    this.cache.setInputEvent(event);
+    this.cache.setInputEvents(event);
   }
 
   private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, approach: Approach): EventDto[] {
