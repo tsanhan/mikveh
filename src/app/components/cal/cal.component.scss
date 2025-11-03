@@ -213,7 +213,14 @@ ngb-datepicker {
                   background-color: var(--selected);
                   color: white;
                 }
+
+                &.nida-day {
+                  background-color: red;
+                  color: white;
+                }
               }
+
+
             }
           }
         }
