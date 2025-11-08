@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { combineLatest, map } from 'rxjs';
-import { CachedCalEvent, CachedInputEvent, CalEvent, DayType, EventDto, InputEventType } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, CalEvent, DayType, EventDto, InputEventType, InputSpecificEventType, OutputEvent } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
@@ -30,16 +30,36 @@ export class CalService {
 
   highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
     map(([inputEvents, approach]: [CachedInputEvent[], Approach]) => {
-    const rtn: CalEvent = {};
-    for (const event of inputEvents) {
-      const { day, month, year } = event.date;
-      const events: CachedInputEvent[] = get(event, [year, month, day]) || [];
-      events.push({...event});
-      set(rtn, [year, month, day], [...events]);
-    }
-    // const events: Omit<InputEvent, 'date'>[] = get(currentEvents, [year, month, day]) || [];
-    // events.push({...event});
-    // set(currentEvents, [year, month, day], [...events]);
+      const rtn: CalEvent = {};
+      const list: OutputEvent[]= [];
+      // split by veset
+      const sortedInputEvents = inputEvents.sort((a, b) => a.simpleDate.getTime() - b.simpleDate.getTime());
+      // after the next veset all the hashahot of the current vesset are not relevant
+      for (const event of sortedInputEvents) {
+        switch (event.specificType) {
+          case InputSpecificEventType.VESET:
+            const hashashotForVeset:OutputEvent[]  = this.getNidaDaysHashashotForVeset(event, sortedInputEvents, approach);
+            list.push(...hashashotForVeset)
+            break;
+          case InputSpecificEventType.BDIKA_TMEA:
+            // if it 7 days from the vesset then no need to push the hashashot forward, if it is then we should.
+            // next day can be tested for hefsek tahara
+          case InputSpecificEventType.KETEM_TAME:
+            // is is during 7 nekyim remove the 7 nekeyim
+            // next day can be tested for hefsek tahara
+            break;
+          
+        }
+      }
+
+
+
+      for (const event of sortedInputEvents) {
+        const { day, month, year } = event.date;
+        const events: CachedInputEvent[] = get(event, [year, month, day]) || [];
+        events.push({ ...event });
+        set(rtn, [year, month, day], [...events]);
+      }
       return rtn;
     })
   );
@@ -48,10 +68,17 @@ export class CalService {
   constructor() { }
 
 
+  
   addEvent(event: CachedInputEvent) {
     this.cache.setInputEvents(event);
   }
 
+  getNidaDaysHashashotForVeset(vesetEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
+
+    const rtn: OutputEvent[] = [];
+    
+    return rtn;
+  }
   // private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, approach: Approach): EventDto[] {
   //   const { type } = event;
 

@@ -4,7 +4,7 @@ import { Approach } from "./approaches";
 export interface CalEvent {
   [hebYear: number]: {
     [hebMonth: number]: {
-      [hebDay: number]: CachedInputEvent[];
+      [hebDay: number]: OutputEvent[];
     }
   }
 }
@@ -16,6 +16,18 @@ export interface CachedCalEvent {
   afterSunset: boolean;
 }
 
+export interface OutputEvent {
+  simpleDate: Date;
+  date: NgbDateStruct;
+  inputEventType: InputEventType;
+  outputEventType: DayType;
+  ona: InputEventOna;
+  specificType: InputSpecificEventType;
+  CachedInputEventRef: CachedInputEvent;
+  details: string[];
+}
+
+
 export interface CachedInputEvent {
   simpleDate: Date;
   date: NgbDateStruct;
@@ -24,13 +36,21 @@ export interface CachedInputEvent {
   specificType: InputSpecificEventType;
 }
 
+export enum DayType {
+  MAHZOR = 'mahzor',
+  CAN_START_CHECK_HEFSEK = 'canStartHefsek',
+  SEVEN_CLEAN = 'sevenCleans',
+  MIKVEH_DAY = 'mikvehDay',
+  MUTERET = 'muteret',
+  PRISHA = 'prisha',
+}
+
 export enum InputEventOna {
   YOM = 'yom',
   LAYLA = 'layla'
 }
 
 export enum InputEventType {
-  SEE_BLOOD = 'seeBlood',
   HEFSEK_TAHARA = 'hefsekTahara',
   REIYA = 'reiya',
 }
@@ -42,14 +62,7 @@ export enum InputSpecificEventType {
 }
 
 
-export enum DayType {
-  MAHZOR = 'mahzor',
-  CAN_START_CHECK_HEFSEK = 'canStartHefsek',
-  SEVEN_CLEAN = 'sevenCleans',
-  MIKVEH_DAY = 'mikvehDay',
-  MUTERET = 'muteret',
-  PRISHA = 'prisha',
-}
+
 
 export interface EventDto {
   type: DayType | InputEventType,
