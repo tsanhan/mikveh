@@ -214,8 +214,12 @@ ngb-datepicker {
                   color: white;
                 }
 
-                &.nida-day {
+                &.veset {
                   background-color: red;
+                  color: white;
+                }
+                &.mahzor {
+                  background-color: rgb(211, 65, 65);
                   color: white;
                 }
               }

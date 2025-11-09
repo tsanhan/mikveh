@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { combineLatest, map } from 'rxjs';
-import { CachedCalEvent, CachedInputEvent, CalEvent, DayType, EventDto, InputEventType, InputSpecificEventType, OutputEvent } from '../interfaces/cal';
+import { combineLatest, map, share, shareReplay } from 'rxjs';
+import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, InputEventType, InputSpecificEventType, OutputEvent } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { ApproachService } from './approach.service';
-import { hDateStringToHDate, hDateSunsetAwareStringToDate } from '../utils/date.util';
+import { hDateStringToHDate, hDateSunsetAwareStringToDate, HDateToNgbDateStruct, NgbDateStructToHDate, simpleDateToHebrew } from '../utils/date.util';
 import { HDate } from '@hebcal/core';
 import { get, set } from 'lodash';
 
@@ -18,7 +18,7 @@ export class CalService {
   approach = inject(ApproachService);
 
   calEvents$ = this.cache.calEvents$;
-  inputEvents$ = this.cache.inputEvents$;
+  inputEvents$ = this.cache.inputEvents$.pipe(shareReplay(1));
 
   // highlightedDates$ = combineLatest([this.calEvents$, this.approach.approach$]).pipe(
   //   map(([calEvents, approach]: [CachedCalEvent[], Approach]) => {
@@ -30,7 +30,6 @@ export class CalService {
 
   highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
     map(([inputEvents, approach]: [CachedInputEvent[], Approach]) => {
-      const rtn: CalEvent = {};
       const list: OutputEvent[]= [];
       // split by veset
       const sortedInputEvents = inputEvents.sort((a, b) => a.simpleDate.getTime() - b.simpleDate.getTime());
@@ -48,15 +47,16 @@ export class CalService {
             // is is during 7 nekyim remove the 7 nekeyim
             // next day can be tested for hefsek tahara
             break;
-          
         }
       }
+      return list;
+    }),
+    map((list: OutputEvent[]) => {
+      const rtn: CalEventDict = {};
 
-
-
-      for (const event of sortedInputEvents) {
+      for (const event of list) {
         const { day, month, year } = event.date;
-        const events: CachedInputEvent[] = get(event, [year, month, day]) || [];
+        const events: OutputEvent[] = get(event, [year, month, day]) || [];
         events.push({ ...event });
         set(rtn, [year, month, day], [...events]);
       }
@@ -77,6 +77,39 @@ export class CalService {
 
     const rtn: OutputEvent[] = [];
     
+    
+    const furstNidaDay: OutputEvent = {
+      ...{...vesetEvent},
+      CachedInputEventRef: {...vesetEvent},
+      outputEventType: DayType.VESET,
+      details: [
+        "ווסט החודש"
+      ]
+    }
+    //MAHZOR
+    const mahzorDays: OutputEvent[] = [];
+    for (let index = 1; index <= (approach.name == ApproachName.SEPHARDI ? 4 : 5); index++) {
+      const {simpleDate} = vesetEvent;
+      const newSimpleDate = new Date(simpleDate)
+      newSimpleDate.setDate(simpleDate.getDate() + index);
+      const hdate = simpleDateToHebrew(newSimpleDate)
+      const date = HDateToNgbDateStruct(hdate)
+      const nidaDay:OutputEvent = {
+        CachedInputEventRef: {...vesetEvent},
+        simpleDate:newSimpleDate,
+        date,
+        outputEventType: DayType.MAHZOR,
+        details: [
+          `יום ${index} לנידה`
+        ]
+      } 
+      mahzorDays.push(nidaDay);
+    }
+      
+    
+    rtn.push(furstNidaDay);
+    rtn.push(...mahzorDays);
+
     return rtn;
   }
   // private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, approach: Approach): EventDto[] {

@@ -1,7 +1,7 @@
 import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { Approach } from "./approaches";
 
-export interface CalEvent {
+export interface CalEventDict {
   [hebYear: number]: {
     [hebMonth: number]: {
       [hebDay: number]: OutputEvent[];
@@ -19,10 +19,9 @@ export interface CachedCalEvent {
 export interface OutputEvent {
   simpleDate: Date;
   date: NgbDateStruct;
-  inputEventType: InputEventType;
   outputEventType: DayType;
-  ona: InputEventOna;
-  specificType: InputSpecificEventType;
+  ona?: InputEventOna;
+  specificType?: InputSpecificEventType;
   CachedInputEventRef: CachedInputEvent;
   details: string[];
 }
@@ -43,6 +42,9 @@ export enum DayType {
   MIKVEH_DAY = 'mikvehDay',
   MUTERET = 'muteret',
   PRISHA = 'prisha',
+  KETEM_TAME = 'ketemTame',
+  BDIKA_TMEA = 'bdikaTmea',
+  VESET = 'veset',
 }
 
 export enum InputEventOna {

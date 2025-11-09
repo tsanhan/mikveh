@@ -34,7 +34,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CachedInputEvent, CalEvent, EventDto, InputEventType, InputSpecificEventType } from 'src/app/interfaces/cal';
+import { CachedInputEvent, CalEventDict, DayType, EventDto, InputEventType, InputSpecificEventType } from 'src/app/interfaces/cal';
 import { ApproachService } from 'src/app/services/approach.service';
 import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate, simpleDateToHebrew } from 'src/app/utils/date.util';
 import {
@@ -78,6 +78,7 @@ export class CalComponent  {
   calendar = inject(NgbCalendar);
   cal = inject(CalService);
   highlightedInputEvents$ = this.cal.highlightedInputEvents$;
+  public dayType = DayType;
 
   @ViewChild('dt', { static: true }) dtRef!: any;
   selectedDate$ = new BehaviorSubject<Date>(new Date());
@@ -147,15 +148,21 @@ export class CalComponent  {
     
   }
 
-  isNidaDay(date: NgbDateStruct, inputEvents: CalEvent) {
+  // isNidaDay(date: NgbDateStruct, calEventDict: CalEventDict) {
+  //   const { year, month, day } = date;
+  //   const eventsForDay = get(calEventDict,[year,month,day]) || [];
+  //   if(eventsForDay.length) 
+  //     if(eventsForDay.some(e => [DayType.VESET, DayType.MAHZOR].includes(e.outputEventType)))
+  //       return 'nida-day';
+  //   return 'standard-day';
+  //   return '';
+  //   // return eventsForDay.some(event => event.type === InputEventType.SEE_BLOOD);
+  // }
+
+  isADay(date: NgbDateStruct, calEventDict: CalEventDict, typeToCompare: DayType) {
     const { year, month, day } = date;
-    const eventsForDay = get(inputEvents,[year,month,day]) || [];
-    if(eventsForDay.length) 
-      if(eventsForDay.some(event => event.specificType === InputSpecificEventType.VESET))
-        return 'nida-day';
-    return 'standard-day';
-    return '';
-    // return eventsForDay.some(event => event.type === InputEventType.SEE_BLOOD);
+    const eventsForDay = get(calEventDict,[year,month,day]) || [];
+    return eventsForDay.length && eventsForDay.some(e => e.outputEventType == typeToCompare);
   }
  
  
