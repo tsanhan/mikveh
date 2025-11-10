@@ -42,9 +42,15 @@
       'outside': date.month !== currentMonth,
       selected,
       'veset': isADay(date, CalEventDict, dayType.VESET),
-      'mahzor': isADay(date, CalEventDict, dayType.MAHZOR)
+      'mahzor': isADay(date, CalEventDict, dayType.MAHZOR),
+      'canStartHefsek': isADay(date, CalEventDict, dayType.CAN_START_CHECK_HEFSEK),
+      'sevenCleans': isADay(date, CalEventDict, dayType.SEVEN_CLEAN),
+      'mikvehDay': isADay(date, CalEventDict, dayType.MIKVEH_DAY),
+      'muteret': isADay(date, CalEventDict, dayType.MUTERET),
+      'prisha': isADay(date, CalEventDict, dayType.PRISHA),
+      'ketemTame': isADay(date, CalEventDict, dayType.KETEM_TAME),
+      'bdikaTmea': isADay(date, CalEventDict, dayType.BDIKA_TMEA),
     }"
-    
     >
       <div class="gregorian-num">{{ data.gregorian.day + '.' + data.gregorian.month }}</div>
       <div class="hebrew-num">{{ i18n.getDayNumerals(date) }}</div>

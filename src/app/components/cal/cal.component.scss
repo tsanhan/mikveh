@@ -215,12 +215,21 @@ ngb-datepicker {
                 }
 
                 &.veset {
-                  background-color: red;
+                  background-color: var(--blood);
                   color: white;
+                  border: #e91e6f solid 2px;
                 }
                 &.mahzor {
-                  background-color: rgb(211, 65, 65);
+                  background-color: var(--blood);
                   color: white;
+                }
+                &.canStartHefsek {
+                  background-color: var(--hefsek);
+                  color: white;
+                }
+                &.prisha {
+                  background-color: var(--prisha);
+                  color: black;
                 }
               }
 
