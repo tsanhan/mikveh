@@ -30,19 +30,19 @@ export class CalService {
 
   highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
     map(([inputEvents, approach]: [CachedInputEvent[], Approach]) => {
-      const list: OutputEvent[]= [];
+      const list: OutputEvent[] = [];
       // split by veset
       const sortedInputEvents = inputEvents.sort((a, b) => a.simpleDate.getTime() - b.simpleDate.getTime());
       // after the next veset all the hashahot of the current vesset are not relevant
       for (const event of sortedInputEvents) {
         switch (event.specificType) {
           case InputSpecificEventType.VESET:
-            const hashashotForVeset:OutputEvent[]  = this.getNidaDaysHashashotForVeset(event, sortedInputEvents, approach);
+            const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(event, sortedInputEvents, approach);
             list.push(...hashashotForVeset)
             break;
           case InputSpecificEventType.BDIKA_TMEA:
-            // if it 7 days from the vesset then no need to push the hashashot forward, if it is then we should.
-            // next day can be tested for hefsek tahara
+          // if it 7 days from the vesset then no need to push the hashashot forward, if it is then we should.
+          // next day can be tested for hefsek tahara
           case InputSpecificEventType.KETEM_TAME:
             // is is during 7 nekyim remove the 7 nekeyim
             // next day can be tested for hefsek tahara
@@ -68,7 +68,7 @@ export class CalService {
   constructor() { }
 
 
-  
+
   addEvent(event: CachedInputEvent) {
     this.cache.setInputEvents(event);
   }
@@ -76,11 +76,11 @@ export class CalService {
   getNidaDaysHashashotForVeset(vesetEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
 
     const rtn: OutputEvent[] = [];
-    
-    
+
+
     const furstNidaDay: OutputEvent = {
-      ...{...vesetEvent},
-      CachedInputEventRef: {...vesetEvent},
+      ...{ ...vesetEvent },
+      CachedInputEventRef: { ...vesetEvent },
       outputEventType: DayType.VESET,
       details: [
         "ווסט החודש"
@@ -88,27 +88,61 @@ export class CalService {
     }
     //MAHZOR
     const mahzorDays: OutputEvent[] = [];
-    for (let index = 1; index <= (approach.name == ApproachName.SEPHARDI ? 4 : 5); index++) {
-      const {simpleDate} = vesetEvent;
+    const forNum = (approach.name == ApproachName.SEPHARDI ? 4 : 5)
+    for (let index = 1; index <= forNum; index++) {
+      const { simpleDate } = vesetEvent;
       const newSimpleDate = new Date(simpleDate)
       newSimpleDate.setDate(simpleDate.getDate() + index);
       const hdate = simpleDateToHebrew(newSimpleDate)
       const date = HDateToNgbDateStruct(hdate)
-      const nidaDay:OutputEvent = {
-        CachedInputEventRef: {...vesetEvent},
-        simpleDate:newSimpleDate,
+      const nidaDay: OutputEvent = {
+        CachedInputEventRef: { ...vesetEvent },
+        simpleDate: newSimpleDate,
         date,
         outputEventType: DayType.MAHZOR,
         details: [
           `יום ${index} לנידה`
         ]
-      } 
+      }
       mahzorDays.push(nidaDay);
     }
-      
-    
+    const { simpleDate } = vesetEvent;
+    const newSimpleDate = new Date(simpleDate)
+
+    // can start bdikot
+    let startBdikotHDate = simpleDateToHebrew(newSimpleDate)
+    startBdikotHDate = startBdikotHDate.add(forNum + 1, "DAYS");
+    const startBdikotDate = HDateToNgbDateStruct(startBdikotHDate)
+    const startBdikot: OutputEvent = {
+      CachedInputEventRef: { ...vesetEvent },
+      simpleDate: newSimpleDate,
+      date: startBdikotDate,
+      outputEventType: DayType.CAN_START_CHECK_HEFSEK,
+      details: [
+        `אפשר להתחיל לבדוק הפסק טהרה`
+      ]
+    }
+
+
+    // hashash binonit
+    let hashashBinonitHDate = simpleDateToHebrew(newSimpleDate)
+    hashashBinonitHDate = hashashBinonitHDate.add(1, "M");
+    const hashashBinonitDate = HDateToNgbDateStruct(hashashBinonitHDate)
+    const hashashBinonit: OutputEvent = {
+      CachedInputEventRef: { ...vesetEvent },
+      simpleDate: newSimpleDate,
+      date: hashashBinonitDate,
+      outputEventType: DayType.PRISHA,
+      details: [
+        `חשש בינונית`
+      ]
+    }
+
     rtn.push(furstNidaDay);
     rtn.push(...mahzorDays);
+    rtn.push(startBdikot);
+    rtn.push(hashashBinonit);
+
 
     return rtn;
   }
