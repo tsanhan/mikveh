@@ -1,42 +1,33 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   inject,
-  OnDestroy,
-  signal,
   Signal,
+  signal,
   ViewChild,
+  WritableSignal,
 } from '@angular/core';
-import { IonDatetime, AlertOptions, ModalController, IonButton, IonFab, IonFabButton, IonIcon, IonItem, IonLabel, IonList, IonTitle, IonToolbar, IonContent, IonModal, IonSelectOption, IonSelect, IonRadio, IonRadioGroup, IonText } from '@ionic/angular/standalone';
+import { IonButton, IonIcon } from '@ionic/angular/standalone';
 import { HDate } from '@hebcal/core';
-import { EventsService } from 'src/app/services/events.service';
-import { AsyncPipe, CommonModule, DatePipe, JsonPipe, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import '@hebcal/cities';
 import {
   BehaviorSubject,
-  combineLatest,
   firstValueFrom,
-  lastValueFrom,
   map,
   Observable,
-  of,
-  share,
-  switchMap,
   tap,
 } from 'rxjs';
 import { CalService } from 'src/app/services/cal.service';
-import { LocationService } from 'src/app/services/location.service';
 
 
 
 import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CachedInputEvent, CalEventDict, DayType, EventDto, InputEventType, InputSpecificEventType } from 'src/app/interfaces/cal';
-import { ApproachService } from 'src/app/services/approach.service';
-import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate, simpleDateToHebrew } from 'src/app/utils/date.util';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CachedInputEvent, CalEventDict, DayType, OutputEvent } from 'src/app/interfaces/cal';
+import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate } from 'src/app/utils/date.util';
 import {
   NgbCalendar,
   NgbCalendarHebrew,
@@ -47,7 +38,6 @@ import {
   NgbDateStruct,
 } from '@ng-bootstrap/ng-bootstrap';
 
-import * as colors from '../../../assets/data/colors.json';
 import { CustomDatepickerI18n } from 'src/app/services/CustomDatepickerI18n.service';
 import { CalAddEventComponent } from '../cal-add-event/cal-add-event.component';
 import { get } from 'lodash';
@@ -71,13 +61,21 @@ import { get } from 'lodash';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalComponent  {
-  showEventModal = signal(false);
+  showEventModal:WritableSignal<boolean> = signal(false);
+  selectedHebDateDetails: WritableSignal<string[]> = signal([]);
   nowHDate = new HDate(new Date());
   selectedHebDate$ = new BehaviorSubject<NgbDateStruct>(HDateToNgbDateStruct(this.nowHDate));
   i18n = inject(NgbDatepickerI18n);
   calendar = inject(NgbCalendar);
   cal = inject(CalService);
-  highlightedInputEvents$ = this.cal.highlightedInputEvents$;
+  highlightedInputEvents$ = this.cal.highlightedInputEvents$.pipe(
+    tap(val => {
+      const selectedHebDate = this.selectedHebDate$.getValue();
+      const {day,month,year} = selectedHebDate as NgbDateStruct;
+      const events = val[year][month][day].map((e:OutputEvent) => e.details).flat();
+      this.selectedHebDateDetails.set(events);
+    })
+  );
   public dayType = DayType;
 
   @ViewChild('dt', { static: true }) dtRef!: any;
@@ -117,9 +115,12 @@ export class CalComponent  {
     };
   }
 
-  onDateSelect(event: any | NgbDateStruct) {
-    console.trace('onDateSelect:', event);
-    this.selectedHebDate$.next(event as NgbDateStruct);
+  async onDateSelect(event: any | NgbDateStruct) {
+    console.log('onDateSelect:', event);
+    const highlightedInputEvents:CalEventDict = await firstValueFrom(this.highlightedInputEvents$);
+    const {day,month,year} = event as NgbDateStruct;
+    const events = highlightedInputEvents[year][month][day].map((e:OutputEvent) => e.details).flat();
+    this.selectedHebDateDetails.set(events);
   };
 
   showAddEvent() {

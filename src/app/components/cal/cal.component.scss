@@ -209,10 +209,7 @@ ngb-datepicker {
                 border-radius: 50%;
                 line-height: 0.8rem;
 
-                &.selected {
-                  background-color: var(--selected);
-                  color: white;
-                }
+                
 
                 &.veset {
                   background-color: var(--blood);
@@ -230,6 +227,14 @@ ngb-datepicker {
                 &.prisha {
                   background-color: var(--prisha);
                   color: black;
+                }
+
+
+
+                
+                &.selected {
+                  background-color: var(--selected);
+                  color: white;
                 }
               }
 

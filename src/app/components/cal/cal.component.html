@@ -19,10 +19,10 @@
             {{i18n.getYearNumerals(month.year)}}
           </div>
           <div class="btn-group d-flex justify-content-end mb-2 ltr" role="group">
-            <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, -1)">
+            <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, 1)">
               <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
             </ion-button>
-            <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, 1)">
+            <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, -1)">
               <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
             </ion-button>
           </div>
@@ -69,7 +69,7 @@
       </span>
     </div>
     <div class="text">
-      loram ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
+      {{selectedHebDateDetails()}}
     </div>
   </div>
   <div class="add-btn">
