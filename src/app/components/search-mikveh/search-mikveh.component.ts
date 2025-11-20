@@ -27,7 +27,7 @@ import { TelHighlightPipe } from 'src/app/pipes/tel-highlight.pipe';
         DatePipe,
         // IonList,
         TranslateHebPipe,
-        TelHighlightPipe, 
+        TelHighlightPipe,
         // IonItem,
          IonSkeletonText],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -76,10 +76,10 @@ export class SearchMikvehComponent implements OnInit {
       return ordered;
 
     }),
-    
+
     tap(() => this.isLoading.set(false)),
     catchError((err) => {
-      console.error('Error fetching mikvehs:', err);  
+      console.error('Error fetching mikvehs:', err);
       this.isLoading.set(false);
       return [];
     })

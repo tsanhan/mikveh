@@ -72,7 +72,7 @@ export class CalComponent  {
     tap(val => {
       const selectedHebDate = this.selectedHebDate$.getValue();
       const {day,month,year} = selectedHebDate as NgbDateStruct;
-      const events = val[year][month][day].map((e:OutputEvent) => e.details).flat();
+      const events =  get(val, [year,month,day],[]).map((e:OutputEvent) => e.details).flat();
       this.selectedHebDateDetails.set(events);
     })
   );
@@ -84,7 +84,7 @@ export class CalComponent  {
   selectedDateHDate$: Observable<HDate> = this.selectedHebDate$.pipe(
     map((heb: NgbDateStruct) => NgbDateStructToHDate(heb))
   )
-  
+
   inputEvents$ = this.cal.inputEvents$;
 
   selectedHDateHeb$: Observable<string> = this.selectedDateHDate$.pipe(
@@ -102,13 +102,13 @@ export class CalComponent  {
     }
     )
   );
- 
+
 
   constructor(private el: ElementRef) {
     addIcons({ add, closeOutline, chevronBackOutline, chevronForwardOutline });
     this.dayTemplateData = this.dayTemplateData.bind(this);
   }
-  
+
   public dayTemplateData(date: NgbDateStruct) {
     return {
       gregorian: (this.calendar as NgbCalendarHebrew).toGregorian(date as NgbDate),
@@ -119,7 +119,8 @@ export class CalComponent  {
     console.log('onDateSelect:', event);
     const highlightedInputEvents:CalEventDict = await firstValueFrom(this.highlightedInputEvents$);
     const {day,month,year} = event as NgbDateStruct;
-    const events = highlightedInputEvents[year][month][day].map((e:OutputEvent) => e.details).flat();
+    const events = get(highlightedInputEvents,[year,month,day], []).map((e:OutputEvent) => e.details).flat();
+    this.selectedHebDate$.next(event);
     this.selectedHebDateDetails.set(events);
   };
 
@@ -136,7 +137,7 @@ export class CalComponent  {
     const { calendar } = datepicker;
     datepicker.navigateTo(calendar.getToday());
   }
-  
+
   async onDateChange(event: CustomEvent) {
     console.log('onDateChange:', event);
     const date = new Date(event.detail.value.split('T')[0] + 'T12:00:00'); // noon to avoid timezone issues
@@ -146,13 +147,13 @@ export class CalComponent  {
   onCloseCalAddEvent(event: CachedInputEvent | null) {
     !!event && this.cal.addEvent(event as CachedInputEvent);
     this.showEventModal.set(false);
-    
+
   }
 
   // isNidaDay(date: NgbDateStruct, calEventDict: CalEventDict) {
   //   const { year, month, day } = date;
   //   const eventsForDay = get(calEventDict,[year,month,day]) || [];
-  //   if(eventsForDay.length) 
+  //   if(eventsForDay.length)
   //     if(eventsForDay.some(e => [DayType.VESET, DayType.MAHZOR].includes(e.outputEventType)))
   //       return 'nida-day';
   //   return 'standard-day';
@@ -165,7 +166,7 @@ export class CalComponent  {
     const eventsForDay = get(calEventDict,[year,month,day]) || [];
     return eventsForDay.length && eventsForDay.some(e => e.outputEventType == typeToCompare);
   }
- 
- 
+
+
 }
 
