@@ -53,12 +53,21 @@ export class CalService {
     }),
     map((list: OutputEvent[]) => {
       const rtn: CalEventDict = {};
+      const aggregateDailyEvents = false;
 
       for (const event of list) {
         const { day, month, year } = event.date;
-        const events: OutputEvent[] = get(event, [year, month, day]) || [];
-        events.push({ ...event });
-        set(rtn, [year, month, day], [...events]);
+        if(aggregateDailyEvents){
+          // get events from returned obj
+          const events: OutputEvent[] = get(rtn, [year, month, day]) || [];
+          // add new event
+          events.push({ ...event });
+          // reset the added events
+          set(rtn, [year, month, day], [...events]);
+        } else {
+          // just set the most reset (relevant) event for that day
+          set(rtn, [year, month, day], [{ ...event }]);
+        }
       }
       return rtn;
     })
