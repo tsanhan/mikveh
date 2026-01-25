@@ -40,6 +40,12 @@ export class CalService {
             const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(event, sortedInputEvents, approach);
             list.push(...hashashotForVeset)
             break;
+          case InputEventType.HEFSEK_TAHARA:
+            // push hefsek tahara event
+            const sevenCleanDays: OutputEvent[] = this.getSevenCleanDays(event, sortedInputEvents, approach);
+            list.push(...sevenCleanDays)
+
+            break;
           case InputSpecificEventType.BDIKA_TMEA:
           // if it 7 days from the vesset then no need to push the hashashot forward, if it is then we should.
           // next day can be tested for hefsek tahara
@@ -82,11 +88,12 @@ export class CalService {
     this.cache.setInputEvents(event);
   }
 
-  getNidaDaysHashashotForVeset(vesetEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
-
+  getSevenCleanDays(vesetEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
     const rtn: OutputEvent[] = [];
-
-
+    return rtn;
+  }
+  getNidaDaysHashashotForVeset(vesetEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
+    const rtn: OutputEvent[] = [];
     const furstNidaDay: OutputEvent = {
       ...{ ...vesetEvent },
       CachedInputEventRef: { ...vesetEvent },

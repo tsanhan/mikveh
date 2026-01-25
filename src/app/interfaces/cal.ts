@@ -21,7 +21,7 @@ export interface OutputEvent {
   date: NgbDateStruct;
   outputEventType: DayType;
   ona?: InputEventOna;
-  specificType?: InputSpecificEventType;
+  specificType?: InputSpecificEventType | InputEventType;
   CachedInputEventRef: CachedInputEvent;
   details: string[];
 }
@@ -32,7 +32,7 @@ export interface CachedInputEvent {
   date: NgbDateStruct;
   type: InputEventType;
   ona: InputEventOna;
-  specificType: InputSpecificEventType;
+  specificType: InputSpecificEventType | InputEventType;
 }
 
 export enum DayType {
