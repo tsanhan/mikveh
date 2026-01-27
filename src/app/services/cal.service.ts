@@ -88,8 +88,26 @@ export class CalService {
     this.cache.setInputEvents(event);
   }
 
-  getSevenCleanDays(vesetEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
+  getSevenCleanDays(hefsekTaharaEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
     const rtn: OutputEvent[] = [];
+    for (let index = 1; index <= 7; index++) {
+      const { simpleDate } = hefsekTaharaEvent;
+      const newSimpleDate = new Date(simpleDate)
+      newSimpleDate.setDate(simpleDate.getDate() + index);
+      const hdate = simpleDateToHebrew(newSimpleDate)
+      const date = HDateToNgbDateStruct(hdate)
+
+      const nekyimDay: OutputEvent = {
+        CachedInputEventRef: { ...hefsekTaharaEvent },
+        simpleDate: newSimpleDate,
+        date,
+        outputEventType: DayType.MAHZOR,
+        details: [
+          `יום ${index}/7 נקיים`
+        ]
+      }
+      rtn.push(nekyimDay);
+    }
     return rtn;
   }
   getNidaDaysHashashotForVeset(vesetEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
