@@ -1,12 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { combineLatest, map, share, shareReplay } from 'rxjs';
-import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, InputEventType, InputSpecificEventType, OutputEvent } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, InputEventType, OutputEvent } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { ApproachService } from './approach.service';
-import { hDateStringToHDate, hDateSunsetAwareStringToDate, HDateToNgbDateStruct, NgbDateStructToHDate, simpleDateToHebrew } from '../utils/date.util';
-import { HDate } from '@hebcal/core';
+import { HDateToNgbDateStruct, simpleDateToHebrew } from '../utils/date.util';
 import { get, set } from 'lodash';
 
 @Injectable({
@@ -35,8 +34,8 @@ export class CalService {
       const sortedInputEvents = inputEvents.sort((a, b) => a.simpleDate.getTime() - b.simpleDate.getTime());
       // after the next veset all the hashahot of the current vesset are not relevant
       for (const event of sortedInputEvents) {
-        switch (event.specificType) {
-          case InputSpecificEventType.VESET:
+        switch (event.type) {
+          case InputEventType.VESET:
             const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(event, sortedInputEvents, approach);
             list.push(...hashashotForVeset)
             break;
@@ -46,10 +45,10 @@ export class CalService {
             list.push(...sevenCleanDays)
 
             break;
-          case InputSpecificEventType.BDIKA_TMEA:
+          case InputEventType.BDIKA_TMEA:
           // if it 7 days from the vesset then no need to push the hashashot forward, if it is then we should.
           // next day can be tested for hefsek tahara
-          case InputSpecificEventType.KETEM_TAME:
+          case InputEventType.KETEM_TAME:
             // is is during 7 nekyim remove the 7 nekeyim
             // next day can be tested for hefsek tahara
             break;

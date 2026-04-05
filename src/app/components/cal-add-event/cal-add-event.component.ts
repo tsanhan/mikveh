@@ -5,7 +5,7 @@ import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular
 import { heart, logoApple, pencilOutline, checkmarkOutline } from 'ionicons/icons';
 import { provideIcons } from '@ng-icons/core';
 import { featherEdit3 } from '@ng-icons/feather-icons';
-import { CachedInputEvent, InputEventOna, InputEventType, InputSpecificEventType } from 'src/app/interfaces/cal';
+import { CachedInputEvent, InputEventOna, InputEventType } from 'src/app/interfaces/cal';
 import { HDate } from '@hebcal/core';
 import { EventsService } from 'src/app/services/events.service';
 import { AsyncPipe } from '@angular/common';
@@ -33,11 +33,9 @@ export class CalAddEventComponent  implements OnInit {
 
 
   public InputEventTypeEnum = InputEventType;
-  public InputSpecificEventTypeEnum = InputSpecificEventType;
   public InputEventOnaEnum = InputEventOna;
 
   eventTypeFC: FormControl = new FormControl<InputEventType>(InputEventType.REIYA, { nonNullable: true });
-  eventSpecificTypeFC: FormControl = new FormControl<InputSpecificEventType>(InputSpecificEventType.VESET, { nonNullable: true });
   eventOnaFC: FormControl = new FormControl<InputEventOna>(InputEventOna.YOM, { nonNullable: true });
 
   
@@ -68,7 +66,6 @@ export class CalAddEventComponent  implements OnInit {
       date: ngbDateStruct,
       type: this.eventTypeFC.value,
       ona: this.eventOnaFC.value,
-      specificType: this.eventSpecificTypeFC.value,
     };
     this.closeAddEvent.emit(eventToEmit);
   }

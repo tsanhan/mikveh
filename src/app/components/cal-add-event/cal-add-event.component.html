@@ -5,14 +5,6 @@
   <ion-radio-group [formControl]="eventTypeFC" [value]="InputEventTypeEnum.REIYA" class="d-flex flex-row gap-2">
     <ion-radio [value]="InputEventTypeEnum.REIYA">ראייה</ion-radio>
     <ion-radio [value]="InputEventTypeEnum.HEFSEK_TAHARA">הפסק טהרה</ion-radio>
-    <!-- <ion-radio value="TVILA">טבילה</ion-radio> -->
-    <!-- 
-    <ion-radio value="HEARA" class="icon">
-      <ion-button shape="round" size="small" fill="clear">
-        <ion-icon slot="icon-only" src="assets/icon/edit-3.svg">.</ion-icon>
-      </ion-button>
-    </ion-radio> 
-    -->
   </ion-radio-group>
 </div>
 <div class="text">
@@ -30,10 +22,10 @@
 @switch (eventTypeFC.value) {
   @case (InputEventTypeEnum.REIYA) {
   <div class="buttons">
-    <ion-radio-group [formControl]="eventSpecificTypeFC" [value]="InputSpecificEventTypeEnum.VESET" class="d-flex flex-row gap-2">
-      <ion-radio [value]="InputSpecificEventTypeEnum.VESET">ווסט</ion-radio>
-      <ion-radio [value]="InputSpecificEventTypeEnum.KETEM_TAME">כתם טמא</ion-radio>
-      <ion-radio [value]="InputSpecificEventTypeEnum.BDIKA_TMEA">בדיקה טמאה</ion-radio>
+    <ion-radio-group [formControl]="eventTypeFC" [value]="InputEventTypeEnum.VESET" class="d-flex flex-row gap-2">
+      <ion-radio [value]="InputEventTypeEnum.VESET">ווסט</ion-radio>
+      <ion-radio [value]="InputEventTypeEnum.KETEM_TAME">כתם טמא</ion-radio>
+      <ion-radio [value]="InputEventTypeEnum.BDIKA_TMEA">בדיקה טמאה</ion-radio>
     </ion-radio-group>
   </div>
   }
