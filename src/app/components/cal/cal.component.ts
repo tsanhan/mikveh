@@ -26,7 +26,7 @@ import { CalService } from 'src/app/services/cal.service';
 import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CachedInputEvent, CalEventDict, DayType, OutputEvent } from 'src/app/interfaces/cal';
+import { CachedInputEvent, CalEventDict, DayType, InputEventType, OutputEvent } from 'src/app/interfaces/cal';
 import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate } from 'src/app/utils/date.util';
 import {
   NgbCalendar,
@@ -77,6 +77,7 @@ export class CalComponent  {
     })
   );
   public dayType = DayType;
+  public inputEventType = InputEventType;
 
   @ViewChild('dt', { static: true }) dtRef!: any;
   selectedDate$ = new BehaviorSubject<Date>(new Date());
@@ -161,7 +162,7 @@ export class CalComponent  {
   //   // return eventsForDay.some(event => event.type === InputEventType.SEE_BLOOD);
   // }
 
-  isADay(date: NgbDateStruct, calEventDict: CalEventDict, typeToCompare: DayType) {
+  isADay(date: NgbDateStruct, calEventDict: CalEventDict, typeToCompare: DayType | InputEventType) {
     const { year, month, day } = date;
     const eventsForDay = get(calEventDict,[year,month,day]) || [];
     return eventsForDay.length && eventsForDay.some(e => e.outputEventType == typeToCompare);

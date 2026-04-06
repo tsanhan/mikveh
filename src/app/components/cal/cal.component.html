@@ -36,20 +36,20 @@
 
 <ng-template #dt let-date let-data="data" let-selected="selected" let-currentMonth="currentMonth">
   @if(highlightedInputEvents$ | async; as CalEventDict ) {
-    <div  
+    <div
     [ngClass]="{
       'hebrew-day': true,
       'outside': date.month !== currentMonth,
       selected,
-      'veset': isADay(date, CalEventDict, dayType.VESET),
+      'veset': isADay(date, CalEventDict, inputEventType.VESET),
       'mahzor': isADay(date, CalEventDict, dayType.MAHZOR),
       'canStartHefsek': isADay(date, CalEventDict, dayType.CAN_START_CHECK_HEFSEK),
       'sevenCleans': isADay(date, CalEventDict, dayType.SEVEN_CLEAN),
       'mikvehDay': isADay(date, CalEventDict, dayType.MIKVEH_DAY),
       'muteret': isADay(date, CalEventDict, dayType.MUTERET),
       'prisha': isADay(date, CalEventDict, dayType.PRISHA),
-      'ketemTame': isADay(date, CalEventDict, dayType.KETEM_TAME),
-      'bdikaTmea': isADay(date, CalEventDict, dayType.BDIKA_TMEA),
+      'ketemTame': isADay(date, CalEventDict, inputEventType.KETEM_TAME),
+      'bdikaTmea': isADay(date, CalEventDict, inputEventType.BDIKA_TMEA),
     }"
     >
       <div class="gregorian-num">{{ data.gregorian.day + '.' + data.gregorian.month }}</div>
@@ -77,7 +77,4 @@
       <ion-icon slot="icon-only" name="add"></ion-icon>
     </ion-button>
   </div>
-</div>
-<div>
-  <pre>Model: {{ showEventModal()}}</pre>
 </div>

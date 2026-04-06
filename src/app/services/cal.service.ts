@@ -114,7 +114,7 @@ export class CalService {
     const furstNidaDay: OutputEvent = {
       ...{ ...vesetEvent },
       CachedInputEventRef: { ...vesetEvent },
-      outputEventType: DayType.VESET,
+      outputEventType: InputEventType.VESET,
       details: [
         "ווסט החודש"
       ]
