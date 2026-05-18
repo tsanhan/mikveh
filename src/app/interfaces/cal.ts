@@ -39,6 +39,7 @@ export enum DayType {
   MIKVEH_DAY = 'mikvehDay',
   MUTERET = 'muteret',
   PRISHA = 'prisha',
+  ONA_BEINONIT = 'onaBeinonit',
 }
 
 export enum InputEventOna {

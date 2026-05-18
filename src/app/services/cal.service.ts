@@ -273,24 +273,26 @@ export class CalService {
       ]
     }
 
-    // hashash binonit
-    let hashashBinonitHDate = simpleDateToHebrew(vesetSimpleDate);
-    hashashBinonitHDate = hashashBinonitHDate.add(1, "M");
-    const hashashBinonitDate = HDateToNgbDateStruct(hashashBinonitHDate);
-    const hashashBinonit: OutputEvent = {
+    // Hashash Onah Beinonit:
+    //   30 *solar* days after the veset (NOT one Hebrew month).
+    //   The hashash falls on the same ona (day / night) as the original veset.
+    const onaBeinonitSimpleDate = new Date(vesetSimpleDate);
+    onaBeinonitSimpleDate.setDate(vesetSimpleDate.getDate() + 30);
+    const onaBeinonitHDate = simpleDateToHebrew(onaBeinonitSimpleDate);
+    const hashashOnaBeinonit: OutputEvent = {
       CachedInputEventRef: { ...vesetEvent },
-      simpleDate: vesetSimpleDate,
-      date: hashashBinonitDate,
-      outputEventType: DayType.PRISHA,
+      simpleDate: onaBeinonitSimpleDate,
+      date: HDateToNgbDateStruct(onaBeinonitHDate),
+      outputEventType: DayType.ONA_BEINONIT,
       details: [
-        `חשש בינונית`
+        `חשש עונה בינונית`
       ]
     }
 
     rtn.push(furstNidaDay);
     rtn.push(...mahzorDays);
     rtn.push(startBdikot);
-    rtn.push(hashashBinonit);
+    rtn.push(hashashOnaBeinonit);
 
     return rtn;
   }
