@@ -40,6 +40,8 @@ export enum DayType {
   MUTERET = 'muteret',
   PRISHA = 'prisha',
   ONA_BEINONIT = 'onaBeinonit',
+  VESET_HACHODESH_DAY = 'vesetHachodeshDay',
+  VESET_HACHODESH_NIGHT = 'vesetHachodeshNight',
 }
 
 export enum InputEventOna {

@@ -66,7 +66,7 @@ export class CalService {
     }),
     map((list: OutputEvent[]) => {
       const rtn: CalEventDict = {};
-      const aggregateDailyEvents = false;
+      const aggregateDailyEvents = true;
 
       for (const event of list) {
         const { day, month, year } = event.date;
@@ -289,10 +289,28 @@ export class CalService {
       ]
     }
 
+    // Hashash Veset HaChodesh:
+    //   Same Hebrew day, next Hebrew month.
+    //   The hashash falls on the same ona (day / night) as the original veset.
+    const vesetHaChodeshHDate = simpleDateToHebrew(vesetSimpleDate).add(1, "M");
+    const vesetHaChodeshType = vesetEvent.ona === InputEventOna.LAYLA
+      ? DayType.VESET_HACHODESH_NIGHT
+      : DayType.VESET_HACHODESH_DAY;
+    const hashashVesetHaChodesh: OutputEvent = {
+      CachedInputEventRef: { ...vesetEvent },
+      simpleDate: vesetHaChodeshHDate.greg(),
+      date: HDateToNgbDateStruct(vesetHaChodeshHDate),
+      outputEventType: vesetHaChodeshType,
+      details: [
+        `חשש וסת החודש - ${onaLabel}`
+      ]
+    }
+
     rtn.push(furstNidaDay);
     rtn.push(...mahzorDays);
     rtn.push(startBdikot);
     rtn.push(hashashOnaBeinonit);
+    rtn.push(hashashVesetHaChodesh);
 
     return rtn;
   }

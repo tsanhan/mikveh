@@ -233,6 +233,23 @@ ngb-datepicker {
                   background-color: #ffd54f;
                   color: black;
                 }
+                // Veset HaChodesh — half circle. Day = top half, Night = bottom half.
+                &.vesetHachodeshDay {
+                  background: linear-gradient(to bottom, #64b5f6 50%, transparent 50%);
+                  color: black;
+                }
+                &.vesetHachodeshNight {
+                  background: linear-gradient(to bottom, transparent 50%, #3949ab 50%);
+                  color: black;
+                }
+                // Combinations: Veset HaChodesh half + Onah Beinonit on the other half
+                &.onaBeinonit.vesetHachodeshDay {
+                  background: linear-gradient(to bottom, #64b5f6 50%, #ffd54f 50%);
+                }
+                &.onaBeinonit.vesetHachodeshNight {
+                  background: linear-gradient(to bottom, #ffd54f 50%, #3949ab 50%);
+                  color: black;
+                }
 
 
 
