@@ -1,12 +1,16 @@
 import { inject, Injectable } from '@angular/core';
 import { combineLatest, map, share, shareReplay } from 'rxjs';
-import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, InputEventType, OutputEvent } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, InputEventOna, InputEventType, OutputEvent } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { ApproachService } from './approach.service';
 import { HDateToNgbDateStruct, simpleDateToHebrew } from '../utils/date.util';
 import { get, set } from 'lodash';
+
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+const nidaDaysFor = (approach: Approach) =>
+  approach.name === ApproachName.SEPHARDI ? 4 : 5;
 
 @Injectable({
   providedIn: 'root',
@@ -30,27 +34,31 @@ export class CalService {
   highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
     map(([inputEvents, approach]: [CachedInputEvent[], Approach]) => {
       const list: OutputEvent[] = [];
+      const forNum = nidaDaysFor(approach);
       // split by veset
-      const sortedInputEvents = inputEvents.sort((a, b) => a.simpleDate.getTime() - b.simpleDate.getTime());
-      // after the next veset all the hashahot of the current vesset are not relevant
+      const sortedInputEvents = inputEvents.sort(
+        (a, b) => new Date(a.simpleDate).getTime() - new Date(b.simpleDate).getTime(),
+      );
+      // VESET / KETEM events that have already been absorbed into an earlier
+      // niddah chain – don't generate a second Hefsek for them.
+      const handled = new Set<CachedInputEvent>();
       for (const event of sortedInputEvents) {
+        if (handled.has(event)) continue;
         switch (event.type) {
-          case InputEventType.VESET:
-            const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(event, sortedInputEvents, approach);
-            list.push(...hashashotForVeset)
+          case InputEventType.VESET: {
+            const chainLast = this.extendChain(event, sortedInputEvents, forNum, handled);
+            const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(event, chainLast, approach);
+            list.push(...hashashotForVeset);
             break;
-          case InputEventType.HEFSEK_TAHARA:
-            // push hefsek tahara event
+          }
+          case InputEventType.HEFSEK_TAHARA: {
             const sevenCleanDays: OutputEvent[] = this.getSevenCleanDays(event, sortedInputEvents, approach);
-            list.push(...sevenCleanDays)
-
+            list.push(...sevenCleanDays);
             break;
+          }
           case InputEventType.BDIKA_TMEA:
-          // if it 7 days from the vesset then no need to push the hashashot forward, if it is then we should.
-          // next day can be tested for hefsek tahara
           case InputEventType.KETEM_TAME:
-            // is is during 7 nekyim remove the 7 nekeyim
-            // next day can be tested for hefsek tahara
+            // Standalone ketem / bdika – not chained to a veset. Skip for now.
             break;
         }
       }
@@ -87,6 +95,103 @@ export class CalService {
     this.cache.setInputEvents(event);
   }
 
+  removeEvent(event: CachedInputEvent) {
+    this.cache.removeInputEvent(event);
+  }
+
+  /**
+   * Returns true if a Hefsek Tahara can be added on `date` – i.e. there is at
+   * least one prior sighting (Veset / Ketem Tame / Bdika Tmea) on or before
+   * that date.
+   */
+  canAddHefsekTahara(date: Date): boolean {
+    const t = new Date(date).getTime();
+    return this.cache.getInputEvents().some(e =>
+      (e.type === InputEventType.VESET ||
+        e.type === InputEventType.KETEM_TAME ||
+        e.type === InputEventType.BDIKA_TMEA) &&
+      new Date(e.simpleDate).getTime() <= t,
+    );
+  }
+
+  /**
+   * Returns null if the new event is allowed, or an error message in Hebrew otherwise.
+   * Currently blocks a Hefsek Tahara that is added too close to (or before) the
+   * latest Veset / Ketem Tame event – the woman has at least `nidaDays` days of
+   * Niddah (4 for Sephardi, 5 for Ashkenazi / Chabad) before a Hefsek Tahara is
+   * meaningful.
+   */
+  validateNewInputEvent(event: CachedInputEvent): string | null {
+    if (event.type !== InputEventType.HEFSEK_TAHARA) return null;
+
+    const approach = this.approach.approach$.getValue();
+    const minNidaDays = nidaDaysFor(approach);
+
+    const allEvents = this.cache.getInputEvents();
+    const newDate = new Date(event.simpleDate).getTime();
+
+    const lastVesetOrKetem = allEvents
+      .filter((e: CachedInputEvent) =>
+        (e.type === InputEventType.VESET ||
+          e.type === InputEventType.KETEM_TAME ||
+          e.type === InputEventType.BDIKA_TMEA) &&
+        new Date(e.simpleDate).getTime() <= newDate)
+      .sort((a: CachedInputEvent, b: CachedInputEvent) =>
+        new Date(b.simpleDate).getTime() - new Date(a.simpleDate).getTime())[0];
+
+    if (!lastVesetOrKetem) {
+      return 'לא ניתן להוסיף הפסק טהרה ללא וסת או כתם טמא קודם';
+    }
+
+    const diffDays = Math.floor(
+      (newDate - new Date(lastVesetOrKetem.simpleDate).getTime()) / MS_PER_DAY,
+    );
+    // The bleeding day itself counts as day 1 of niddah, so the earliest
+    // possible Hefsek Tahara is on day `minNidaDays` → diff of `minNidaDays - 1`.
+    const minDiff = minNidaDays - 1;
+    if (diffDays < minDiff) {
+      const missing = minDiff - diffDays;
+      return `לא ניתן להוסיף הפסק טהרה — נדרשים לפחות ${minNidaDays} ימי נידה מהווסת/כתם האחרון (חסרים ${missing} ימים)`;
+    }
+    return null;
+  }
+
+  /**
+   * Walks forward from `start` and absorbs any VESET / KETEM_TAME event that
+   * falls within the current niddah window (`forNum - 1` days after the
+   * latest event in the chain). Returns the last event in the chain.
+   * All absorbed events are added to the `handled` set so the caller will
+   * not generate a separate Hefsek Tahara marker for them.
+   */
+  private extendChain(
+    start: CachedInputEvent,
+    sortedEvents: CachedInputEvent[],
+    forNum: number,
+    handled: Set<CachedInputEvent>,
+  ): CachedInputEvent {
+    handled.add(start);
+    let latest = start;
+    let extended = true;
+    while (extended) {
+      extended = false;
+      const cutoff = new Date(latest.simpleDate);
+      cutoff.setDate(cutoff.getDate() + forNum - 1);
+      const cutoffT = cutoff.getTime();
+      const latestT = new Date(latest.simpleDate).getTime();
+      for (const e of sortedEvents) {
+        if (handled.has(e)) continue;
+        if (e.type !== InputEventType.VESET && e.type !== InputEventType.KETEM_TAME) continue;
+        const t = new Date(e.simpleDate).getTime();
+        if (t > latestT && t <= cutoffT) {
+          latest = e;
+          handled.add(e);
+          extended = true;
+        }
+      }
+    }
+    return latest;
+  }
+
   getSevenCleanDays(hefsekTaharaEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
     const rtn: OutputEvent[] = [];
     for (let index = 1; index <= 7; index++) {
@@ -109,23 +214,35 @@ export class CalService {
     }
     return rtn;
   }
-  getNidaDaysHashashotForVeset(vesetEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
+  getNidaDaysHashashotForVeset(
+    vesetEvent: CachedInputEvent,
+    chainLast: CachedInputEvent,
+    approach: Approach,
+  ): OutputEvent[] {
     const rtn: OutputEvent[] = [];
+    const onaLabel = vesetEvent.ona === InputEventOna.LAYLA ? 'לילה' : 'יום';
+    const forNum = nidaDaysFor(approach);
+
+    const vesetSimpleDate = new Date(vesetEvent.simpleDate);
+    const chainLastDate = new Date(chainLast.simpleDate);
+    // niddah days run from the veset day up to (chainLast + forNum - 1),
+    // because the veset day itself counts as day 1 of niddah.
+    const totalNidaDays =
+      Math.floor((chainLastDate.getTime() - vesetSimpleDate.getTime()) / MS_PER_DAY) + forNum;
+
     const furstNidaDay: OutputEvent = {
       ...{ ...vesetEvent },
       CachedInputEventRef: { ...vesetEvent },
       outputEventType: InputEventType.VESET,
       details: [
-        "ווסט החודש"
+        'ווסת – יום 1 לנידה'
       ]
     }
-    //MAHZOR
+    // niddah days 2..totalNidaDays
     const mahzorDays: OutputEvent[] = [];
-    const forNum = (approach.name == ApproachName.SEPHARDI ? 4 : 5)
-    for (let index = 1; index <= forNum; index++) {
-      const { simpleDate } = vesetEvent;
-      const newSimpleDate = new Date(simpleDate)
-      newSimpleDate.setDate(simpleDate.getDate() + index);
+    for (let index = 1; index < totalNidaDays; index++) {
+      const newSimpleDate = new Date(vesetSimpleDate);
+      newSimpleDate.setDate(vesetSimpleDate.getDate() + index);
       const hdate = simpleDateToHebrew(newSimpleDate)
       const date = HDateToNgbDateStruct(hdate)
       const nidaDay: OutputEvent = {
@@ -134,21 +251,21 @@ export class CalService {
         date,
         outputEventType: DayType.MAHZOR,
         details: [
-          `יום ${index} לנידה`
+          `יום ${index + 1} לנידה`
         ]
       }
       mahzorDays.push(nidaDay);
     }
-    const { simpleDate } = vesetEvent;
-    const newSimpleDate = new Date(simpleDate)
 
-    // can start bdikot
-    let startBdikotHDate = simpleDateToHebrew(newSimpleDate)
-    startBdikotHDate = startBdikotHDate.add(forNum + 1, "DAYS");
-    const startBdikotDate = HDateToNgbDateStruct(startBdikotHDate)
+    // Hefsek Tahara is done on the last niddah day (afternoon),
+    // i.e. `chainLast + forNum - 1` days.
+    const startBdikotSimpleDate = new Date(chainLastDate);
+    startBdikotSimpleDate.setDate(chainLastDate.getDate() + forNum - 1);
+    const startBdikotHDate = simpleDateToHebrew(startBdikotSimpleDate);
+    const startBdikotDate = HDateToNgbDateStruct(startBdikotHDate);
     const startBdikot: OutputEvent = {
       CachedInputEventRef: { ...vesetEvent },
-      simpleDate: newSimpleDate,
+      simpleDate: startBdikotSimpleDate,
       date: startBdikotDate,
       outputEventType: DayType.CAN_START_CHECK_HEFSEK,
       details: [
@@ -156,14 +273,13 @@ export class CalService {
       ]
     }
 
-
     // hashash binonit
-    let hashashBinonitHDate = simpleDateToHebrew(newSimpleDate)
+    let hashashBinonitHDate = simpleDateToHebrew(vesetSimpleDate);
     hashashBinonitHDate = hashashBinonitHDate.add(1, "M");
-    const hashashBinonitDate = HDateToNgbDateStruct(hashashBinonitHDate)
+    const hashashBinonitDate = HDateToNgbDateStruct(hashashBinonitHDate);
     const hashashBinonit: OutputEvent = {
       CachedInputEventRef: { ...vesetEvent },
-      simpleDate: newSimpleDate,
+      simpleDate: vesetSimpleDate,
       date: hashashBinonitDate,
       outputEventType: DayType.PRISHA,
       details: [
@@ -175,7 +291,6 @@ export class CalService {
     rtn.push(...mahzorDays);
     rtn.push(startBdikot);
     rtn.push(hashashBinonit);
-
 
     return rtn;
   }

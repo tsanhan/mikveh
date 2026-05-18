@@ -1,38 +1,25 @@
 <div class="headline">
   הוספה
 </div>
+<div class="text">
+  בחרי את סוג האירוע
+</div>
 <div class="buttons">
-  <ion-radio-group [formControl]="eventTypeFC" [value]="InputEventTypeEnum.REIYA" class="d-flex flex-row gap-2">
-    <ion-radio [value]="InputEventTypeEnum.REIYA">ראייה</ion-radio>
-    <ion-radio [value]="InputEventTypeEnum.HEFSEK_TAHARA">הפסק טהרה</ion-radio>
+  <ion-radio-group [formControl]="eventTypeFC" [value]="InputEventTypeEnum.VESET" class="d-flex flex-row gap-2">
+    <ion-radio [value]="InputEventTypeEnum.VESET">ווסת</ion-radio>
+    <ion-radio [value]="InputEventTypeEnum.KETEM_TAME">כתם טמא</ion-radio>
+    <ion-radio [value]="InputEventTypeEnum.BDIKA_TMEA">בדיקה טמאה</ion-radio>
+    @if (canAddHefsek) {
+      <ion-radio [value]="InputEventTypeEnum.HEFSEK_TAHARA">הפסק טהרה</ion-radio>
+    }
   </ion-radio-group>
 </div>
-<div class="text">
-  @switch (eventTypeFC.value) {
-    @case (InputEventTypeEnum.REIYA) {
-    <div>
-      בחרי את סוג הראיה
-    </div>
-    }
-    @case (InputEventTypeEnum.HEFSEK_TAHARA) {
-      הפסק טהרה - סימנים שהטומאה הסתיימה
-    }
-  }
-</div>
-@switch (eventTypeFC.value) {
-  @case (InputEventTypeEnum.REIYA) {
-  <div class="buttons">
-    <ion-radio-group [formControl]="eventTypeFC" [value]="InputEventTypeEnum.VESET" class="d-flex flex-row gap-2">
-      <ion-radio [value]="InputEventTypeEnum.VESET">ווסט</ion-radio>
-      <ion-radio [value]="InputEventTypeEnum.KETEM_TAME">כתם טמא</ion-radio>
-      <ion-radio [value]="InputEventTypeEnum.BDIKA_TMEA">בדיקה טמאה</ion-radio>
-    </ion-radio-group>
+@if (eventTypeFC.value === InputEventTypeEnum.HEFSEK_TAHARA) {
+  <div class="text">
+    הפסק טהרה - סימנים שהטומאה הסתיימה
   </div>
-  }
-}
-<div class="text">
-  @switch (eventTypeFC.value) {
-    @case (InputEventTypeEnum.REIYA) {
+} @else {
+  <div class="text">
     <div>
       בחרי את עונת הראיה
     </div>
@@ -42,11 +29,7 @@
       </span>
       <span>זריחה: {{sunriseByDate(hdate) | async }} שקיעה: {{sunsetByDate(hdate) | async }}</span>
     </div>
-    }
-  }
-</div>
-@switch (eventTypeFC.value) {
-  @case (InputEventTypeEnum.REIYA) {
+  </div>
   <div class="buttons">
     <ion-radio-group [formControl]="eventOnaFC" [value]="InputEventOnaEnum.YOM" class="d-flex flex-row gap-2">
       <ion-radio [value]="InputEventOnaEnum.YOM">יום</ion-radio>
@@ -58,7 +41,6 @@
       עונת יום - מזריחה לשקיעה עונת לילה - משקיעה לזריחה
     </div>
   </div>
-  }
 }
 <div class="buttons">
   <ion-button class="cancel-btn" size="small" expand="block" shape="round" fill="outline"

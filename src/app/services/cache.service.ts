@@ -151,16 +151,30 @@ export class CacheService {
   }
 
   public setInputEvents(event: CachedInputEvent) {
-    const currentEvents = this._inputEvents$.getValue();
-    currentEvents.push({...event});
+    const currentEvents = [...this._inputEvents$.getValue(), { ...event }];
     this._inputEvents$.next(currentEvents);
     this._calEventsStorage.set('inputEvents', currentEvents);
-
   }
 
   public getCalEvents(): CachedCalEvent[] {
     const currentEvents = this._calEvents$.getValue();
     return currentEvents;
+  }
+
+  public getInputEvents(): CachedInputEvent[] {
+    return this._inputEvents$.getValue();
+  }
+
+  public removeInputEvent(event: CachedInputEvent) {
+    const eventTime = new Date(event.simpleDate).getTime();
+    const remaining = this._inputEvents$.getValue().filter(
+      e =>
+        !(new Date(e.simpleDate).getTime() === eventTime &&
+          e.type === event.type &&
+          e.ona === event.ona),
+    );
+    this._inputEvents$.next(remaining);
+    this._calEventsStorage.set('inputEvents', remaining);
   }
 
 

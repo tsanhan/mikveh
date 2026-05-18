@@ -8,12 +8,13 @@ import {
   ViewChild,
   WritableSignal,
 } from '@angular/core';
-import { IonButton, IonIcon } from '@ionic/angular/standalone';
+import { AlertController, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { HDate } from '@hebcal/core';
 import { CommonModule } from '@angular/common';
 import '@hebcal/cities';
 import {
   BehaviorSubject,
+  combineLatest,
   firstValueFrom,
   map,
   Observable,
@@ -88,6 +89,36 @@ export class CalComponent  {
 
   inputEvents$ = this.cal.inputEvents$;
 
+  // Input events that fall on the currently selected calendar day.
+  selectedDayInputEvents$: Observable<CachedInputEvent[]> = combineLatest([
+    this.inputEvents$,
+    this.selectedHebDate$,
+  ]).pipe(
+    map(([events, sel]: [CachedInputEvent[], NgbDateStruct]) =>
+      events.filter(e =>
+        e.date.year === sel.year &&
+        e.date.month === sel.month &&
+        e.date.day === sel.day),
+    ),
+  );
+
+  inputEventTypeLabels: Record<string, string> = {
+    [InputEventType.VESET]: 'ווסת',
+    [InputEventType.KETEM_TAME]: 'כתם טמא',
+    [InputEventType.BDIKA_TMEA]: 'בדיקה טמאה',
+    [InputEventType.HEFSEK_TAHARA]: 'הפסק טהרה',
+    [InputEventType.REIYA]: 'ראיה',
+  };
+
+  inputEventLabel(e: CachedInputEvent): string {
+    const base = this.inputEventTypeLabels[e.type] ?? e.type;
+    if (e.type === InputEventType.VESET || e.type === InputEventType.KETEM_TAME) {
+      const ona = e.ona === 'layla' ? 'לילה' : 'יום';
+      return `${base} (${ona})`;
+    }
+    return base;
+  }
+
   selectedHDateHeb$: Observable<string> = this.selectedDateHDate$.pipe(
     map((date: HDate) => hebDateToHebrew(date))
   );
@@ -145,10 +176,39 @@ export class CalComponent  {
     this.selectedDate$.next(date);
   }
 
-  onCloseCalAddEvent(event: CachedInputEvent | null) {
-    !!event && this.cal.addEvent(event as CachedInputEvent);
-    this.showEventModal.set(false);
+  private alertCtrl = inject(AlertController);
 
+  async onCloseCalAddEvent(event: CachedInputEvent | null) {
+    if (event) {
+      const error = this.cal.validateNewInputEvent(event);
+      if (error) {
+        const alert = await this.alertCtrl.create({
+          header: 'שגיאה',
+          message: error,
+          buttons: ['סגור'],
+        });
+        await alert.present();
+        return;
+      }
+      this.cal.addEvent(event);
+    }
+    this.showEventModal.set(false);
+  }
+
+  async onRemoveInputEvent(event: CachedInputEvent) {
+    const alert = await this.alertCtrl.create({
+      header: 'מחיקת אירוע',
+      message: `למחוק את האירוע "${this.inputEventLabel(event)}"?`,
+      buttons: [
+        { text: 'ביטול', role: 'cancel' },
+        {
+          text: 'מחק',
+          role: 'destructive',
+          handler: () => this.cal.removeEvent(event),
+        },
+      ],
+    });
+    await alert.present();
   }
 
   // isNidaDay(date: NgbDateStruct, calEventDict: CalEventDict) {

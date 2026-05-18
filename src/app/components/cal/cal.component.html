@@ -71,6 +71,21 @@
     <div class="text">
       {{selectedHebDateDetails()}}
     </div>
+    @if (selectedDayInputEvents$ | async; as dayInputs) {
+      @if (dayInputs.length) {
+        <div class="day-input-events">
+          @for (e of dayInputs; track e) {
+            <div class="day-input-event">
+              <span class="label">{{ inputEventLabel(e) }}</span>
+              <ion-button size="small" fill="clear" color="danger"
+                (click)="onRemoveInputEvent(e)">
+                <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+              </ion-button>
+            </div>
+          }
+        </div>
+      }
+    }
   </div>
   <div class="add-btn">
     <ion-button shape="round" (click)="showAddEvent()">

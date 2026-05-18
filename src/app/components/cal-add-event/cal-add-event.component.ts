@@ -35,22 +35,28 @@ export class CalAddEventComponent  implements OnInit {
   public InputEventTypeEnum = InputEventType;
   public InputEventOnaEnum = InputEventOna;
 
-  eventTypeFC: FormControl = new FormControl<InputEventType>(InputEventType.REIYA, { nonNullable: true });
+  eventTypeFC: FormControl = new FormControl<InputEventType>(InputEventType.VESET, { nonNullable: true });
   eventOnaFC: FormControl = new FormControl<InputEventOna>(InputEventOna.YOM, { nonNullable: true });
 
   
   events = inject(EventsService);
+  cal = inject(CalService);
   sunriseByDate = (hdate: HDate) => this.events.sunriseByDate(hdate.greg() as Date);
   sunsetByDate = (hdate: HDate) => this.events.sunsetByDate(hdate?.greg() as Date);
 
-
+  // True when the woman has at least one prior sighting (Veset / Ketem / Bdika Tmea)
+  // on or before the selected date – Hefsek Tahara is meaningless without one.
+  canAddHefsek = false;
 
   constructor() { 
     addIcons({ logoApple, pencilOutline,heart, featherEdit3, checkmarkOutline  });
   }
 
   ngOnInit() {
-   
+    this.canAddHefsek = this.cal.canAddHefsekTahara(this.hdate.greg() as Date);
+    if (!this.canAddHefsek && this.eventTypeFC.value === InputEventType.HEFSEK_TAHARA) {
+      this.eventTypeFC.setValue(InputEventType.VESET);
+    }
   }
 
   cancelAddEvent() {

@@ -334,6 +334,33 @@ ngb-datepicker-navigation {
     }
   }
 
+  & .day-input-events {
+    margin-top: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    & .day-input-event {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 8px;
+      padding: 0 0.5rem;
+
+      & .label {
+        font-size: 0.9rem;
+      }
+
+      & ion-button {
+        --padding-start: 4px;
+        --padding-end: 4px;
+        margin: 0;
+        height: 1.6rem;
+      }
+    }
+  }
+
   & .add-btn {
     align-items: center;
     display: flex;
