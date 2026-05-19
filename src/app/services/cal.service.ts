@@ -97,6 +97,20 @@ export class CalService {
 
   removeEvent(event: CachedInputEvent) {
     this.cache.removeInputEvent(event);
+    const remaining = this.cache.getInputEvents();
+    const orphanedHefsekim = remaining.filter((e: CachedInputEvent) => {
+      if (e.type !== InputEventType.HEFSEK_TAHARA) return false;
+      const t = new Date(e.simpleDate).getTime();
+      return !remaining.some((o: CachedInputEvent) =>
+        (o.type === InputEventType.VESET ||
+          o.type === InputEventType.KETEM_TAME ||
+          o.type === InputEventType.BDIKA_TMEA) &&
+        new Date(o.simpleDate).getTime() <= t,
+      );
+    });
+    for (const orphan of orphanedHefsekim) {
+      this.cache.removeInputEvent(orphan);
+    }
   }
 
   /**
