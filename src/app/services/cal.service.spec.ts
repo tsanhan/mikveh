@@ -126,42 +126,69 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
   // getSevenCleanDays
   // ---------------------------------------------------------------------------
   describe('getSevenCleanDays()', () => {
-    it('returns exactly 7 days, starting one day after the Hefsek Tahara', () => {
+    it('returns 7 nekiim days + 1 mikveh marker on day 7 (8 events total)', () => {
       const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
-      const days = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
+      const events = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
 
-      expect(days.length).toBe(7);
-      days.forEach((d, i) => {
-        expect(dayDiff(hefsek.simpleDate, d.simpleDate)).toBe(i + 1);
-      });
+      const nekiim = events.filter(e => e.outputEventType === DayType.SEVEN_CLEAN);
+      const mikveh = events.filter(e => e.outputEventType === DayType.MIKVEH_DAY);
+
+      expect(nekiim.length).toBe(7);
+      expect(mikveh.length).toBe(1);
+      expect(events.length).toBe(8);
     });
 
-    it('details are labelled "יום N/7 נקיים"', () => {
+    it('the 7 nekiim days are tagged SEVEN_CLEAN (not MAHZOR)', () => {
       const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
-      const days = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
-      days.forEach((d, i) => {
+      const nekiim = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD)
+        .filter(e => e.outputEventType === DayType.SEVEN_CLEAN);
+      for (const d of nekiim) {
+        expect(d.outputEventType).toBe(DayType.SEVEN_CLEAN);
+      }
+    });
+
+    it('nekiim days fall on hefsek+1 .. hefsek+7', () => {
+      const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
+      const nekiim = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD)
+        .filter(e => e.outputEventType === DayType.SEVEN_CLEAN);
+      nekiim.forEach((d, i) => {
+        expect(dayDiff(hefsek.simpleDate, d.simpleDate)).toBe(i + 1);
         expect(d.details).toEqual([`יום ${i + 1}/7 נקיים`]);
       });
     });
 
-    it('every nekiim day references the Hefsek Tahara that produced it', () => {
+    it('mikveh marker shares the Gregorian date of nekiim day 7', () => {
       const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
-      const days = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
-      for (const d of days) {
+      const events = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
+
+      const nekiim7 = events.filter(e => e.outputEventType === DayType.SEVEN_CLEAN)[6];
+      const mikveh = events.find(e => e.outputEventType === DayType.MIKVEH_DAY)!;
+
+      expect(mikveh.simpleDate.getTime()).toBe(nekiim7.simpleDate.getTime());
+      expect(dayDiff(hefsek.simpleDate, mikveh.simpleDate)).toBe(7);
+    });
+
+    it('mikveh marker has the evening-tvila label', () => {
+      const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
+      const mikveh = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD)
+        .find(e => e.outputEventType === DayType.MIKVEH_DAY)!;
+      expect(mikveh.details).toEqual(['בערב טבילה במקווה']);
+    });
+
+    it('mikveh marker is NOT one of the seven nekiim (no "נקיים" in details)', () => {
+      const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
+      const mikveh = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD)
+        .find(e => e.outputEventType === DayType.MIKVEH_DAY)!;
+      expect(mikveh.details.some(d => /נקיים/.test(d))).toBe(false);
+    });
+
+    it('every emitted event references the Hefsek Tahara that produced it', () => {
+      const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
+      const events = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
+      for (const d of events) {
         expect(d.CachedInputEventRef.type).toBe(InputEventType.HEFSEK_TAHARA);
         expect(d.CachedInputEventRef.simpleDate.getTime())
           .toBe(hefsek.simpleDate.getTime());
-      }
-    });
-
-    // NOTE: currently the implementation tags each nekiim day with
-    // DayType.MAHZOR instead of DayType.SEVEN_CLEAN. The template styles
-    // .sevenCleans by DayType.SEVEN_CLEAN, so the days render as MAHZOR.
-    it('tags each nekiim day with a DayType (currently MAHZOR – see suggestion)', () => {
-      const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
-      const days = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
-      for (const d of days) {
-        expect(d.outputEventType).toBe(DayType.MAHZOR);
       }
     });
   });

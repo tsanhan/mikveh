@@ -165,7 +165,7 @@ export class CalService {
     const minDiff = minNidaDays - 1;
     if (diffDays < minDiff) {
       const missing = minDiff - diffDays;
-      return `לא ניתן להוסיף הפסק טהרה — נדרשים לפחות ${minNidaDays} ימי נידה מהווסת/כתם האחרון (חסרים ${missing} ימים)`;
+      return `לא ניתן להוסיף הפסק טהרה, נדרשים לפחות ${minNidaDays} ימי נידה מהווסת/כתם האחרון (חסרים ${missing} ימים)`;
     }
     return null;
   }
@@ -219,12 +219,25 @@ export class CalService {
         CachedInputEventRef: { ...hefsekTaharaEvent },
         simpleDate: newSimpleDate,
         date,
-        outputEventType: DayType.MAHZOR,
+        outputEventType: DayType.SEVEN_CLEAN,
         details: [
           `יום ${index}/7 נקיים`
         ]
       }
       rtn.push(nekyimDay);
+
+      if (index === 7) {
+        const mikvehDay: OutputEvent = {
+          CachedInputEventRef: { ...hefsekTaharaEvent },
+          simpleDate: newSimpleDate,
+          date,
+          outputEventType: DayType.MIKVEH_DAY,
+          details: [
+            'בערב טבילה במקווה',
+          ],
+        };
+        rtn.push(mikvehDay);
+      }
     }
     return rtn;
   }
