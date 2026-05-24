@@ -130,6 +130,42 @@ To inspect the device's web view from Chrome, open: `chrome://inspect/#devices`
 
 ---
 
+## Running the tests
+
+The halachic-calculation logic in `src/app/services/cal.service.ts` (Hefsek Tahara, the seven nekiim, Mikveh day, the niddah chain, the hashashot of Onah Beinonit / Veset HaChodesh, and the cascade-delete data integrity rules) is covered by unit tests in `src/app/services/cal.service.spec.ts`.
+
+The project uses Karma + Jasmine via the Angular CLI.
+
+### Watch mode (during development)
+
+```bash
+npm test
+```
+
+Opens a Chrome window and re-runs the tests on every save.
+
+### One-shot run (CI / pre-commit)
+
+```bash
+CHROME_BIN=$(which google-chrome) npx ng test --browsers=ChromeHeadlessNoSandbox --watch=false
+```
+
+The `ChromeHeadlessNoSandbox` launcher is defined in `karma.conf.js` and is the one to use on Linux / CI environments where Chrome cannot run with the default sandbox.
+
+### Running a single spec file
+
+```bash
+CHROME_BIN=$(which google-chrome) npx ng test --browsers=ChromeHeadlessNoSandbox --watch=false --include='**/cal.service.spec.ts'
+```
+
+### Adding new tests
+
+- Co-locate the spec next to the file under test (e.g. `foo.service.ts` ↔ `foo.service.spec.ts`).
+- For services that inject `LocationService`, `CacheService`, or `ApproachService`, mirror the lightweight stubs used in `cal.service.spec.ts` rather than booting the real services (which depend on Capacitor / Storage / Geolocation).
+- Use UTC-noon dates (`new Date('2025-01-10T12:00:00Z')`) when constructing input events to avoid DST-related off-by-one day diffs.
+
+---
+
 ## Disclaimer
 
 This app is a **helper tool only**. It is not a substitute for asking a Rav. For any real-life halachic question please consult a qualified Rabbi.
