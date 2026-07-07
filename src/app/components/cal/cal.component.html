@@ -72,7 +72,26 @@
       </span>
     </div>
     <div class="text">
-      {{selectedHebDateDetails()}}
+      @for (detail of selectedHebDateDetails(); track detail) {
+        <div class="detail-line">
+          @if (isKetemLeniencyDetail(detail)) {
+            <span>
+              לפי שיטת הרב עובדיה יש דעה מקילה בכתם שאפשר לעשות הפסק טהרה לפני 4 ימים.
+              ראי בהסברים:
+            </span>
+            <button
+              type="button"
+              class="detail-link"
+              (click)="openHefsekExplanation()"
+            >
+              הפסק טהרה ושבעה נקיים
+            </button>
+            <span>, ובמקרה מעשי שאלי רב.</span>
+          } @else {
+            {{ detail }}
+          }
+        </div>
+      }
     </div>
     @if (selectedDayInputEvents$ | async; as dayInputs) {
       @if (dayInputs.length) {

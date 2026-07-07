@@ -115,6 +115,22 @@ ion-modal ion-toolbar {
   --color: white;
 }
 
+.detail-line {
+  display: block;
+}
+
+.detail-line .detail-link {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: #7c1239;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0;
+  text-decoration: underline;
+}
+
 
 
 // ion-list {
@@ -211,7 +227,9 @@ ngb-datepicker {
 
                 
 
-                &.veset {
+                &.veset,
+                &.ketemTame,
+                &.bdikaTmea {
                   background-color: var(--blood);
                   color: white;
                   border: #e91e6f solid 2px;

@@ -1,11 +1,15 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  computed,
   CUSTOM_ELEMENTS_SCHEMA,
+  DestroyRef,
+  ElementRef,
   inject,
+  ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { addIcons } from 'ionicons';
 import {
   chevronForwardCircle,
@@ -15,8 +19,9 @@ import {
 } from 'ionicons/icons';
 import { IonAvatar, IonText, IonImg, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 import { CacheService } from 'src/app/services/cache.service';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { map, withLatestFrom } from 'rxjs';
 import { ApproachService } from 'src/app/services/approach.service';
+import { TopicNavigationService } from 'src/app/services/topic-navigation.service';
 
 @Component({
     selector: 'app-main-swiper',
@@ -30,9 +35,13 @@ import { ApproachService } from 'src/app/services/approach.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MainSwiperComponent {
+export class MainSwiperComponent implements AfterViewInit {
   cache = inject(CacheService);
-    approach = inject(ApproachService);
+  approach = inject(ApproachService);
+  topicNavigation = inject(TopicNavigationService);
+  destroyRef = inject(DestroyRef);
+
+  @ViewChild('swiper') swiperRef!: ElementRef;
 
   topics$ = this.cache.topics$;
   approachKey$ = this.approach.approach$.pipe(map(approach => approach.contentKey ?? approach.name));
@@ -40,6 +49,39 @@ export class MainSwiperComponent {
   constructor( ) {
     addIcons({ document, chevronForwardCircle, colorPalette, globe });
 
+  }
+
+  ngAfterViewInit() {
+    this.topicNavigation.topicRequests$
+      .pipe(
+        withLatestFrom(this.topics$),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(([topicId, topics]) => this.slideToTopic(topicId, topics));
+  }
+
+  private slideToTopic(topicId: string, topics: any[]) {
+    const index = topics.findIndex(topic => topic.id === topicId);
+    if (index < 0) return;
+
+    setTimeout(() => {
+      this.swiperRef?.nativeElement?.swiper?.slideTo(index);
+    });
+  }
+
+  /**
+   * Kept for existing deep links/bookmarks such as /approaches?topic=shiva-nekyim
+   * if they were already opened before this internal navigation flow existed.
+   */
+  ngOnInit() {
+    const params = new URLSearchParams(window.location.search);
+    const topicId = params.get('topic');
+    if (!topicId) return;
+    window.history.replaceState({}, '', window.location.pathname);
+
+    this.topics$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(topics => this.slideToTopic(topicId, topics));
   }
 
   jsonEscape = (str: string) => {

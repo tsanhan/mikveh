@@ -8,7 +8,7 @@ import {
   ViewChild,
   WritableSignal,
 } from '@angular/core';
-import { AlertController, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { AlertController, IonButton, IonIcon, MenuController } from '@ionic/angular/standalone';
 import { HDate } from '@hebcal/core';
 import { CommonModule } from '@angular/common';
 import '@hebcal/cities';
@@ -42,6 +42,7 @@ import {
 import { CustomDatepickerI18n } from 'src/app/services/CustomDatepickerI18n.service';
 import { CalAddEventComponent } from '../cal-add-event/cal-add-event.component';
 import { get } from 'lodash';
+import { TopicNavigationService } from 'src/app/services/topic-navigation.service';
 
 @Component({
   selector: 'app-cal',
@@ -69,6 +70,8 @@ export class CalComponent  {
   i18n = inject(NgbDatepickerI18n);
   calendar = inject(NgbCalendar);
   cal = inject(CalService);
+  menu = inject(MenuController);
+  topicNavigation = inject(TopicNavigationService);
   highlightedInputEvents$ = this.cal.highlightedInputEvents$.pipe(
     tap(val => {
       const selectedHebDate = this.selectedHebDate$.getValue();
@@ -79,6 +82,7 @@ export class CalComponent  {
   );
   public dayType = DayType;
   public inputEventType = InputEventType;
+  public hefsekExplanationTopicId = 'shiva-nekyim';
 
   @ViewChild('dt', { static: true }) dtRef!: any;
   selectedDate$ = new BehaviorSubject<Date>(new Date());
@@ -117,6 +121,15 @@ export class CalComponent  {
       return `${base} (${ona})`;
     }
     return base;
+  }
+
+  isKetemLeniencyDetail(detail: string): boolean {
+    return detail.includes('ראי בהסברים: הפסק טהרה ושבעה נקיים');
+  }
+
+  async openHefsekExplanation() {
+    this.topicNavigation.openTopic(this.hefsekExplanationTopicId);
+    await this.menu.close();
   }
 
   selectedHDateHeb$: Observable<string> = this.selectedDateHDate$.pipe(
@@ -230,4 +243,3 @@ export class CalComponent  {
 
 
 }
-

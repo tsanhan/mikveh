@@ -360,6 +360,64 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
   });
 
   // ---------------------------------------------------------------------------
+  // highlightedInputEvents$ – standalone Ketem / Bdika sightings
+  // ---------------------------------------------------------------------------
+  describe('highlightedInputEvents$ – standalone Ketem / Bdika sightings', () => {
+    it('Ketem Tame opens a 5-day niddah window without hashashot', async () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+      const ketem = makeEvent('2025-01-10', InputEventType.KETEM_TAME);
+      cache.setEvents([ketem]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+
+      const day1 = all.find(e => e.outputEventType === InputEventType.KETEM_TAME)!;
+      expect(day1).toBeTruthy();
+      expect(day1.details[0]).toBe('כתם טמא – יום 1 לנידה');
+      expect(day1.details[1]).toContain('לפי שיטת הרב עובדיה יש דעה מקילה בכתם');
+      expect(day1.details[1]).toContain('הפסק טהרה ושבעה נקיים');
+      expect(dayDiff(ketem.simpleDate, day1.simpleDate)).toBe(0);
+
+      const mahzor = all.filter(e => e.outputEventType === DayType.MAHZOR);
+      expect(mahzor.length).toBe(4); // days 2..5
+      expect(mahzor.every(e => e.details.some(d => /דעה מקילה בכתם/.test(d)))).toBe(true);
+
+      const start = all.find(e => e.outputEventType === DayType.CAN_START_CHECK_HEFSEK)!;
+      expect(dayDiff(ketem.simpleDate, start.simpleDate)).toBe(4);
+      expect(start.details.some(d => /דעה מקילה בכתם/.test(d))).toBe(true);
+
+      expect(all.some(e => e.outputEventType === DayType.ONA_BEINONIT)).toBe(false);
+      expect(all.some(e =>
+        e.outputEventType === DayType.VESET_HACHODESH_DAY ||
+        e.outputEventType === DayType.VESET_HACHODESH_NIGHT,
+      )).toBe(false);
+    });
+
+    it('Bdika Tmea opens a 5-day niddah window with hashashot', async () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+      const bdika = makeEvent('2025-01-10', InputEventType.BDIKA_TMEA, InputEventOna.LAYLA);
+      cache.setEvents([bdika]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+
+      const day1 = all.find(e => e.outputEventType === InputEventType.BDIKA_TMEA)!;
+      expect(day1).toBeTruthy();
+      expect(day1.details).toEqual(['בדיקה טמאה – יום 1 לנידה']);
+      expect(all.some(e => e.details.some(d => /דעה מקילה בכתם/.test(d)))).toBe(false);
+
+      const mahzor = all.filter(e => e.outputEventType === DayType.MAHZOR);
+      expect(mahzor.length).toBe(4); // days 2..5
+
+      const start = all.find(e => e.outputEventType === DayType.CAN_START_CHECK_HEFSEK)!;
+      expect(dayDiff(bdika.simpleDate, start.simpleDate)).toBe(4);
+
+      const onaBeinonit = all.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+      expect(onaBeinonit).toBeTruthy();
+      expect(dayDiff(bdika.simpleDate, onaBeinonit.simpleDate)).toBe(30);
+      expect(all.some(e => e.outputEventType === DayType.VESET_HACHODESH_NIGHT)).toBe(true);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // highlightedInputEvents$ – Hefsek Tahara → 7 nekiim
   // ---------------------------------------------------------------------------
   describe('highlightedInputEvents$ – Hefsek Tahara produces 7 nekiim', () => {
@@ -431,6 +489,18 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       const hefsek = makeEvent('2025-01-12', InputEventType.HEFSEK_TAHARA);
       const err = cal.validateNewInputEvent(hefsek);
       expect(err).toMatch(/לפחות 4 ימי נידה/);
+    });
+
+    it('requires 5 niddah days after Ketem Tame even for Rav Ovadia', () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+      const ketem = makeEvent('2025-01-10', InputEventType.KETEM_TAME);
+      cache.setEvents([ketem]);
+
+      const day4Hefsek = makeEvent('2025-01-13', InputEventType.HEFSEK_TAHARA);
+      expect(cal.validateNewInputEvent(day4Hefsek)).toMatch(/לפחות 5 ימי נידה/);
+
+      const day5Hefsek = makeEvent('2025-01-14', InputEventType.HEFSEK_TAHARA);
+      expect(cal.validateNewInputEvent(day5Hefsek)).toBeNull();
     });
   });
 
