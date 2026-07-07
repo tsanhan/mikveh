@@ -16,6 +16,9 @@ const nidaDaysForInputEvent = (event: CachedInputEvent, approach: Approach) =>
 const isSephardiApproach = (approach: Approach) =>
   approach.name === ApproachName.SEPHARDI_OVADIA ||
   approach.name === ApproachName.SEPHARDI_MORDECHAI_ELIYAHU;
+const isHefsekLenientOvadiaKetem = (event: CachedInputEvent, approach: Approach) =>
+  approach.name === ApproachName.SEPHARDI_OVADIA &&
+  event.type === InputEventType.KETEM_TAME;
 const KETEM_OVADIA_LENIENCY_NOTE =
   'לפי שיטת הרב עובדיה יש דעה מקילה בכתם שאפשר לעשות הפסק טהרה לפני 4 ימים. ראי בהסברים: הפסק טהרה ושבעה נקיים, ובמקרה מעשי שאלי רב.';
 
@@ -127,19 +130,13 @@ export class CalService {
     }
   }
 
-  /**
-   * Returns true if a Hefsek Tahara can be added on `date` – i.e. there is at
-   * least one prior sighting (Veset / Ketem Tame / Bdika Tmea) on or before
-   * that date.
-   */
   canAddHefsekTahara(date: Date): boolean {
-    const t = new Date(date).getTime();
-    return this.cache.getInputEvents().some(e =>
-      (e.type === InputEventType.VESET ||
-        e.type === InputEventType.KETEM_TAME ||
-        e.type === InputEventType.BDIKA_TMEA) &&
-      new Date(e.simpleDate).getTime() <= t,
-    );
+    const approach = this.approach.approach$.getValue();
+    const t = this.startOfDayMs(date);
+    const latestSighting = this.latestSightingOnOrBefore(t);
+    if (!latestSighting) return false;
+
+    return this.daysSince(latestSighting, t) >= this.minHefsekDiff(latestSighting, approach);
   }
 
   /**
@@ -153,34 +150,51 @@ export class CalService {
     if (event.type !== InputEventType.HEFSEK_TAHARA) return null;
 
     const approach = this.approach.approach$.getValue();
-    const allEvents = this.cache.getInputEvents();
-    const newDate = new Date(event.simpleDate).getTime();
+    const newDate = this.startOfDayMs(event.simpleDate);
 
-    const lastVesetOrKetem = allEvents
-      .filter((e: CachedInputEvent) =>
-        (e.type === InputEventType.VESET ||
-          e.type === InputEventType.KETEM_TAME ||
-          e.type === InputEventType.BDIKA_TMEA) &&
-        new Date(e.simpleDate).getTime() <= newDate)
-      .sort((a: CachedInputEvent, b: CachedInputEvent) =>
-        new Date(b.simpleDate).getTime() - new Date(a.simpleDate).getTime())[0];
+    const lastVesetOrKetem = this.latestSightingOnOrBefore(newDate);
 
     if (!lastVesetOrKetem) {
       return 'לא ניתן להוסיף הפסק טהרה ללא וסת, כתם טמא או בדיקה טמאה קודם';
     }
 
     const minNidaDays = nidaDaysForInputEvent(lastVesetOrKetem, approach);
-    const diffDays = Math.floor(
-      (newDate - new Date(lastVesetOrKetem.simpleDate).getTime()) / MS_PER_DAY,
-    );
-    // The bleeding day itself counts as day 1 of niddah, so the earliest
-    // possible Hefsek Tahara is on day `minNidaDays` → diff of `minNidaDays - 1`.
-    const minDiff = minNidaDays - 1;
+    const diffDays = this.daysSince(lastVesetOrKetem, newDate);
+    const minDiff = this.minHefsekDiff(lastVesetOrKetem, approach);
     if (diffDays < minDiff) {
       const missing = minDiff - diffDays;
       return `לא ניתן להוסיף הפסק טהרה, נדרשים לפחות ${minNidaDays} ימי נידה מהווסת/כתם/בדיקה האחרון (חסרים ${missing} ימים)`;
     }
     return null;
+  }
+
+  private latestSightingOnOrBefore(dateMs: number): CachedInputEvent | undefined {
+    return this.cache.getInputEvents()
+      .filter((e: CachedInputEvent) =>
+        this.isSightingEvent(e) &&
+        this.startOfDayMs(e.simpleDate) <= dateMs)
+      .sort((a: CachedInputEvent, b: CachedInputEvent) =>
+        this.startOfDayMs(b.simpleDate) - this.startOfDayMs(a.simpleDate))[0];
+  }
+
+  private daysSince(event: CachedInputEvent, dateMs: number): number {
+    return Math.floor(
+      (dateMs - this.startOfDayMs(event.simpleDate)) / MS_PER_DAY,
+    );
+  }
+
+  private startOfDayMs(date: Date): number {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  }
+
+  private minHefsekDiff(event: CachedInputEvent, approach: Approach): number {
+    if (isHefsekLenientOvadiaKetem(event, approach)) return 0;
+
+    // The bleeding day itself counts as day 1 of niddah, so the earliest
+    // possible Hefsek Tahara is on day `minNidaDays` -> diff of `minNidaDays - 1`.
+    return nidaDaysForInputEvent(event, approach) - 1;
   }
 
   /**

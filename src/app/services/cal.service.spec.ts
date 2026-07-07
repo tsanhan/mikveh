@@ -515,8 +515,8 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(err).toMatch(/לפחות 4 ימי נידה/);
     });
 
-    it('requires 5 niddah days after Ketem Tame even for Rav Ovadia', () => {
-      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+    it('requires 5 niddah days after Ketem Tame for Rav Mordechai Eliyahu', () => {
+      approach.approach$.next(APPROACH_SEPHARDI_MORDECHAI_ELIYAHU);
       const ketem = makeEvent('2025-01-10', InputEventType.KETEM_TAME);
       cache.setEvents([ketem]);
 
@@ -525,6 +525,18 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
 
       const day5Hefsek = makeEvent('2025-01-14', InputEventType.HEFSEK_TAHARA);
       expect(cal.validateNewInputEvent(day5Hefsek)).toBeNull();
+    });
+
+    it('allows Rav Ovadia Hefsek Tahara before day 4 after Ketem Tame', () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+      const ketem = makeEvent('2025-01-10', InputEventType.KETEM_TAME);
+      cache.setEvents([ketem]);
+
+      const sameDayHefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
+      expect(cal.validateNewInputEvent(sameDayHefsek)).toBeNull();
+
+      const day3Hefsek = makeEvent('2025-01-12', InputEventType.HEFSEK_TAHARA);
+      expect(cal.validateNewInputEvent(day3Hefsek)).toBeNull();
     });
   });
 
@@ -537,9 +549,33 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(cal.canAddHefsekTahara(new Date('2025-01-10T12:00:00Z'))).toBe(false);
     });
 
-    it('returns true when a VESET exists on/before the date', () => {
+    it('returns false before the minimum Hefsek day after a Chabad VESET', () => {
+      cache.setEvents([makeEvent('2025-01-10', InputEventType.VESET)]);
+      expect(cal.canAddHefsekTahara(new Date('2025-01-13T12:00:00Z'))).toBe(false);
+    });
+
+    it('returns true on the minimum Hefsek day after a Chabad VESET', () => {
       cache.setEvents([makeEvent('2025-01-10', InputEventType.VESET)]);
       expect(cal.canAddHefsekTahara(new Date('2025-01-14T12:00:00Z'))).toBe(true);
+    });
+
+    it('returns true on the 4th niddah day after a Rav Ovadia VESET', () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+      cache.setEvents([makeEvent('2025-01-10', InputEventType.VESET)]);
+      expect(cal.canAddHefsekTahara(new Date('2025-01-13T12:00:00Z'))).toBe(true);
+    });
+
+    it('returns true before day 4 after a Rav Ovadia Ketem Tame', () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+      cache.setEvents([makeEvent('2025-01-10', InputEventType.KETEM_TAME)]);
+      expect(cal.canAddHefsekTahara(new Date('2025-01-10T12:00:00Z'))).toBe(true);
+      expect(cal.canAddHefsekTahara(new Date('2025-01-12T12:00:00Z'))).toBe(true);
+    });
+
+    it('returns false before day 5 after a non-Ovadia Ketem Tame', () => {
+      approach.approach$.next(APPROACH_SEPHARDI_MORDECHAI_ELIYAHU);
+      cache.setEvents([makeEvent('2025-01-10', InputEventType.KETEM_TAME)]);
+      expect(cal.canAddHefsekTahara(new Date('2025-01-13T12:00:00Z'))).toBe(false);
     });
 
     it('returns false when the only sighting is in the future', () => {
