@@ -42,6 +42,8 @@ export enum DayType {
   ONA_BEINONIT = 'onaBeinonit',
   VESET_HACHODESH_DAY = 'vesetHachodeshDay',
   VESET_HACHODESH_NIGHT = 'vesetHachodeshNight',
+  HAFLAGA_DAY = 'haflagaDay',
+  HAFLAGA_NIGHT = 'haflagaNight',
 }
 
 export enum InputEventOna {
@@ -68,4 +70,3 @@ export enum Ona {
   VesetHahodesh = 'וסת החודש',
   Haflaga = 'הפלגה',
 }
-

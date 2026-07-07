@@ -79,6 +79,7 @@ export class CalService {
           }
         }
       }
+      list.push(...this.getHaflagaHashashot(sortedInputEvents, approach));
       return list;
     }),
     map((list: OutputEvent[]) => {
@@ -385,6 +386,115 @@ export class CalService {
     }
 
     return rtn;
+  }
+
+  private getHaflagaHashashot(events: CachedInputEvent[], approach: Approach): OutputEvent[] {
+    return approach.name === ApproachName.CHABAD
+      ? this.getChabadHaflagaHashashot(events)
+      : this.getSephardiHaflagaHashashot(events);
+  }
+
+  private getChabadHaflagaHashashot(events: CachedInputEvent[]): OutputEvent[] {
+    const activeIntervals: number[] = [];
+    let pendingHefsek: CachedInputEvent | undefined;
+    let hasSightingBeforeHefsek = false;
+    let latestSighting: CachedInputEvent | undefined;
+
+    for (const event of events) {
+      if (event.type === InputEventType.HEFSEK_TAHARA) {
+        pendingHefsek = hasSightingBeforeHefsek ? event : undefined;
+        continue;
+      }
+
+      if (!this.createsHashashot(event)) continue;
+
+      hasSightingBeforeHefsek = true;
+      latestSighting = event;
+      if (!pendingHefsek) continue;
+
+      const interval = this.chabadHaflagaIntervalOnot(pendingHefsek, event);
+      for (let i = activeIntervals.length - 1; i >= 0; i--) {
+        if (activeIntervals[i] < interval) activeIntervals.splice(i, 1);
+      }
+      if (!activeIntervals.includes(interval)) activeIntervals.push(interval);
+      pendingHefsek = undefined;
+    }
+
+    const anchor = pendingHefsek ?? latestSighting;
+    if (!anchor || !activeIntervals.length) return [];
+
+    return activeIntervals.map(interval =>
+      this.haflagaEventFromHefsekOnot(anchor, interval),
+    );
+  }
+
+  private getSephardiHaflagaHashashot(events: CachedInputEvent[]): OutputEvent[] {
+    const sightings = events.filter(e => this.createsHashashot(e));
+    if (sightings.length < 2) return [];
+
+    const previous = sightings[sightings.length - 2];
+    const current = sightings[sightings.length - 1];
+    const diffDays = this.daysSince(previous, this.startOfDayMs(current.simpleDate));
+    const intervalDays = diffDays + 1;
+    const targetSimpleDate = this.addDays(current.simpleDate, diffDays);
+
+    return [
+      this.haflagaEvent(
+        current,
+        targetSimpleDate,
+        current.ona,
+        `חשש וסת הפלגה - ${this.onaLabel(current.ona)} (${intervalDays} ימים)`,
+      ),
+    ];
+  }
+
+  private chabadHaflagaIntervalOnot(hefsek: CachedInputEvent, sighting: CachedInputEvent): number {
+    const diffDays = this.daysSince(hefsek, this.startOfDayMs(sighting.simpleDate));
+    return diffDays * 2 + (sighting.ona === InputEventOna.LAYLA ? 1 : 0);
+  }
+
+  private haflagaEventFromHefsekOnot(hefsek: CachedInputEvent, interval: number): OutputEvent {
+    const ona = interval % 2 === 0 ? InputEventOna.YOM : InputEventOna.LAYLA;
+    const offsetDays = ona === InputEventOna.YOM ? interval / 2 : (interval - 1) / 2;
+    const targetSimpleDate = this.addDays(hefsek.simpleDate, offsetDays);
+    return this.haflagaEvent(
+      hefsek,
+      targetSimpleDate,
+      ona,
+      `חשש וסת הפלגה - ${this.onaLabel(ona)} (${interval} עונות)`,
+    );
+  }
+
+  private haflagaEvent(
+    ref: CachedInputEvent,
+    simpleDate: Date,
+    ona: InputEventOna,
+    detail: string,
+  ): OutputEvent {
+    const hdate = simpleDateToHebrew(simpleDate);
+    return {
+      CachedInputEventRef: { ...ref },
+      simpleDate,
+      date: HDateToNgbDateStruct(hdate),
+      outputEventType: ona === InputEventOna.LAYLA ? DayType.HAFLAGA_NIGHT : DayType.HAFLAGA_DAY,
+      ona,
+      details: [detail],
+    };
+  }
+
+  private createsHashashot(event: CachedInputEvent): boolean {
+    return event.type === InputEventType.VESET ||
+      event.type === InputEventType.BDIKA_TMEA;
+  }
+
+  private onaLabel(ona: InputEventOna): string {
+    return ona === InputEventOna.LAYLA ? 'לילה' : 'יום';
+  }
+
+  private addDays(date: Date, days: number): Date {
+    const d = new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
   }
 
   private isSightingEvent(event: CachedInputEvent): boolean {

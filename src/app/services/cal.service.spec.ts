@@ -466,6 +466,136 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
   });
 
   // ---------------------------------------------------------------------------
+  // Veset Haflaga
+  // ---------------------------------------------------------------------------
+  describe('Veset Haflaga', () => {
+    it('Sephardi: counts inclusive days from sighting start to sighting start and marks the latest ona', async () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+      const v1 = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
+      const v2 = makeEvent('2025-01-20', InputEventType.VESET, InputEventOna.LAYLA);
+      cache.setEvents([v1, v2]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const haflaga = all.find(e => e.outputEventType === DayType.HAFLAGA_NIGHT)!;
+
+      expect(haflaga).toBeTruthy();
+      expect(dayDiff(v2.simpleDate, haflaga.simpleDate)).toBe(10);
+      expect(haflaga.ona).toBe(InputEventOna.LAYLA);
+      expect(haflaga.details).toContain('חשש וסת הפלגה - לילה (11 ימים)');
+    });
+
+    it('Sephardi: uses only the latest two hashash-generating sightings', async () => {
+      approach.approach$.next(APPROACH_SEPHARDI_MORDECHAI_ELIYAHU);
+      const v1 = makeEvent('2025-01-01', InputEventType.VESET);
+      const v2 = makeEvent('2025-01-10', InputEventType.VESET);
+      const v3 = makeEvent('2025-01-25', InputEventType.VESET, InputEventOna.YOM);
+      cache.setEvents([v1, v2, v3]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const haflagot = all.filter(e =>
+        e.outputEventType === DayType.HAFLAGA_DAY ||
+        e.outputEventType === DayType.HAFLAGA_NIGHT,
+      );
+
+      expect(haflagot.length).toBe(1);
+      expect(dayDiff(v3.simpleDate, haflagot[0].simpleDate)).toBe(15);
+      expect(haflagot[0].details).toContain('חשש וסת הפלגה - יום (16 ימים)');
+    });
+
+    it('Chabad: does not mark Haflaga from a Hefsek without an earlier sighting', async () => {
+      const h1 = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const v1 = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
+      cache.setEvents([h1, v1]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(all.some(e =>
+        e.outputEventType === DayType.HAFLAGA_DAY ||
+        e.outputEventType === DayType.HAFLAGA_NIGHT,
+      )).toBe(false);
+    });
+
+    it('Chabad: marks Haflaga after Veset, Hefsek Tahara, and another Veset', async () => {
+      const v1 = makeEvent('2025-01-01', InputEventType.VESET, InputEventOna.YOM);
+      const h1 = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const v2 = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
+      cache.setEvents([v1, h1, v2]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const haflaga = all.find(e => e.outputEventType === DayType.HAFLAGA_DAY)!;
+
+      expect(haflaga).toBeTruthy();
+      expect(dayDiff(v2.simpleDate, haflaga.simpleDate)).toBe(5);
+      expect(haflaga.ona).toBe(InputEventOna.YOM);
+      expect(haflaga.details).toContain('חשש וסת הפלגה - יום (10 עונות)');
+    });
+
+    it('Chabad: when a later Hefsek exists, counts Haflaga from that Hefsek Tahara', async () => {
+      const v0 = makeEvent('2025-01-01', InputEventType.VESET, InputEventOna.YOM);
+      const h1 = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const v1 = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
+      const h2 = makeEvent('2025-01-14', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([v0, h1, v1, h2]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const haflaga = all.find(e => e.outputEventType === DayType.HAFLAGA_DAY)!;
+
+      expect(haflaga).toBeTruthy();
+      expect(dayDiff(h2.simpleDate, haflaga.simpleDate)).toBe(5);
+      expect(haflaga.ona).toBe(InputEventOna.YOM);
+      expect(haflaga.details).toContain('חשש וסת הפלגה - יום (10 עונות)');
+    });
+
+    it('Chabad: a shorter Haflaga does not cancel a longer Haflaga', async () => {
+      const v0 = makeEvent('2024-12-28', InputEventType.VESET, InputEventOna.YOM);
+      const h1 = makeEvent('2025-01-01', InputEventType.HEFSEK_TAHARA);
+      const v1 = makeEvent('2025-01-26', InputEventType.VESET, InputEventOna.YOM); // 50 onot
+      const h2 = makeEvent('2025-01-30', InputEventType.HEFSEK_TAHARA);
+      const v2 = makeEvent('2025-02-22', InputEventType.VESET, InputEventOna.LAYLA); // 47 onot
+      const h3 = makeEvent('2025-02-26', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([v0, h1, v1, h2, v2, h3]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const haflagot = all.filter(e =>
+        e.outputEventType === DayType.HAFLAGA_DAY ||
+        e.outputEventType === DayType.HAFLAGA_NIGHT,
+      );
+
+      expect(haflagot.length).toBe(2);
+      expect(haflagot.some(e =>
+        dayDiff(h3.simpleDate, e.simpleDate) === 25 &&
+        e.outputEventType === DayType.HAFLAGA_DAY &&
+        e.details.includes('חשש וסת הפלגה - יום (50 עונות)'),
+      )).toBe(true);
+      expect(haflagot.some(e =>
+        dayDiff(h3.simpleDate, e.simpleDate) === 23 &&
+        e.outputEventType === DayType.HAFLAGA_NIGHT &&
+        e.details.includes('חשש וסת הפלגה - לילה (47 עונות)'),
+      )).toBe(true);
+    });
+
+    it('Chabad: a longer Haflaga cancels shorter Haflagot', async () => {
+      const v0 = makeEvent('2024-12-28', InputEventType.VESET, InputEventOna.YOM);
+      const h1 = makeEvent('2025-01-01', InputEventType.HEFSEK_TAHARA);
+      const v1 = makeEvent('2025-01-24', InputEventType.VESET, InputEventOna.LAYLA); // 47 onot
+      const h2 = makeEvent('2025-01-28', InputEventType.HEFSEK_TAHARA);
+      const v2 = makeEvent('2025-02-22', InputEventType.VESET, InputEventOna.YOM); // 50 onot
+      const h3 = makeEvent('2025-02-26', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([v0, h1, v1, h2, v2, h3]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const haflagot = all.filter(e =>
+        e.outputEventType === DayType.HAFLAGA_DAY ||
+        e.outputEventType === DayType.HAFLAGA_NIGHT,
+      );
+
+      expect(haflagot.length).toBe(1);
+      expect(dayDiff(h3.simpleDate, haflagot[0].simpleDate)).toBe(25);
+      expect(haflagot[0].outputEventType).toBe(DayType.HAFLAGA_DAY);
+      expect(haflagot[0].details).toContain('חשש וסת הפלגה - יום (50 עונות)');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // validateNewInputEvent
   // ---------------------------------------------------------------------------
   describe('validateNewInputEvent()', () => {
