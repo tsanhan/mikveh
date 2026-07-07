@@ -246,13 +246,37 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(dayDiff(veset.simpleDate, startBdikot.simpleDate)).toBe(3);
     });
 
-    it('Ona Beinonit hashash is exactly 30 solar days after the veset', () => {
-      const veset = makeEvent('2025-01-10', InputEventType.VESET);
+    it('Chabad: Ona Beinonit hashash is exactly 30 solar days after the veset and spans a full day', () => {
+      const veset = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.LAYLA);
       const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_CHABAD);
 
       const onaBeinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
       expect(onaBeinonit).toBeTruthy();
       expect(dayDiff(veset.simpleDate, onaBeinonit.simpleDate)).toBe(30);
+      expect(onaBeinonit.ona).toBeUndefined();
+      expect(onaBeinonit.details).toContain('חשש עונה בינונית');
+    });
+
+    it('Rav Ovadia: Ona Beinonit hashash is only the original ona after 30 solar days', () => {
+      const veset = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.LAYLA);
+      const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_OVADIA);
+
+      const onaBeinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+      expect(onaBeinonit).toBeTruthy();
+      expect(dayDiff(veset.simpleDate, onaBeinonit.simpleDate)).toBe(30);
+      expect(onaBeinonit.ona).toBe(InputEventOna.LAYLA);
+      expect(onaBeinonit.details).toContain('חשש עונה בינונית - לילה');
+    });
+
+    it('Rav Mordechai Eliyahu: Ona Beinonit hashash is only the original ona after 30 solar days', () => {
+      const veset = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
+      const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU);
+
+      const onaBeinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+      expect(onaBeinonit).toBeTruthy();
+      expect(dayDiff(veset.simpleDate, onaBeinonit.simpleDate)).toBe(30);
+      expect(onaBeinonit.ona).toBe(InputEventOna.YOM);
+      expect(onaBeinonit.details).toContain('חשש עונה בינונית - יום');
     });
 
     it('Veset HaChodesh hashash is the same Hebrew day, next Hebrew month', () => {

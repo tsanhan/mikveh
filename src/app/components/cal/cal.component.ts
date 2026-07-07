@@ -27,7 +27,7 @@ import { CalService } from 'src/app/services/cal.service';
 import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CachedInputEvent, CalEventDict, DayType, InputEventType, OutputEvent } from 'src/app/interfaces/cal';
+import { CachedInputEvent, CalEventDict, DayType, InputEventOna, InputEventType, OutputEvent } from 'src/app/interfaces/cal';
 import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate } from 'src/app/utils/date.util';
 import {
   NgbCalendar,
@@ -81,6 +81,7 @@ export class CalComponent  {
     })
   );
   public dayType = DayType;
+  public inputEventOna = InputEventOna;
   public inputEventType = InputEventType;
   public hefsekExplanationTopicId = 'shiva-nekyim';
 
@@ -239,6 +240,22 @@ export class CalComponent  {
     const { year, month, day } = date;
     const eventsForDay = get(calEventDict,[year,month,day]) || [];
     return eventsForDay.length && eventsForDay.some(e => e.outputEventType == typeToCompare);
+  }
+
+  isFullDayOnaBeinonit(date: NgbDateStruct, calEventDict: CalEventDict) {
+    const { year, month, day } = date;
+    const eventsForDay = get(calEventDict,[year,month,day]) || [];
+    return eventsForDay.length && eventsForDay.some(
+      e => e.outputEventType === DayType.ONA_BEINONIT && !e.ona,
+    );
+  }
+
+  isOnaBeinonitForOna(date: NgbDateStruct, calEventDict: CalEventDict, ona: InputEventOna) {
+    const { year, month, day } = date;
+    const eventsForDay = get(calEventDict,[year,month,day]) || [];
+    return eventsForDay.length && eventsForDay.some(
+      e => e.outputEventType === DayType.ONA_BEINONIT && e.ona === ona,
+    );
   }
 
 

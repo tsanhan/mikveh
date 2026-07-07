@@ -13,6 +13,9 @@ const nidaDaysFor = (approach: Approach) =>
   approach.name === ApproachName.SEPHARDI_OVADIA ? 4 : 5;
 const nidaDaysForInputEvent = (event: CachedInputEvent, approach: Approach) =>
   event.type === InputEventType.VESET ? nidaDaysFor(approach) : 5;
+const isSephardiApproach = (approach: Approach) =>
+  approach.name === ApproachName.SEPHARDI_OVADIA ||
+  approach.name === ApproachName.SEPHARDI_MORDECHAI_ELIYAHU;
 const KETEM_OVADIA_LENIENCY_NOTE =
   'לפי שיטת הרב עובדיה יש דעה מקילה בכתם שאפשר לעשות הפסק טהרה לפני 4 ימים. ראי בהסברים: הפסק טהרה ושבעה נקיים, ובמקרה מעשי שאלי רב.';
 
@@ -329,17 +332,20 @@ export class CalService {
     if (includeHashashot) {
       // Hashash Onah Beinonit:
       //   30 *solar* days after the sighting (NOT one Hebrew month).
-      //   The hashash falls on the same ona (day / night) as the original sighting.
+      //   Chabad treats it as a full day. Sephardi approaches treat it as the
+      //   same ona (day / night) as the original sighting, like Veset HaChodesh.
       const onaBeinonitSimpleDate = new Date(vesetSimpleDate);
       onaBeinonitSimpleDate.setDate(vesetSimpleDate.getDate() + 30);
       const onaBeinonitHDate = simpleDateToHebrew(onaBeinonitSimpleDate);
+      const isSephardi = isSephardiApproach(approach);
       const hashashOnaBeinonit: OutputEvent = {
         CachedInputEventRef: { ...sightingEvent },
         simpleDate: onaBeinonitSimpleDate,
         date: HDateToNgbDateStruct(onaBeinonitHDate),
         outputEventType: DayType.ONA_BEINONIT,
+        ...(isSephardi ? { ona: sightingEvent.ona } : {}),
         details: [
-          `חשש עונה בינונית`
+          isSephardi ? `חשש עונה בינונית - ${onaLabel}` : `חשש עונה בינונית`
         ]
       }
 
