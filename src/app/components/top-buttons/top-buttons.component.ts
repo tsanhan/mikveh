@@ -55,6 +55,11 @@ export class TopButtonsComponent {
   router = inject(Router);
 
   public ApproachNameEnum = ApproachName;
+  public approachOptionKeys = [
+    ApproachName.CHABAD,
+    ApproachName.SEPHARDI_OVADIA,
+    ApproachName.SEPHARDI_MORDECHAI_ELIYAHU,
+  ];
 
   approaches$ = this.approach.approaches$;
   selectedApproach$ = this.approach.approach$;
@@ -64,7 +69,7 @@ export class TopButtonsComponent {
   ]).pipe(
     map(([selectedApproach, approaches]) => {
       const { name } = selectedApproach;
-      const { nameHeb } = approaches[name];
+      const { nameHeb } = approaches[name] ?? selectedApproach;
       return nameHeb;
     })
   );

@@ -27,14 +27,14 @@ const APPROACH_CHABAD: Approach = {
   nameHeb: 'חב"ד',
   svg: '',
 };
-const APPROACH_ASHKENAZI: Approach = {
-  name: ApproachName.ASHKENAZI,
-  nameHeb: 'אשכנזי',
+const APPROACH_SEPHARDI_MORDECHAI_ELIYAHU: Approach = {
+  name: ApproachName.SEPHARDI_MORDECHAI_ELIYAHU,
+  nameHeb: 'ספרדי - הרב מרדכי אליהו',
   svg: '',
 };
-const APPROACH_SEPHARDI: Approach = {
-  name: ApproachName.SEPHARDI,
-  nameHeb: 'ספרדי',
+const APPROACH_SEPHARDI_OVADIA: Approach = {
+  name: ApproachName.SEPHARDI_OVADIA,
+  nameHeb: 'ספרדי - הרב עובדיה',
   svg: '',
 };
 
@@ -197,7 +197,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
   // getNidaDaysHashashotForVeset – single Veset (chainLast === veset)
   // ---------------------------------------------------------------------------
   describe('getNidaDaysHashashotForVeset() – single veset, no chain', () => {
-    it('Ashkenazi/Chabad: 5 niddah days, CAN_START_CHECK_HEFSEK on day 5', () => {
+    it('Chabad: 5 niddah days, CAN_START_CHECK_HEFSEK on day 5', () => {
       const veset = makeEvent('2025-01-10', InputEventType.VESET);
       const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_CHABAD);
 
@@ -220,9 +220,22 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(dayDiff(veset.simpleDate, startBdikot.simpleDate)).toBe(4); // veset + (forNum-1)
     });
 
-    it('Sephardi: 4 niddah days, CAN_START_CHECK_HEFSEK on day 4', () => {
+    it('Rav Mordechai Eliyahu: 5 niddah days, CAN_START_CHECK_HEFSEK on day 5', () => {
       const veset = makeEvent('2025-01-10', InputEventType.VESET);
-      const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI);
+      const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU);
+
+      const mahzor = out.filter(e => e.outputEventType === DayType.MAHZOR);
+      expect(mahzor.length).toBe(4); // days 2..5
+
+      const startBdikot = out.find(
+        e => e.outputEventType === DayType.CAN_START_CHECK_HEFSEK,
+      )!;
+      expect(dayDiff(veset.simpleDate, startBdikot.simpleDate)).toBe(4);
+    });
+
+    it('Rav Ovadia: 4 niddah days, CAN_START_CHECK_HEFSEK on day 4', () => {
+      const veset = makeEvent('2025-01-10', InputEventType.VESET);
+      const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_OVADIA);
 
       const mahzor = out.filter(e => e.outputEventType === DayType.MAHZOR);
       expect(mahzor.length).toBe(3); // days 2..4
@@ -403,16 +416,16 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(cal.validateNewInputEvent(hefsek)).toBeNull();
     });
 
-    it('accepts a Hefsek Tahara on the 4th niddah day for Sephardi', () => {
-      approach.approach$.next(APPROACH_SEPHARDI);
+    it('accepts a Hefsek Tahara on the 4th niddah day for Rav Ovadia', () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
       const v = makeEvent('2025-01-10', InputEventType.VESET);
       cache.setEvents([v]);
       const hefsek = makeEvent('2025-01-13', InputEventType.HEFSEK_TAHARA); // diff=3 == minDiff
       expect(cal.validateNewInputEvent(hefsek)).toBeNull();
     });
 
-    it('rejects a Sephardi Hefsek Tahara on day 3 (too early)', () => {
-      approach.approach$.next(APPROACH_SEPHARDI);
+    it('rejects a Rav Ovadia Hefsek Tahara on day 3 (too early)', () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
       const v = makeEvent('2025-01-10', InputEventType.VESET);
       cache.setEvents([v]);
       const hefsek = makeEvent('2025-01-12', InputEventType.HEFSEK_TAHARA);

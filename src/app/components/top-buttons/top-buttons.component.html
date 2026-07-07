@@ -12,30 +12,16 @@
   @if (this.approaches$ | async; as approaches) {
     @if (selectedApproach$ | async; as selectedApproach) {
       <ion-fab-list side="bottom">
-        <ion-fab-button
-          [ngClass]="{ active: selectedApproach.name === 'ashkenaz' }"
-          (click)="chooseApproach('ashkenaz')"
-        >
-          <ion-text>
-            {{ approaches["ashkenaz"].nameHeb }}
-          </ion-text>
-        </ion-fab-button>
-        <ion-fab-button
-          [ngClass]="{ active: selectedApproach.name === ApproachNameEnum.CHABAD}"
-          (click)="chooseApproach(ApproachNameEnum.CHABAD)"
-        >
-          <ion-text style="padding-bottom: 0.5rem" >
-            {{ approaches[ApproachNameEnum.CHABAD].nameHeb }}
-          </ion-text>
-        </ion-fab-button>
-        <ion-fab-button
-          [ngClass]="{ active: selectedApproach.name === 'sfarad' }"
-          (click)="chooseApproach('sfarad')"
-        >
-          <ion-text style="height: -webkit-fill-available">
-            {{ approaches["sfarad"].nameHeb }}
-          </ion-text>
-        </ion-fab-button>
+        @for (approachKey of approachOptionKeys; track approachKey) {
+          <ion-fab-button
+            [ngClass]="{ active: selectedApproach.name === approachKey }"
+            (click)="chooseApproach(approachKey)"
+          >
+            <ion-text>
+              {{ approaches[approachKey].nameHeb }}
+            </ion-text>
+          </ion-fab-button>
+        }
         <!-- <ion-fab-button [show]="true">
           <ion-button [ngClass]="{routActive: (rootRoute$ | async)?.includes('/calendar')}" fill="clear" routerLink="/calendar" style="--padding-bottom: 10px;">
             <ion-icon  slot="icon-only" name="calendar-outline"></ion-icon>

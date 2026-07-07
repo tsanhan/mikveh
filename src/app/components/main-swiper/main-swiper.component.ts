@@ -35,7 +35,7 @@ export class MainSwiperComponent {
     approach = inject(ApproachService);
 
   topics$ = this.cache.topics$;
-  approachKey$ = this.approach.approach$.pipe(map(approach => approach['name']));
+  approachKey$ = this.approach.approach$.pipe(map(approach => approach.contentKey ?? approach.name));
 
   constructor( ) {
     addIcons({ document, chevronForwardCircle, colorPalette, globe });

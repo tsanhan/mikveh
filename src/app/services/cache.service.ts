@@ -7,7 +7,7 @@ import { IMikveh } from '../interfaces/mikveh.interface';
 import { BehaviorSubject, map, Observable, shareReplay, tap } from 'rxjs';
 import { ApproachService } from './approach.service';
 import { CachedCalEvent, CachedInputEvent } from '../interfaces/cal';
-import { Approach } from '../interfaces/approaches';
+import { Approach, ApproachName } from '../interfaces/approaches';
 
 @Injectable({
   providedIn: 'root',
@@ -88,7 +88,9 @@ export class CacheService {
     if (!app) {
       await this._storage.set('approach', { ...this.approach.approach$.getValue() });
     } else {
-      this.approach.approach$.next(app);
+      const normalizedApproach = this.normalizeApproach(app);
+      this.approach.approach$.next(normalizedApproach);
+      await this._storage.set('approach', normalizedApproach);
     }
 
     const calEvents = await this._calEventsStorage.get('calEvents');
@@ -121,13 +123,28 @@ export class CacheService {
   }
 
   public setApproach(key: string) {
-    const approach = this.approach.approaches$.getValue()[key];
+    const approach = this.normalizeApproach(key);
     this.approach.approach$.next({ ...approach });
     this._storage.set('approach', approach);
   }
 
   public getApproach(key: string): Approach {
-    return this.approach.approaches$.getValue()[key];
+    return this.normalizeApproach(key);
+  }
+
+  private normalizeApproach(value: string | Approach): Approach {
+    const approaches = this.approach.approaches$.getValue();
+    const key = typeof value === 'string' ? value : value?.name;
+
+    if (key === 'sfarad') {
+      return { ...approaches[ApproachName.SEPHARDI_OVADIA] };
+    }
+
+    if (key === 'ashkenaz') {
+      return { ...approaches[ApproachName.SEPHARDI_MORDECHAI_ELIYAHU] };
+    }
+
+    return { ...(approaches[key] ?? approaches[ApproachName.CHABAD]) };
   }
 
   public setDarkMode(darkMode: boolean) {

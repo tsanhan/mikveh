@@ -17,7 +17,7 @@ The Jewish laws of family purity have many dates to remember each month:
 - the "concern" days (ימי פרישה / חששות) such as Onah Beinonit, Veset HaChodesh, etc.
 - and finally the night she may go to the Mikveh.
 
-These dates depend on the family's tradition — **Ashkenazi**, **Sephardi**, or **Chabad** — and the rules differ slightly between them.
+These dates depend on the family's tradition — **Chabad** or **Sephardi**. The Sephardi option supports two calculation methods: **Rav Ovadia Yosef** and **Rav Mordechai Eliyahu**.
 
 **Mikveh4U does all of this counting for you.** You enter the events you observed (for example: "I saw a period today" or "I made a Hefsek Tahara today"), and the app marks the upcoming relevant days on a calendar with clear Hebrew explanations.
 
@@ -27,7 +27,7 @@ It also uses your phone's location to show the closest Mikveh on a map.
 
 ## What can it do?
 
-- **Pick your tradition** – choose between Ashkenazi, Sephardi, or Chabad. The calculations change accordingly.
+- **Pick your tradition** – choose Chabad, Sephardi according to Rav Ovadia Yosef, or Sephardi according to Rav Mordechai Eliyahu. The calculations change accordingly.
 - **A clean Hebrew calendar** – shows both the Hebrew date and the Gregorian date.
 - **Add an event with one tap**, for example:
   - וסת (start of period)
@@ -47,7 +47,7 @@ It also uses your phone's location to show the closest Mikveh on a map.
 
 ## How it works (in plain words)
 
-1. You open the app and choose your tradition (Ashkenazi / Sephardi / Chabad).
+1. You open the app and choose your tradition (Chabad / Sephardi - Rav Ovadia Yosef / Sephardi - Rav Mordechai Eliyahu).
 2. You see a calendar (Hebrew + Gregorian).
 3. When something happens (period, Hefsek Tahara, etc.) you tap the day and add the event.
 4. The app calculates all the rules that follow from that event for your tradition and paints them onto the calendar with short Hebrew labels like:

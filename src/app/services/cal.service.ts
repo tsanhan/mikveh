@@ -10,7 +10,7 @@ import { get, set } from 'lodash';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const nidaDaysFor = (approach: Approach) =>
-  approach.name === ApproachName.SEPHARDI ? 4 : 5;
+  approach.name === ApproachName.SEPHARDI_OVADIA ? 4 : 5;
 
 @Injectable({
   providedIn: 'root',
@@ -132,8 +132,8 @@ export class CalService {
    * Returns null if the new event is allowed, or an error message in Hebrew otherwise.
    * Currently blocks a Hefsek Tahara that is added too close to (or before) the
    * latest Veset / Ketem Tame event – the woman has at least `nidaDays` days of
-   * Niddah (4 for Sephardi, 5 for Ashkenazi / Chabad) before a Hefsek Tahara is
-   * meaningful.
+   * Niddah (4 for Rav Ovadia, 5 for Chabad / Rav Mordechai Eliyahu) before a
+   * Hefsek Tahara is meaningful.
    */
   validateNewInputEvent(event: CachedInputEvent): string | null {
     if (event.type !== InputEventType.HEFSEK_TAHARA) return null;

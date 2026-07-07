@@ -2,6 +2,7 @@ export interface Approach {
   nameHeb:string;
   name:string;
   svg:string;
+  contentKey?: string;
 }
 
 export interface Approaches {
@@ -10,7 +11,6 @@ export interface Approaches {
 
 export enum ApproachName {
   CHABAD = 'chabad',
-  ASHKENAZI = 'ashkenaz',
-  SEPHARDI = 'sfarad',
+  SEPHARDI_OVADIA = 'sfarad_ovadia',
+  SEPHARDI_MORDECHAI_ELIYAHU = 'sfarad_mordechai_eliyahu',
 }
-

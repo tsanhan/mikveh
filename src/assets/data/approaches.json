@@ -2,16 +2,19 @@
   "chabad": {
     "nameHeb": "חב\"ד",
     "name": "chabad",
+    "contentKey": "chabad",
     "svg": "jamCrown"
   },
-  "ashkenaz": {
-    "nameHeb": "הרמ\"א",
-    "name": "ashkenaz",
-    "svg": "faSolidScrollTorah"
+  "sfarad_ovadia": {
+    "nameHeb": "ספרדי - הרב עובדיה",
+    "name": "sfarad_ovadia",
+    "contentKey": "sfarad",
+    "svg": "faSolidBookTanakh"
   },
-  "sfarad": {
-    "nameHeb": "ספרד",
-    "name": "sfarad",
+  "sfarad_mordechai_eliyahu": {
+    "nameHeb": "ספרדי - הרב מרדכי אליהו",
+    "name": "sfarad_mordechai_eliyahu",
+    "contentKey": "sfarad",
     "svg": "faSolidBookTanakh"
   }
 }
