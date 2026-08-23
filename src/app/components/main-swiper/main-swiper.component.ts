@@ -52,6 +52,15 @@ export class MainSwiperComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
+    const swiperElement = this.swiperRef.nativeElement;
+    const enableRtl = () => swiperElement.swiper?.changeLanguageDirection('rtl');
+
+    if (swiperElement.swiper) {
+      enableRtl();
+    } else {
+      swiperElement.addEventListener('swiperinit', enableRtl, { once: true });
+    }
+
     this.topicNavigation.topicRequests$
       .pipe(
         withLatestFrom(this.topics$),

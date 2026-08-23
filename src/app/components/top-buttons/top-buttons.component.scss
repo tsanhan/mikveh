@@ -86,8 +86,18 @@ ion-fab.whatsapp {
 }
 
 ion-menu-button {
-  margin: 0.5rem 1.5rem 1.5rem 1.5rem;
+  margin: 0.5rem 1rem;
   color: #d78788;
+  pointer-events: auto;
+}
+
+ion-buttons {
+  position: absolute;
+  inset: 0;
+  direction: ltr;
+  height: 4rem;
+  justify-content: flex-start;
+  pointer-events: none;
 }
 
 ::ng-deep ion-button.routActive {
@@ -105,5 +115,5 @@ ion-menu-button {
   left: 50%;
   transform: translate(-50%, -50%);
   color: #d78788;
-  top: 40%;
+  top: 50%;
 }

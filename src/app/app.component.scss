@@ -1,9 +1,13 @@
 // @import 'variables';
 
 .top-buttons {
-  height: 7vh;
+  height: 4rem;
   background: var(--app);
   z-index: 9;
+}
+
+.app-router-outlet {
+  margin-top: 4rem;
 }
 
 ion-menu::part(container) {

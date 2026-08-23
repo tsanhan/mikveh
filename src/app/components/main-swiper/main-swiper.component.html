@@ -1,7 +1,7 @@
 
 <swiper-container
   #swiper
-  class="mySwiper" thumbs-swiper=".mySwiper2" space-between="10">
+  class="mySwiper" dir="rtl" thumbs-swiper=".mySwiper2" space-between="10">
   @for(topic of topics$ | async; track topic; let idx = $index) {
   
     <swiper-slide>
