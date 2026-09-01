@@ -1,6 +1,7 @@
 import { HDate, HebrewDateEvent, Location, Zmanim } from "@hebcal/core";
 import days from '../../assets/data/days.json';
 import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
+import { HebrewDateKey } from "../interfaces/cal";
 
 /**
  * 
@@ -169,4 +170,71 @@ export function HDateToNgbDateStruct(heb: HDate): NgbDateStruct {
             : hebcalMonth + monthsBeforeNisan,
         year: heb.getFullYear(),
     };
+}
+
+export function hDateToHebrewDateKey(date: HDate): HebrewDateKey {
+    return {
+        year: date.getFullYear(),
+        month: date.getMonth(),
+        day: date.getDate(),
+    };
+}
+
+export function hebrewDateKeyToHDate(date: HebrewDateKey): HDate {
+    return new HDate(date.day, date.month, date.year);
+}
+
+/** Adds absolute Hebrew calendar days; Gregorian midnight is not involved. */
+export function addHebrewDays(date: HebrewDateKey, days: number): HebrewDateKey {
+    return hDateToHebrewDateKey(hebrewDateKeyToHDate(date).add(days, 'd'));
+}
+
+/**
+ * Returns the same Hebrew day number in the following Hebrew month.
+ *
+ * When day 30 does not exist in the following month, HDate normalization keeps
+ * the application's existing behavior and rolls it to day 1 of the subsequent
+ * month. This is a Hebrew-month operation, not elapsed-day arithmetic.
+ */
+export function addHebrewMonths(date: HebrewDateKey, monthsToAdd: number): HebrewDateKey {
+    if (!Number.isInteger(monthsToAdd)) {
+        throw new TypeError('Hebrew months must be added as a whole number');
+    }
+
+    let hdate = hebrewDateKeyToHDate(date);
+    const direction = monthsToAdd >= 0 ? 1 : -1;
+    for (let index = 0; index < Math.abs(monthsToAdd); index++) {
+        const year = hdate.getFullYear();
+        const month = hdate.getMonth();
+        let targetYear = year;
+        let targetMonth: number;
+
+        if (direction > 0) {
+            if (month === 6) { // Elul -> Tishrei of the next Hebrew year
+                targetYear += 1;
+                targetMonth = 7;
+            } else if (month === HDate.monthsInYear(year)) { // Adar/Adar II -> Nisan
+                targetMonth = 1;
+            } else {
+                targetMonth = month + 1;
+            }
+        } else {
+            if (month === 7) { // Tishrei -> Elul of the previous Hebrew year
+                targetYear -= 1;
+                targetMonth = 6;
+            } else if (month === 1) { // Nisan -> Adar/Adar II
+                targetMonth = HDate.monthsInYear(year);
+            } else {
+                targetMonth = month - 1;
+            }
+        }
+
+        hdate = new HDate(hdate.getDate(), targetMonth, targetYear);
+    }
+    return hDateToHebrewDateKey(hdate);
+}
+
+/** Veset HaChodesh coordinate: the same Hebrew day number in the next Hebrew month. */
+export function sameHebrewDayInNextMonth(date: HebrewDateKey): HebrewDateKey {
+    return addHebrewMonths(date, 1);
 }

@@ -9,7 +9,7 @@ import { ApproachService } from './approach.service';
 import { CachedCalEvent, CachedInputEvent } from '../interfaces/cal';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { HDate } from '@hebcal/core';
-import { HDateToNgbDateStruct } from '../utils/date.util';
+import { HDateToNgbDateStruct, hDateToHebrewDateKey, NgbDateStructToHDate } from '../utils/date.util';
 
 @Injectable({
   providedIn: 'root',
@@ -181,11 +181,34 @@ export class CacheService {
 
   private normalizeInputEvent(event: CachedInputEvent): CachedInputEvent {
     const simpleDate = new Date(event.simpleDate);
+    const storedHebrewDate = event.hebrewDate;
+    const hdate = storedHebrewDate
+      ? new HDate(storedHebrewDate.day, storedHebrewDate.month, storedHebrewDate.year)
+      : this.validStoredDate(event.date)
+        ? NgbDateStructToHDate(event.date)
+        : new HDate(simpleDate);
     return {
       ...event,
+      id: event.id || this.createEventId(),
+      hebrewDate: hDateToHebrewDateKey(hdate),
       simpleDate,
-      date: HDateToNgbDateStruct(new HDate(simpleDate)),
+      date: HDateToNgbDateStruct(hdate),
     };
+  }
+
+  private validStoredDate(date?: { day: number; month: number; year: number }): boolean {
+    if (!date || date.day < 1 || date.month < 1 || date.year < 1) return false;
+    try {
+      const roundTrip = HDateToNgbDateStruct(NgbDateStructToHDate(date));
+      return roundTrip.day === date.day && roundTrip.month === date.month && roundTrip.year === date.year;
+    } catch {
+      return false;
+    }
+  }
+
+  private createEventId(): string {
+    return globalThis.crypto?.randomUUID?.() ??
+      `calendar-${Date.now()}-${Math.random().toString(36).slice(2)}`;
   }
 
   public getCalEvents(): CachedCalEvent[] {
@@ -198,12 +221,8 @@ export class CacheService {
   }
 
   public removeInputEvent(event: CachedInputEvent) {
-    const eventTime = new Date(event.simpleDate).getTime();
     const remaining = this._inputEvents$.getValue().filter(
-      e =>
-        !(new Date(e.simpleDate).getTime() === eventTime &&
-          e.type === event.type &&
-          e.ona === event.ona),
+      e => e.id !== event.id,
     );
     this._inputEvents$.next(remaining);
     this._calEventsStorage.set('inputEvents', remaining);

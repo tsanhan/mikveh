@@ -6,6 +6,7 @@
 </ngb-datepicker>
 } @else {
 <app-cal-add-event [selectedHDateHeb]="selectedHDateHeb$ | async" [hdate]="(selectedDateHDate$ | async)!"
+  [selectedOna]="selectedOnah()"
   (onClose)="onCloseCalAddEvent($event)"></app-cal-add-event>
 }
 
@@ -43,25 +44,22 @@
       'hebrew-day': true,
       'outside': date.month !== currentMonth,
       selected,
-      'nidaDay': isNidaDay(date, CalEventDict),
-      'veset': isADay(date, CalEventDict, inputEventType.VESET),
-      'mahzor': isADay(date, CalEventDict, dayType.MAHZOR),
-      'canStartHefsek': isADay(date, CalEventDict, dayType.CAN_START_CHECK_HEFSEK),
-      'sevenCleans': isADay(date, CalEventDict, dayType.SEVEN_CLEAN),
-      'mikvehDay': isADay(date, CalEventDict, dayType.MIKVEH_DAY),
-      'muteret': isADay(date, CalEventDict, dayType.MUTERET),
-      'prisha': isADay(date, CalEventDict, dayType.PRISHA),
-      'onaBeinonit': isFullDayOnaBeinonit(date, CalEventDict),
-      'onaBeinonitDay': isOnaBeinonitForOna(date, CalEventDict, inputEventOna.YOM),
-      'onaBeinonitNight': isOnaBeinonitForOna(date, CalEventDict, inputEventOna.LAYLA),
-      'vesetHachodeshDay': isADay(date, CalEventDict, dayType.VESET_HACHODESH_DAY),
-      'vesetHachodeshNight': isADay(date, CalEventDict, dayType.VESET_HACHODESH_NIGHT),
-      'haflagaDay': isADay(date, CalEventDict, dayType.HAFLAGA_DAY),
-      'haflagaNight': isADay(date, CalEventDict, dayType.HAFLAGA_NIGHT),
-      'ketemTame': isADay(date, CalEventDict, inputEventType.KETEM_TAME),
-      'bdikaTmea': isADay(date, CalEventDict, inputEventType.BDIKA_TMEA),
+      'has-events': isADay(date, CalEventDict, inputEventType.VESET) || isADay(date, CalEventDict, dayType.ONA_BEINONIT),
     }"
     >
+      @if (onotContainSameEvents(date, CalEventDict)) {
+        <span [ngClass]="onahClasses(date, CalEventDict, inputEventOna.NIGHT, true)"
+          aria-hidden="true"></span>
+      } @else {
+        @if (hasEventsForOnah(date, CalEventDict, inputEventOna.NIGHT)) {
+          <span [ngClass]="onahClasses(date, CalEventDict, inputEventOna.NIGHT)"
+            aria-hidden="true"></span>
+        }
+        @if (hasEventsForOnah(date, CalEventDict, inputEventOna.DAY)) {
+          <span [ngClass]="onahClasses(date, CalEventDict, inputEventOna.DAY)"
+            aria-hidden="true"></span>
+        }
+      }
       <div class="gregorian-num">{{ data.gregorian.day + '.' + data.gregorian.month }}</div>
       <div class="hebrew-num">{{ i18n.getDayNumerals(date) }}</div>
     </div>
@@ -78,13 +76,35 @@
         {{ selectedGregDate$ | async }}
       </span>
     </div>
-    <div class="text">
-      @for (detail of selectedHebDateDetails(); track detail) {
-        <div class="detail-line">
-          {{ detail }}
-        </div>
-      }
-    </div>
+    @if (selectedNightDetails().length || selectedDayDetails().length) {
+      <div class="text onah-details">
+        @if (selectedOnahDetailsAreIdentical()) {
+          <section class="full-day-details">
+            <div class="onah-heading">כל היום</div>
+            @for (detail of selectedNightDetails(); track detail) {
+              <div class="detail-line">{{ detail }}</div>
+            }
+          </section>
+        } @else {
+          @if (selectedNightDetails().length) {
+            <section>
+              <div class="onah-heading">🌙 עונת לילה</div>
+              @for (detail of selectedNightDetails(); track detail) {
+                <div class="detail-line">{{ detail }}</div>
+              }
+            </section>
+          }
+          @if (selectedDayDetails().length) {
+            <section>
+              <div class="onah-heading">☀️ עונת יום</div>
+              @for (detail of selectedDayDetails(); track detail) {
+                <div class="detail-line">{{ detail }}</div>
+              }
+            </section>
+          }
+        }
+      </div>
+    }
     @if (selectedDayInputEvents$ | async; as dayInputs) {
       @if (dayInputs.length) {
         <div class="day-input-events">

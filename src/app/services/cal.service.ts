@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { combineLatest, map, share, shareReplay } from 'rxjs';
-import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, InputEventOna, InputEventType, OutputEvent } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, HebrewDateKey, InputEventOna, InputEventType, OnahRef, OutputEvent } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { ApproachService } from './approach.service';
-import { HDateToNgbDateStruct, simpleDateToHebrew } from '../utils/date.util';
+import { addHebrewDays, HDateToNgbDateStruct, hDateToHebrewDateKey, hebrewDateKeyToHDate, sameHebrewDayInNextMonth, simpleDateToHebrew } from '../utils/date.util';
 import { get, set } from 'lodash';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -17,10 +17,6 @@ const nidaDaysForInputEvent = (event: CachedInputEvent, approach: Approach) =>
   (event.type === InputEventType.KETEM_TAME && approach.name === ApproachName.SEPHARDI_OVADIA)
     ? nidaDaysFor(approach)
     : 5;
-const isSephardiApproach = (approach: Approach) =>
-  approach.name === ApproachName.SEPHARDI_OVADIA ||
-  approach.name === ApproachName.SEPHARDI_MORDECHAI_ELIYAHU;
-
 @Injectable({
   providedIn: 'root',
 })
@@ -44,9 +40,7 @@ export class CalService {
     map(([inputEvents, approach]: [CachedInputEvent[], Approach]) => {
       const list: OutputEvent[] = [];
       // split by veset
-      const sortedInputEvents = inputEvents.sort(
-        (a, b) => new Date(a.simpleDate).getTime() - new Date(b.simpleDate).getTime(),
-      );
+      const sortedInputEvents = [...inputEvents].sort((a, b) => this.compareInputEvents(a, b));
       // Sighting events that have already been absorbed into an earlier
       // niddah chain – don't generate a second Hefsek for them.
       const handled = new Set<CachedInputEvent>();
@@ -86,17 +80,21 @@ export class CalService {
       const aggregateDailyEvents = true;
 
       for (const event of list) {
-        const { day, month, year } = event.date;
-        if(aggregateDailyEvents){
-          // get events from returned obj
-          const events: OutputEvent[] = get(rtn, [year, month, day]) || [];
-          // add new event
-          events.push({ ...event });
-          // reset the added events
-          set(rtn, [year, month, day], [...events]);
-        } else {
-          // just set the most reset (relevant) event for that day
-          set(rtn, [year, month, day], [{ ...event }]);
+        const occupiedDates = new Map<string, HebrewDateKey>();
+        for (const segment of event.segments) {
+          const date = segment.hebrewDate;
+          occupiedDates.set(`${date.year}-${date.month}-${date.day}`, date);
+        }
+
+        for (const occupiedDate of occupiedDates.values()) {
+          const { day, month, year } = HDateToNgbDateStruct(hebrewDateKeyToHDate(occupiedDate));
+          if(aggregateDailyEvents){
+            const events: OutputEvent[] = get(rtn, [year, month, day]) || [];
+            events.push({ ...event });
+            set(rtn, [year, month, day], [...events]);
+          } else {
+            set(rtn, [year, month, day], [{ ...event }]);
+          }
         }
       }
       return rtn;
@@ -254,6 +252,9 @@ export class CalService {
       const date = HDateToNgbDateStruct(hdate)
 
       const nekyimDay: OutputEvent = {
+        id: this.concernId(DayType.SEVEN_CLEAN, hefsekTaharaEvent, hdate),
+        sourceEventId: hefsekTaharaEvent.id,
+        segments: this.fullHebrewDateSegments(hDateToHebrewDateKey(hdate)),
         CachedInputEventRef: { ...hefsekTaharaEvent },
         simpleDate: newSimpleDate,
         date,
@@ -266,6 +267,9 @@ export class CalService {
 
       if (index === 7) {
         const mikvehDay: OutputEvent = {
+          id: this.concernId(DayType.MIKVEH_DAY, hefsekTaharaEvent, hdate),
+          sourceEventId: hefsekTaharaEvent.id,
+          segments: [this.onahRef(hDateToHebrewDateKey(hdate), InputEventOna.NIGHT)],
           CachedInputEventRef: { ...hefsekTaharaEvent },
           simpleDate: newSimpleDate,
           date,
@@ -294,7 +298,6 @@ export class CalService {
     includeHashashot: boolean,
   ): OutputEvent[] {
     const rtn: OutputEvent[] = [];
-    const onaLabel = sightingEvent.ona === InputEventOna.LAYLA ? 'לילה' : 'יום';
     const forNum = nidaDaysForInputEvent(chainLast, approach);
 
     const vesetSimpleDate = new Date(sightingEvent.simpleDate);
@@ -305,7 +308,9 @@ export class CalService {
       Math.floor((chainLastDate.getTime() - vesetSimpleDate.getTime()) / MS_PER_DAY) + forNum;
 
     const firstNidaDay: OutputEvent = {
-      ...{ ...sightingEvent },
+      id: this.concernId(sightingEvent.type, sightingEvent, simpleDateToHebrew(vesetSimpleDate)),
+      sourceEventId: sightingEvent.id,
+      segments: [this.onahRef(sightingEvent.hebrewDate, sightingEvent.ona)],
       simpleDate: vesetSimpleDate,
       date: HDateToNgbDateStruct(simpleDateToHebrew(vesetSimpleDate)),
       CachedInputEventRef: { ...sightingEvent },
@@ -322,6 +327,9 @@ export class CalService {
       const hdate = simpleDateToHebrew(newSimpleDate)
       const date = HDateToNgbDateStruct(hdate)
       const nidaDay: OutputEvent = {
+        id: this.concernId(DayType.MAHZOR, sightingEvent, hdate),
+        sourceEventId: sightingEvent.id,
+        segments: this.fullHebrewDateSegments(hDateToHebrewDateKey(hdate)),
         CachedInputEventRef: { ...sightingEvent },
         simpleDate: newSimpleDate,
         date,
@@ -340,6 +348,9 @@ export class CalService {
     const startBdikotHDate = simpleDateToHebrew(startBdikotSimpleDate);
     const startBdikotDate = HDateToNgbDateStruct(startBdikotHDate);
     const startBdikot: OutputEvent = {
+      id: this.concernId(DayType.CAN_START_CHECK_HEFSEK, sightingEvent, startBdikotHDate),
+      sourceEventId: sightingEvent.id,
+      segments: [this.onahRef(hDateToHebrewDateKey(startBdikotHDate), InputEventOna.DAY)],
       CachedInputEventRef: { ...sightingEvent },
       simpleDate: startBdikotSimpleDate,
       date: startBdikotDate,
@@ -353,44 +364,8 @@ export class CalService {
     rtn.push(...mahzorDays);
     rtn.push(startBdikot);
     if (includeHashashot) {
-      // Hashash Onah Beinonit:
-      //   30 *solar* days after the sighting (NOT one Hebrew month).
-      //   Chabad treats it as a full day. Sephardi approaches treat it as the
-      //   same ona (day / night) as the original sighting, like Veset HaChodesh.
-      const onaBeinonitSimpleDate = new Date(vesetSimpleDate);
-      onaBeinonitSimpleDate.setDate(vesetSimpleDate.getDate() + 30);
-      const onaBeinonitHDate = simpleDateToHebrew(onaBeinonitSimpleDate);
-      const isSephardi = isSephardiApproach(approach);
-      const hashashOnaBeinonit: OutputEvent = {
-        CachedInputEventRef: { ...sightingEvent },
-        simpleDate: onaBeinonitSimpleDate,
-        date: HDateToNgbDateStruct(onaBeinonitHDate),
-        outputEventType: DayType.ONA_BEINONIT,
-        ...(isSephardi ? { ona: sightingEvent.ona } : {}),
-        details: [
-          isSephardi ? `חשש עונה בינונית - ${onaLabel}` : `חשש עונה בינונית`
-        ]
-      }
-
-      // Hashash Veset HaChodesh:
-      //   Same Hebrew day, next Hebrew month.
-      //   The hashash falls on the same ona (day / night) as the original sighting.
-      const vesetHaChodeshHDate = simpleDateToHebrew(vesetSimpleDate).add(1, "M");
-      const vesetHaChodeshType = sightingEvent.ona === InputEventOna.LAYLA
-        ? DayType.VESET_HACHODESH_NIGHT
-        : DayType.VESET_HACHODESH_DAY;
-      const hashashVesetHaChodesh: OutputEvent = {
-        CachedInputEventRef: { ...sightingEvent },
-        simpleDate: vesetHaChodeshHDate.greg(),
-        date: HDateToNgbDateStruct(vesetHaChodeshHDate),
-        outputEventType: vesetHaChodeshType,
-        details: [
-          `חשש וסת החודש - ${onaLabel}`
-        ]
-      }
-
-      rtn.push(hashashOnaBeinonit);
-      rtn.push(hashashVesetHaChodesh);
+      rtn.push(this.calculateOnahBeinonit(sightingEvent, approach));
+      rtn.push(this.calculateVesetHaChodesh(sightingEvent));
     }
 
     return rtn;
@@ -481,11 +456,17 @@ export class CalService {
   ): OutputEvent {
     const hdate = simpleDateToHebrew(simpleDate);
     return {
+      id: this.concernId(
+        ona === InputEventOna.NIGHT ? DayType.HAFLAGA_NIGHT : DayType.HAFLAGA_DAY,
+        ref,
+        hdate,
+      ),
+      sourceEventId: ref.id,
+      segments: [this.onahRef(hDateToHebrewDateKey(hdate), ona)],
       CachedInputEventRef: { ...ref },
       simpleDate,
       date: HDateToNgbDateStruct(hdate),
       outputEventType: ona === InputEventOna.LAYLA ? DayType.HAFLAGA_NIGHT : DayType.HAFLAGA_DAY,
-      ona,
       details: [detail],
     };
   }
@@ -521,6 +502,75 @@ export class CalService {
       default:
         return 'ווסת';
     }
+  }
+
+  private calculateOnahBeinonit(
+    sightingEvent: CachedInputEvent,
+    approach: Approach,
+  ): OutputEvent {
+    const targetDate = addHebrewDays(sightingEvent.hebrewDate, 29);
+    const targetHDate = hebrewDateKeyToHDate(targetDate);
+    const isChabad = approach.name === ApproachName.CHABAD;
+    const onaLabel = this.onaLabel(sightingEvent.ona);
+    return {
+      id: this.concernId(DayType.ONA_BEINONIT, sightingEvent, targetHDate),
+      sourceEventId: sightingEvent.id,
+      segments: isChabad
+        ? this.fullHebrewDateSegments(targetDate)
+        : [this.onahRef(targetDate, sightingEvent.ona)],
+      CachedInputEventRef: { ...sightingEvent },
+      simpleDate: targetHDate.greg(),
+      date: HDateToNgbDateStruct(targetHDate),
+      outputEventType: DayType.ONA_BEINONIT,
+      details: [isChabad ? 'חשש עונה בינונית' : `חשש עונה בינונית - ${onaLabel}`],
+    };
+  }
+
+  private calculateVesetHaChodesh(sightingEvent: CachedInputEvent): OutputEvent {
+    const targetDate = sameHebrewDayInNextMonth(sightingEvent.hebrewDate);
+    const targetHDate = hebrewDateKeyToHDate(targetDate);
+    const outputEventType = sightingEvent.ona === InputEventOna.NIGHT
+      ? DayType.VESET_HACHODESH_NIGHT
+      : DayType.VESET_HACHODESH_DAY;
+    return {
+      id: this.concernId(outputEventType, sightingEvent, targetHDate),
+      sourceEventId: sightingEvent.id,
+      segments: [this.onahRef(targetDate, sightingEvent.ona)],
+      CachedInputEventRef: { ...sightingEvent },
+      simpleDate: targetHDate.greg(),
+      date: HDateToNgbDateStruct(targetHDate),
+      outputEventType,
+      details: [`חשש וסת החודש - ${this.onaLabel(sightingEvent.ona)}`],
+    };
+  }
+
+  private fullHebrewDateSegments(hebrewDate: HebrewDateKey): OnahRef[] {
+    return [
+      this.onahRef(hebrewDate, InputEventOna.NIGHT),
+      this.onahRef(hebrewDate, InputEventOna.DAY),
+    ];
+  }
+
+  private onahRef(hebrewDate: HebrewDateKey, onah: InputEventOna): OnahRef {
+    return { hebrewDate: { ...hebrewDate }, onah };
+  }
+
+  private concernId(
+    type: DayType | InputEventType,
+    source: CachedInputEvent,
+    date: ReturnType<typeof simpleDateToHebrew>,
+  ): string {
+    return `${type}:${source.id}:${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  }
+
+  private compareInputEvents(a: CachedInputEvent, b: CachedInputEvent): number {
+    const dateDiff = hebrewDateKeyToHDate(a.hebrewDate).abs() -
+      hebrewDateKeyToHDate(b.hebrewDate).abs();
+    if (dateDiff !== 0) return dateDiff;
+
+    const onahOrder = (onah: InputEventOna) =>
+      onah === InputEventOna.NIGHT ? 0 : 1;
+    return onahOrder(a.ona) - onahOrder(b.ona);
   }
 
   // private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, approach: Approach): EventDto[] {

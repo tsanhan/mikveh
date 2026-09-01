@@ -21,6 +21,7 @@ import {
   tap,
 } from 'rxjs';
 import { CalService } from 'src/app/services/cal.service';
+import { EventsService } from 'src/app/services/events.service';
 
 
 
@@ -28,7 +29,7 @@ import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CachedInputEvent, CalEventDict, DayType, InputEventOna, InputEventType, OutputEvent } from 'src/app/interfaces/cal';
-import { HDateToNgbDateStruct, hebDateToHebrew, NgbDateStructToHDate } from 'src/app/utils/date.util';
+import { HDateToNgbDateStruct, hDateToHebrewDateKey, hebDateToHebrew, NgbDateStructToHDate } from 'src/app/utils/date.util';
 import {
   NgbCalendar,
   NgbCalendarHebrew,
@@ -64,17 +65,20 @@ import { get } from 'lodash';
 export class CalComponent  {
   showEventModal:WritableSignal<boolean> = signal(false);
   selectedHebDateDetails: WritableSignal<string[]> = signal([]);
+  selectedNightDetails: WritableSignal<string[]> = signal([]);
+  selectedDayDetails: WritableSignal<string[]> = signal([]);
+  selectedOnah: WritableSignal<InputEventOna> = signal(InputEventOna.DAY);
   nowHDate = new HDate(new Date());
   selectedHebDate$ = new BehaviorSubject<NgbDateStruct>(HDateToNgbDateStruct(this.nowHDate));
   i18n = inject(NgbDatepickerI18n);
   calendar = inject(NgbCalendar);
   cal = inject(CalService);
+  events = inject(EventsService);
   highlightedInputEvents$ = this.cal.highlightedInputEvents$.pipe(
     tap(val => {
       const selectedHebDate = this.selectedHebDate$.getValue();
       const {day,month,year} = selectedHebDate as NgbDateStruct;
-      const events =  get(val, [year,month,day],[]).map((e:OutputEvent) => e.details).flat();
-      this.selectedHebDateDetails.set(events);
+      this.setSelectedDetails(val, selectedHebDate);
     })
   );
   public dayType = DayType;
@@ -95,12 +99,13 @@ export class CalComponent  {
     this.inputEvents$,
     this.selectedHebDate$,
   ]).pipe(
-    map(([events, sel]: [CachedInputEvent[], NgbDateStruct]) =>
-      events.filter(e =>
-        e.date.year === sel.year &&
-        e.date.month === sel.month &&
-        e.date.day === sel.day),
-    ),
+    map(([events, sel]: [CachedInputEvent[], NgbDateStruct]) => {
+      const selectedDate = hDateToHebrewDateKey(NgbDateStructToHDate(sel));
+      return events.filter(e =>
+        e.hebrewDate.year === selectedDate.year &&
+        e.hebrewDate.month === selectedDate.month &&
+        e.hebrewDate.day === selectedDate.day);
+    }),
   );
 
   inputEventTypeLabels: Record<string, string> = {
@@ -113,7 +118,7 @@ export class CalComponent  {
 
   inputEventLabel(e: CachedInputEvent): string {
     const base = this.inputEventTypeLabels[e.type] ?? e.type;
-    if (e.type === InputEventType.VESET || e.type === InputEventType.KETEM_TAME) {
+    if (e.type === InputEventType.VESET || e.type === InputEventType.KETEM_TAME || e.type === InputEventType.BDIKA_TMEA) {
       const ona = e.ona === 'layla' ? 'לילה' : 'יום';
       return `${base} (${ona})`;
     }
@@ -140,6 +145,10 @@ export class CalComponent  {
   constructor(private el: ElementRef) {
     addIcons({ add, closeOutline, chevronBackOutline, chevronForwardOutline });
     this.dayTemplateData = this.dayTemplateData.bind(this);
+    firstValueFrom(this.events.hDateNow$).then(hdate => {
+      this.nowHDate = hdate;
+      this.selectedHebDate$.next(HDateToNgbDateStruct(hdate));
+    });
   }
 
   public dayTemplateData(date: NgbDateStruct) {
@@ -155,6 +164,7 @@ export class CalComponent  {
     const events = get(highlightedInputEvents,[year,month,day], []).map((e:OutputEvent) => e.details).flat();
     this.selectedHebDate$.next(event);
     this.selectedHebDateDetails.set(events);
+    this.setSelectedDetails(highlightedInputEvents, event);
   };
 
   showAddEvent() {
@@ -241,20 +251,117 @@ export class CalComponent  {
     return eventsForDay.some(event => nidaTypes.includes(event.outputEventType));
   }
 
-  isFullDayOnaBeinonit(date: NgbDateStruct, calEventDict: CalEventDict) {
+  isEventForOna(
+    date: NgbDateStruct,
+    calEventDict: CalEventDict,
+    type: DayType | InputEventType,
+    ona: InputEventOna,
+  ): boolean {
     const { year, month, day } = date;
-    const eventsForDay = get(calEventDict,[year,month,day]) || [];
-    return eventsForDay.length && eventsForDay.some(
-      e => e.outputEventType === DayType.ONA_BEINONIT && !e.ona,
+    const hebrewDate = hDateToHebrewDateKey(NgbDateStructToHDate(date));
+    const eventsForDay: OutputEvent[] = get(calEventDict,[year,month,day]) || [];
+    return eventsForDay.some(event =>
+      event.outputEventType === type && event.segments.some(segment =>
+        segment.onah === ona &&
+        segment.hebrewDate.year === hebrewDate.year &&
+        segment.hebrewDate.month === hebrewDate.month &&
+        segment.hebrewDate.day === hebrewDate.day,
+      ),
     );
   }
 
-  isOnaBeinonitForOna(date: NgbDateStruct, calEventDict: CalEventDict, ona: InputEventOna) {
+  hasEventsForOnah(
+    date: NgbDateStruct,
+    calEventDict: CalEventDict,
+    onah: InputEventOna,
+  ): boolean {
+    return this.eventsForOnah(date, calEventDict, onah).length > 0;
+  }
+
+  onotContainSameEvents(date: NgbDateStruct, calEventDict: CalEventDict): boolean {
+    const nightEventIds = this.eventsForOnah(date, calEventDict, InputEventOna.NIGHT)
+      .map(event => event.id)
+      .sort();
+    const dayEventIds = this.eventsForOnah(date, calEventDict, InputEventOna.DAY)
+      .map(event => event.id)
+      .sort();
+
+    return nightEventIds.length > 0 &&
+      nightEventIds.length === dayEventIds.length &&
+      nightEventIds.every((id, index) => id === dayEventIds[index]);
+  }
+
+  onahClasses(
+    date: NgbDateStruct,
+    calEventDict: CalEventDict,
+    ona: InputEventOna,
+    fullDay = false,
+  ) {
+    return {
+      'onah-area': true,
+      'night': ona === InputEventOna.NIGHT,
+      'day': ona === InputEventOna.DAY,
+      'full-day': fullDay,
+      'nidaDay': [InputEventType.VESET, InputEventType.KETEM_TAME, InputEventType.BDIKA_TMEA, DayType.MAHZOR]
+        .some(type => this.isEventForOna(date, calEventDict, type, ona)),
+      'veset': this.isEventForOna(date, calEventDict, InputEventType.VESET, ona),
+      'ketemTame': this.isEventForOna(date, calEventDict, InputEventType.KETEM_TAME, ona),
+      'bdikaTmea': this.isEventForOna(date, calEventDict, InputEventType.BDIKA_TMEA, ona),
+      'canStartHefsek': this.isEventForOna(date, calEventDict, DayType.CAN_START_CHECK_HEFSEK, ona),
+      'sevenCleans': this.isEventForOna(date, calEventDict, DayType.SEVEN_CLEAN, ona),
+      'mikvehDay': this.isEventForOna(date, calEventDict, DayType.MIKVEH_DAY, ona),
+      'onaBeinonit': this.isEventForOna(date, calEventDict, DayType.ONA_BEINONIT, ona),
+      'vesetHachodesh':
+        this.isEventForOna(date, calEventDict, DayType.VESET_HACHODESH_DAY, ona) ||
+        this.isEventForOna(date, calEventDict, DayType.VESET_HACHODESH_NIGHT, ona),
+      'haflaga':
+        this.isEventForOna(date, calEventDict, DayType.HAFLAGA_DAY, ona) ||
+        this.isEventForOna(date, calEventDict, DayType.HAFLAGA_NIGHT, ona),
+    };
+  }
+
+  selectedOnahDetailsAreIdentical(): boolean {
+    const nightDetails = [...this.selectedNightDetails()].sort();
+    const dayDetails = [...this.selectedDayDetails()].sort();
+    return nightDetails.length > 0 &&
+      nightDetails.length === dayDetails.length &&
+      nightDetails.every((detail, index) => detail === dayDetails[index]);
+  }
+
+  private setSelectedDetails(calEventDict: CalEventDict, date: NgbDateStruct) {
     const { year, month, day } = date;
-    const eventsForDay = get(calEventDict,[year,month,day]) || [];
-    return eventsForDay.length && eventsForDay.some(
-      e => e.outputEventType === DayType.ONA_BEINONIT && e.ona === ona,
-    );
+    const events: OutputEvent[] = get(calEventDict, [year, month, day], []);
+    this.selectedHebDateDetails.set(events.flatMap(event => event.details));
+    this.selectedNightDetails.set(this.detailsForOnah(events, date, InputEventOna.NIGHT));
+    this.selectedDayDetails.set(this.detailsForOnah(events, date, InputEventOna.DAY));
+  }
+
+  private detailsForOnah(events: OutputEvent[], date: NgbDateStruct, onah: InputEventOna): string[] {
+    const hebrewDate = hDateToHebrewDateKey(NgbDateStructToHDate(date));
+    return [...new Set(events
+      .filter(event => event.segments.some(segment =>
+        segment.onah === onah &&
+        segment.hebrewDate.year === hebrewDate.year &&
+        segment.hebrewDate.month === hebrewDate.month &&
+        segment.hebrewDate.day === hebrewDate.day,
+      ))
+      .flatMap(event => event.details))];
+  }
+
+  private eventsForOnah(
+    date: NgbDateStruct,
+    calEventDict: CalEventDict,
+    onah: InputEventOna,
+  ): OutputEvent[] {
+    const { year, month, day } = date;
+    const hebrewDate = hDateToHebrewDateKey(NgbDateStructToHDate(date));
+    const events: OutputEvent[] = get(calEventDict, [year, month, day], []);
+    return events.filter(event => event.segments.some(segment =>
+      segment.onah === onah &&
+      segment.hebrewDate.year === hebrewDate.year &&
+      segment.hebrewDate.month === hebrewDate.month &&
+      segment.hebrewDate.day === hebrewDate.day,
+    ));
   }
 
 

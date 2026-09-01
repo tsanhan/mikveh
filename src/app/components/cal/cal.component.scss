@@ -370,6 +370,102 @@ ngb-datepicker-navigation {
   font-size: smaller;
   height: 2.5rem;
   width: 2.5rem;
+  position: relative;
+  overflow: hidden;
+
+  .onah-area {
+    background: transparent;
+    border: 0;
+    height: 50%;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+
+    &.night {
+      top: 0;
+      border-radius: 50% 50% 0 0;
+    }
+
+    &.day {
+      bottom: 0;
+      border-radius: 0 0 50% 50%;
+    }
+
+    &.full-day {
+      border-radius: 50%;
+      height: 100%;
+      top: 0;
+    }
+
+    &.night::after,
+    &.day::after {
+      color: rgba(0, 0, 0, 0.35);
+      font-size: 0.45rem;
+      line-height: 1;
+      position: absolute;
+      right: 0.18rem;
+    }
+
+    &.night::after {
+      content: '☾';
+      top: 0.18rem;
+    }
+
+    &.day::after {
+      bottom: 0.18rem;
+      content: '☀';
+    }
+
+    &.full-day::after {
+      content: none;
+    }
+
+    &.nidaDay {
+      background: var(--blood);
+    }
+
+    &.veset,
+    &.ketemTame,
+    &.bdikaTmea {
+      box-shadow: inset 0 0 0 2px #e91e6f;
+    }
+
+    &.canStartHefsek {
+      background: var(--hefsek);
+    }
+
+    &.sevenCleans {
+      background: var(--7-nekim);
+    }
+
+    &.mikvehDay {
+      background: var(--tvila);
+    }
+
+    &.haflaga {
+      background: #26a69a;
+    }
+
+    &.vesetHachodesh {
+      background: #64b5f6;
+    }
+
+    &.onaBeinonit {
+      background: #ffd54f;
+    }
+
+  }
+
+  .gregorian-num,
+  .hebrew-num {
+    pointer-events: none;
+    position: relative;
+    z-index: 1;
+  }
 }
 
 .hebrew-day:hover,
@@ -475,4 +571,30 @@ ngb-datepicker-navigation {
 
   }
 
+}
+
+.onah-details {
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 0.4rem;
+
+  section {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 0.35rem;
+
+    &.full-day-details {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .onah-heading {
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .detail-line {
+    font-size: 0.75rem;
+  }
 }

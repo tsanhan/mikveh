@@ -8,6 +8,18 @@ export interface CalEventDict {
   }
 }
 
+/** Canonical, UI-independent Hebrew calendar coordinate. Month uses Hebcal numbering. */
+export interface HebrewDateKey {
+  year: number;
+  month: number;
+  day: number;
+}
+
+export interface OnahRef {
+  hebrewDate: HebrewDateKey;
+  onah: InputEventOna;
+}
+
 export interface CachedCalEvent {
   type: InputEventType;
   hDateSunsetAwareString: string;
@@ -15,18 +27,29 @@ export interface CachedCalEvent {
   afterSunset: boolean;
 }
 
-export interface OutputEvent {
+export interface CalendarConcern {
+  id: string;
+  sourceEventId?: string;
+  segments: OnahRef[];
+  /** Technical Gregorian anchor retained while the older date-based calculations are migrated. */
   simpleDate: Date;
+  /** Datepicker adapter value; not the semantic identity of the concern. */
   date: NgbDateStruct;
   outputEventType: DayType | InputEventType;
-  ona?: InputEventOna;
   CachedInputEventRef: CachedInputEvent;
   details: string[];
 }
 
+export type OutputEvent = CalendarConcern;
+
 
 export interface CachedInputEvent {
+  id: string;
+  /** Semantic identity of the selected Hebrew calendar date. */
+  hebrewDate: HebrewDateKey;
+  /** Technical Gregorian conversion anchor, not the sighting timestamp. */
   simpleDate: Date;
+  /** Datepicker adapter value retained for compatibility with the current UI. */
   date: NgbDateStruct;
   type: InputEventType;
   ona: InputEventOna;
@@ -47,7 +70,11 @@ export enum DayType {
 }
 
 export enum InputEventOna {
+  DAY = 'yom',
+  NIGHT = 'layla',
+  /** @deprecated Use DAY. Kept for persisted-data and source compatibility. */
   YOM = 'yom',
+  /** @deprecated Use NIGHT. Kept for persisted-data and source compatibility. */
   LAYLA = 'layla'
 }
 

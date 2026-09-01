@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { HDate } from '@hebcal/core';
+import { HDate, months } from '@hebcal/core';
 
 import { CalService } from './cal.service';
 import { CacheService } from './cache.service';
@@ -14,7 +14,7 @@ import {
   InputEventType,
   OutputEvent,
 } from '../interfaces/cal';
-import { HDateToNgbDateStruct, NgbDateStructToHDate } from '../utils/date.util';
+import { addHebrewDays, HDateToNgbDateStruct, hDateToHebrewDateKey, NgbDateStructToHDate, sameHebrewDayInNextMonth } from '../utils/date.util';
 
 // -----------------------------------------------------------------------------
 // Test helpers
@@ -51,6 +51,24 @@ function makeEvent(
   const simpleDate = new Date(`${isoDate}T12:00:00Z`);
   const hdate = new HDate(simpleDate);
   return {
+    id: `${type}:${isoDate}:${ona}`,
+    hebrewDate: hDateToHebrewDateKey(hdate),
+    simpleDate,
+    date: HDateToNgbDateStruct(hdate),
+    type,
+    ona,
+  };
+}
+
+function makeHebrewEvent(
+  hdate: HDate,
+  type: InputEventType,
+  ona: InputEventOna = InputEventOna.DAY,
+): CachedInputEvent {
+  const simpleDate = hdate.greg();
+  return {
+    id: `${type}:${hdate.toString()}:${ona}`,
+    hebrewDate: hDateToHebrewDateKey(hdate),
     simpleDate,
     date: HDateToNgbDateStruct(hdate),
     type,
@@ -83,13 +101,7 @@ class CacheServiceStub {
     return this._events$.getValue();
   }
   removeInputEvent(event: CachedInputEvent) {
-    const t = new Date(event.simpleDate).getTime();
-    const remaining = this._events$.getValue().filter(
-      e =>
-        !(new Date(e.simpleDate).getTime() === t &&
-          e.type === event.type &&
-          e.ona === event.ona),
-    );
+    const remaining = this._events$.getValue().filter(e => e.id !== event.id);
     this._events$.next(remaining);
   }
   // unused fields but referenced via type
@@ -246,37 +258,141 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(dayDiff(veset.simpleDate, startBdikot.simpleDate)).toBe(3);
     });
 
-    it('Chabad: Ona Beinonit hashash is exactly 30 solar days after the veset and spans a full day', () => {
+    it('Chabad: Ona Beinonit is Hebrew day +29 and explicitly occupies Night and Day', () => {
       const veset = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.LAYLA);
       const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_CHABAD);
 
       const onaBeinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
       expect(onaBeinonit).toBeTruthy();
-      expect(dayDiff(veset.simpleDate, onaBeinonit.simpleDate)).toBe(30);
-      expect(onaBeinonit.ona).toBeUndefined();
+      const targetDate = addHebrewDays(veset.hebrewDate, 29);
+      expect(onaBeinonit.segments).toEqual([
+        { hebrewDate: targetDate, onah: InputEventOna.NIGHT },
+        { hebrewDate: targetDate, onah: InputEventOna.DAY },
+      ]);
       expect(onaBeinonit.details).toContain('חשש עונה בינונית');
     });
 
-    it('Rav Ovadia: Ona Beinonit hashash is only the original ona after 30 solar days', () => {
+    it('Chabad: full-day Onah Beinonit does not depend on the original onah', () => {
+      const night = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.NIGHT);
+      const day = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.DAY);
+
+      const nightConcern = cal.getNidaDaysHashashotForVeset(night, night, APPROACH_CHABAD)
+        .find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+      const dayConcern = cal.getNidaDaysHashashotForVeset(day, day, APPROACH_CHABAD)
+        .find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+
+      expect(nightConcern.segments).toEqual(dayConcern.segments);
+    });
+
+    it('Rav Ovadia: Ona Beinonit is Hebrew day +29 on the original Night onah', () => {
       const veset = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.LAYLA);
       const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_OVADIA);
 
       const onaBeinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
       expect(onaBeinonit).toBeTruthy();
-      expect(dayDiff(veset.simpleDate, onaBeinonit.simpleDate)).toBe(30);
-      expect(onaBeinonit.ona).toBe(InputEventOna.LAYLA);
+      expect(onaBeinonit.segments).toEqual([
+        { hebrewDate: addHebrewDays(veset.hebrewDate, 29), onah: InputEventOna.NIGHT },
+      ]);
       expect(onaBeinonit.details).toContain('חשש עונה בינונית - לילה');
     });
 
-    it('Rav Mordechai Eliyahu: Ona Beinonit hashash is only the original ona after 30 solar days', () => {
+    it('Rav Ovadia: a Day sighting produces only the target Day segment', () => {
+      const veset = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.DAY);
+      const onaBeinonit = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_OVADIA)
+        .find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+
+      expect(onaBeinonit.segments).toEqual([
+        { hebrewDate: addHebrewDays(veset.hebrewDate, 29), onah: InputEventOna.DAY },
+      ]);
+    });
+
+    it('Rav Mordechai Eliyahu: Ona Beinonit is Hebrew day +29 on the original Day onah', () => {
       const veset = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
       const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU);
 
       const onaBeinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
       expect(onaBeinonit).toBeTruthy();
-      expect(dayDiff(veset.simpleDate, onaBeinonit.simpleDate)).toBe(30);
-      expect(onaBeinonit.ona).toBe(InputEventOna.YOM);
+      expect(onaBeinonit.segments).toEqual([
+        { hebrewDate: addHebrewDays(veset.hebrewDate, 29), onah: InputEventOna.DAY },
+      ]);
       expect(onaBeinonit.details).toContain('חשש עונה בינונית - יום');
+    });
+
+    it('Rav Mordechai Eliyahu: a Night sighting produces only the target Night segment', () => {
+      const veset = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.NIGHT);
+      const onaBeinonit = cal.getNidaDaysHashashotForVeset(
+        veset,
+        veset,
+        APPROACH_SEPHARDI_MORDECHAI_ELIYAHU,
+      ).find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+
+      expect(onaBeinonit.segments).toEqual([
+        { hebrewDate: addHebrewDays(veset.hebrewDate, 29), onah: InputEventOna.NIGHT },
+      ]);
+    });
+
+    it('keeps Onah Beinonit and Veset HaChodesh independent after a 29-day source month', () => {
+      const veset = makeHebrewEvent(
+        new HDate(1, months.IYYAR, 5786),
+        InputEventType.VESET,
+        InputEventOna.NIGHT,
+      );
+      const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_OVADIA);
+      const beinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+      const hachodesh = out.find(e =>
+        e.outputEventType === DayType.VESET_HACHODESH_NIGHT ||
+        e.outputEventType === DayType.VESET_HACHODESH_DAY,
+      )!;
+
+      expect(beinonit.segments[0].hebrewDate).toEqual({
+        year: 5786,
+        month: months.SIVAN,
+        day: 1,
+      });
+      expect(hachodesh.segments[0].hebrewDate).toEqual(beinonit.segments[0].hebrewDate);
+      expect(hachodesh.id).not.toBe(beinonit.id);
+    });
+
+    it('places Onah Beinonit one Hebrew day before Veset HaChodesh after a 30-day source month', () => {
+      const veset = makeHebrewEvent(
+        new HDate(1, months.NISAN, 5786),
+        InputEventType.VESET,
+        InputEventOna.DAY,
+      );
+      const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_OVADIA);
+      const beinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+      const hachodesh = out.find(e =>
+        e.outputEventType === DayType.VESET_HACHODESH_NIGHT ||
+        e.outputEventType === DayType.VESET_HACHODESH_DAY,
+      )!;
+
+      expect(beinonit.segments[0].hebrewDate).toEqual({
+        year: 5786,
+        month: months.NISAN,
+        day: 30,
+      });
+      expect(hachodesh.segments[0].hebrewDate).toEqual({
+        year: 5786,
+        month: months.IYYAR,
+        day: 1,
+      });
+      const beinonitAbs = new HDate(30, months.NISAN, 5786).abs();
+      const hachodeshAbs = new HDate(1, months.IYYAR, 5786).abs();
+      expect(hachodeshAbs - beinonitAbs).toBe(1);
+    });
+
+    it('calculates 15 Nisan independently as 14 Iyar and 15 Iyar', () => {
+      const veset = makeHebrewEvent(
+        new HDate(15, months.NISAN, 5786),
+        InputEventType.VESET,
+        InputEventOna.DAY,
+      );
+      const out = cal.getNidaDaysHashashotForVeset(veset, veset, APPROACH_SEPHARDI_OVADIA);
+      const beinonit = out.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
+      const hachodesh = out.find(e => e.outputEventType === DayType.VESET_HACHODESH_DAY)!;
+
+      expect(beinonit.segments[0].hebrewDate).toEqual({ year: 5786, month: months.IYYAR, day: 14 });
+      expect(hachodesh.segments[0].hebrewDate).toEqual({ year: 5786, month: months.IYYAR, day: 15 });
     });
 
     it('Veset HaChodesh hashash is the same Hebrew day, next Hebrew month', () => {
@@ -290,11 +406,11 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       )!;
       expect(vesetHachodesh).toBeTruthy();
 
-      const vesetHDate = new HDate(veset.simpleDate);
-      const expectedHDate = vesetHDate.add(1, 'M');
+      const expectedDate = sameHebrewDayInNextMonth(veset.hebrewDate);
 
-      expect(vesetHachodesh.date.day).toBe(expectedHDate.getDate());
-      expect(vesetHachodesh.date.year).toBe(expectedHDate.getFullYear());
+      expect(vesetHachodesh.segments).toEqual([
+        { hebrewDate: expectedDate, onah: veset.ona },
+      ]);
     });
 
     it('VESET_HACHODESH type is DAY when ona is yom', () => {
@@ -456,7 +572,9 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
 
       const onaBeinonit = all.find(e => e.outputEventType === DayType.ONA_BEINONIT)!;
       expect(onaBeinonit).toBeTruthy();
-      expect(dayDiff(bdika.simpleDate, onaBeinonit.simpleDate)).toBe(30);
+      expect(onaBeinonit.segments).toEqual([
+        { hebrewDate: addHebrewDays(bdika.hebrewDate, 29), onah: InputEventOna.NIGHT },
+      ]);
       expect(all.some(e => e.outputEventType === DayType.VESET_HACHODESH_NIGHT)).toBe(true);
     });
 
@@ -511,7 +629,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
 
       expect(haflaga).toBeTruthy();
       expect(dayDiff(v2.simpleDate, haflaga.simpleDate)).toBe(10);
-      expect(haflaga.ona).toBe(InputEventOna.LAYLA);
+      expect(haflaga.segments[0].onah).toBe(InputEventOna.NIGHT);
       expect(haflaga.details).toContain('חשש וסת הפלגה - לילה (11 ימים)');
     });
 
@@ -556,7 +674,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
 
       expect(haflaga).toBeTruthy();
       expect(dayDiff(v2.simpleDate, haflaga.simpleDate)).toBe(5);
-      expect(haflaga.ona).toBe(InputEventOna.YOM);
+      expect(haflaga.segments[0].onah).toBe(InputEventOna.DAY);
       expect(haflaga.details).toContain('חשש וסת הפלגה - יום (10 עונות)');
     });
 
@@ -572,7 +690,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
 
       expect(haflaga).toBeTruthy();
       expect(dayDiff(h2.simpleDate, haflaga.simpleDate)).toBe(5);
-      expect(haflaga.ona).toBe(InputEventOna.YOM);
+      expect(haflaga.segments[0].onah).toBe(InputEventOna.DAY);
       expect(haflaga.details).toContain('חשש וסת הפלגה - יום (10 עונות)');
     });
 

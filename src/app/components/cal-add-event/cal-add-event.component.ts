@@ -10,7 +10,7 @@ import { HDate } from '@hebcal/core';
 import { EventsService } from 'src/app/services/events.service';
 import { AsyncPipe } from '@angular/common';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { HDateToNgbDateStruct, NgbDateStructToHDate } from 'src/app/utils/date.util';
+import { HDateToNgbDateStruct, hDateToHebrewDateKey } from 'src/app/utils/date.util';
 import { CalService } from 'src/app/services/cal.service';
 
 @Component({
@@ -30,19 +30,26 @@ export class CalAddEventComponent  implements OnInit {
   @Output('onClose') closeAddEvent = new EventEmitter<CachedInputEvent |null>();
   @Input('hdate') hdate!: HDate;
   @Input('selectedHDateHeb') selectedHDateHeb?: string | null;
+  @Input() selectedOna: InputEventOna = InputEventOna.DAY;
 
 
   public InputEventTypeEnum = InputEventType;
   public InputEventOnaEnum = InputEventOna;
 
   eventTypeFC: FormControl = new FormControl<InputEventType>(InputEventType.VESET, { nonNullable: true });
-  eventOnaFC: FormControl = new FormControl<InputEventOna>(InputEventOna.YOM, { nonNullable: true });
+  eventOnaFC: FormControl = new FormControl<InputEventOna>(InputEventOna.DAY, { nonNullable: true });
 
   
   events = inject(EventsService);
   cal = inject(CalService);
   sunriseByDate = (hdate: HDate) => this.events.sunriseByDate(hdate.greg() as Date);
-  sunsetByDate = (hdate: HDate) => this.events.sunsetByDate(hdate?.greg() as Date);
+  sunsetByDate = (hdate: HDate, onah: InputEventOna) => {
+    const date = hdate.greg() as Date;
+    if (onah === InputEventOna.NIGHT) {
+      date.setDate(date.getDate() - 1);
+    }
+    return this.events.sunsetByDate(date);
+  };
 
   // True when the woman has at least one prior sighting (Veset / Ketem / Bdika Tmea)
   // on or before the selected date – Hefsek Tahara is meaningless without one.
@@ -53,6 +60,7 @@ export class CalAddEventComponent  implements OnInit {
   }
 
   ngOnInit() {
+    this.eventOnaFC.setValue(this.selectedOna);
     this.canAddHefsek = this.cal.canAddHefsekTahara(this.hdate.greg() as Date);
     if (!this.canAddHefsek && this.eventTypeFC.value === InputEventType.HEFSEK_TAHARA) {
       this.eventTypeFC.setValue(InputEventType.VESET);
@@ -68,6 +76,9 @@ export class CalAddEventComponent  implements OnInit {
     const ngbDateStruct = HDateToNgbDateStruct(this.hdate as HDate);
     const simpleDate = this.hdate.greg() as Date;
     const eventToEmit: CachedInputEvent = {
+      id: globalThis.crypto?.randomUUID?.() ??
+        `calendar-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      hebrewDate: hDateToHebrewDateKey(this.hdate),
       simpleDate,
       date: ngbDateStruct,
       type: this.eventTypeFC.value,

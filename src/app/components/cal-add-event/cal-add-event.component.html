@@ -27,13 +27,13 @@
       <span>זמני
         {{selectedHDateHeb}}:
       </span>
-      <span>זריחה: {{sunriseByDate(hdate) | async }} שקיעה: {{sunsetByDate(hdate) | async }}</span>
+      <span>זריחה: {{sunriseByDate(hdate) | async }} שקיעה: {{sunsetByDate(hdate, eventOnaFC.value) | async }}</span>
     </div>
   </div>
   <div class="buttons">
-    <ion-radio-group [formControl]="eventOnaFC" [value]="InputEventOnaEnum.YOM" class="d-flex flex-row gap-2">
-      <ion-radio [value]="InputEventOnaEnum.YOM">יום</ion-radio>
-      <ion-radio [value]="InputEventOnaEnum.LAYLA">לילה</ion-radio>
+    <ion-radio-group [formControl]="eventOnaFC" [value]="InputEventOnaEnum.NIGHT" class="d-flex flex-row gap-2">
+      <ion-radio [value]="InputEventOnaEnum.NIGHT">🌙 לילה</ion-radio>
+      <ion-radio [value]="InputEventOnaEnum.DAY">☀️ יום</ion-radio>
     </ion-radio-group>
   </div>
   <div class="text">
