@@ -311,6 +311,7 @@ export class CalComponent  {
       'sevenCleans': this.isEventForOna(date, calEventDict, DayType.SEVEN_CLEAN, ona),
       'mikvehDay': this.isEventForOna(date, calEventDict, DayType.MIKVEH_DAY, ona),
       'onaBeinonit': this.isEventForOna(date, calEventDict, DayType.ONA_BEINONIT, ona),
+      'vesetKavua': this.isEventForOna(date, calEventDict, DayType.VESET_KAVUA, ona),
       'vesetHachodesh':
         this.isEventForOna(date, calEventDict, DayType.VESET_HACHODESH_DAY, ona) ||
         this.isEventForOna(date, calEventDict, DayType.VESET_HACHODESH_NIGHT, ona),

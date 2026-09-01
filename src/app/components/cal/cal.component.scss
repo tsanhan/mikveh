@@ -238,6 +238,12 @@ ngb-datepicker {
                 &.bdikaTmea {
                   border: #e91e6f solid 2px;
                 }
+
+                &.vesetKavua {
+                  background-color: #ddd6fe;
+                  box-shadow: inset 0 0 0 2px #6d28d9;
+                  color: #2e1065;
+                }
                 &.canStartHefsek {
                   background: var(--hefsek);
                   color: white;
@@ -458,6 +464,12 @@ ngb-datepicker-navigation {
       background: #ffd54f;
     }
 
+    &.vesetKavua {
+      background: #ddd6fe;
+      box-shadow: inset 0 0 0 2px #6d28d9;
+      color: #2e1065;
+    }
+
   }
 
   .gregorian-num,
@@ -466,6 +478,7 @@ ngb-datepicker-navigation {
     position: relative;
     z-index: 1;
   }
+
 }
 
 .hebrew-day:hover,

@@ -67,6 +67,29 @@ export enum DayType {
   VESET_HACHODESH_NIGHT = 'vesetHachodeshNight',
   HAFLAGA_DAY = 'haflagaDay',
   HAFLAGA_NIGHT = 'haflagaNight',
+  VESET_KAVUA = 'vesetKavua',
+}
+
+export type FixedVesetKind = 'monthly-date' | 'dilug';
+export type FixedVesetStatus = 'active' | 'dormant';
+
+/** Derived fixed-veset state. Dormant patterns are retained for restoration. */
+export interface FixedVesetPattern {
+  kind: FixedVesetKind;
+  status: FixedVesetStatus;
+  ona: InputEventOna;
+  /** Zero for a fixed date; the monthly day-number change for dilug. */
+  dayStep: number;
+  nextExpected: HebrewDateKey;
+  /** Consecutive recorded sightings that did not match this fixed pattern. */
+  consecutiveMisses: number;
+  establishedByEventId: string;
+}
+
+export interface VesetPatternState {
+  fixed: FixedVesetPattern | null;
+  semiFixedSephardi: boolean;
+  suppressesOnahBeinonit: boolean;
 }
 
 export enum InputEventOna {

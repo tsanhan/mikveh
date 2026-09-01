@@ -44,7 +44,7 @@
       'hebrew-day': true,
       'outside': date.month !== currentMonth,
       selected,
-      'has-events': isADay(date, CalEventDict, inputEventType.VESET) || isADay(date, CalEventDict, dayType.ONA_BEINONIT),
+      'has-events': isADay(date, CalEventDict, inputEventType.VESET) || isADay(date, CalEventDict, dayType.ONA_BEINONIT) || isADay(date, CalEventDict, dayType.VESET_KAVUA),
     }"
     >
       @if (onotContainSameEvents(date, CalEventDict)) {

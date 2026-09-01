@@ -1,14 +1,17 @@
 import { inject, Injectable } from '@angular/core';
 import { combineLatest, map, share, shareReplay } from 'rxjs';
-import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, HebrewDateKey, InputEventOna, InputEventType, OnahRef, OutputEvent } from '../interfaces/cal';
+import { CachedCalEvent, CachedInputEvent, CalEventDict, DayType, EventDto, FixedVesetPattern, HebrewDateKey, InputEventOna, InputEventType, OnahRef, OutputEvent, VesetPatternState } from '../interfaces/cal';
 import { LocationService } from './location.service';
 import { CacheService } from './cache.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
 import { ApproachService } from './approach.service';
-import { addHebrewDays, HDateToNgbDateStruct, hDateToHebrewDateKey, hebrewDateKeyToHDate, sameHebrewDayInNextMonth, simpleDateToHebrew } from '../utils/date.util';
+import { addHebrewDays, addHebrewMonths, HDateToNgbDateStruct, hDateToHebrewDateKey, hebrewDateKeyToHDate, sameHebrewDayInNextMonth, simpleDateToHebrew } from '../utils/date.util';
 import { get, set } from 'lodash';
+import { HDate } from '@hebcal/core';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
+/** Practical calendar-rendering horizon for an active monthly fixed veset. */
+const FIXED_VESET_FUTURE_MONTHS = 120;
 const nidaDaysFor = (approach: Approach) =>
   approach.name === ApproachName.SEPHARDI_OVADIA ? 4 : 5;
 const nidaDaysForInputEvent = (event: CachedInputEvent, approach: Approach) =>
@@ -49,13 +52,24 @@ export class CalService {
         switch (event.type) {
           case InputEventType.VESET: {
             const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-            const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(event, chainLast, approach);
+            const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(
+              event,
+              chainLast,
+              approach,
+              this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
+            );
             list.push(...hashashotForVeset);
             break;
           }
           case InputEventType.BDIKA_TMEA: {
             const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-            const hashashotForBdika: OutputEvent[] = this.getNidaDaysForSighting(event, chainLast, approach, true);
+            const hashashotForBdika: OutputEvent[] = this.getNidaDaysForSighting(
+              event,
+              chainLast,
+              approach,
+              true,
+              this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
+            );
             list.push(...hashashotForBdika);
             break;
           }
@@ -72,6 +86,7 @@ export class CalService {
           }
         }
       }
+      list.push(...this.getFixedVesetConcerns(sortedInputEvents, approach));
       list.push(...this.getHaflagaHashashot(sortedInputEvents, approach));
       return list;
     }),
@@ -287,8 +302,15 @@ export class CalService {
     vesetEvent: CachedInputEvent,
     chainLast: CachedInputEvent,
     approach: Approach,
+    suppressOnahBeinonit = false,
   ): OutputEvent[] {
-    return this.getNidaDaysForSighting(vesetEvent, chainLast, approach, true);
+    return this.getNidaDaysForSighting(
+      vesetEvent,
+      chainLast,
+      approach,
+      true,
+      suppressOnahBeinonit,
+    );
   }
 
   getNidaDaysForSighting(
@@ -296,6 +318,7 @@ export class CalService {
     chainLast: CachedInputEvent,
     approach: Approach,
     includeHashashot: boolean,
+    suppressOnahBeinonit = false,
   ): OutputEvent[] {
     const rtn: OutputEvent[] = [];
     const forNum = nidaDaysForInputEvent(chainLast, approach);
@@ -364,11 +387,272 @@ export class CalService {
     rtn.push(...mahzorDays);
     rtn.push(startBdikot);
     if (includeHashashot) {
-      rtn.push(this.calculateOnahBeinonit(sightingEvent, approach));
+      if (!suppressOnahBeinonit) {
+        rtn.push(this.calculateOnahBeinonit(sightingEvent, approach));
+      }
       rtn.push(this.calculateVesetHaChodesh(sightingEvent));
     }
 
     return rtn;
+  }
+
+  /**
+   * Derives the current fixed/semi-fixed state from sightings; no state is
+   * deleted or persisted. A dormant fixed pattern remains available for the
+   * one-occurrence restoration rule until a different fixed pattern is made.
+   */
+  calculateVesetPatternState(
+    events: CachedInputEvent[],
+    approach: Approach,
+    asOf?: HebrewDateKey,
+  ): VesetPatternState {
+    const evaluationDate = asOf ?? this.defaultPatternEvaluationDate(events);
+    const { pattern } = this.deriveFixedVeset(events, evaluationDate, false);
+    const semiFixedSephardi = this.hasSephardiSemiFixedPattern(events, approach, evaluationDate);
+    return {
+      fixed: pattern,
+      semiFixedSephardi,
+      suppressesOnahBeinonit: pattern?.status === 'active' || semiFixedSephardi,
+    };
+  }
+
+  getFixedVesetConcerns(
+    events: CachedInputEvent[],
+    _approach: Approach,
+    asOf?: HebrewDateKey,
+  ): OutputEvent[] {
+    return this.deriveFixedVeset(
+      events,
+      asOf ?? this.defaultPatternEvaluationDate(events),
+      true,
+    ).concerns;
+  }
+
+  /**
+   * The app permits future test/planning entries. Use the later of today and
+   * the latest entered sighting so those entries can establish a pattern;
+   * callers that need a historical snapshot still pass an explicit `asOf`.
+   */
+  private defaultPatternEvaluationDate(events: CachedInputEvent[]): HebrewDateKey {
+    const today = hDateToHebrewDateKey(new HDate());
+    const sightings = events
+      .filter(event => this.createsHashashot(event))
+      .sort((a, b) => this.compareInputEvents(a, b));
+    const latest = sightings[sightings.length - 1];
+    return latest && this.compareHebrewDates(latest.hebrewDate, today) > 0
+      ? latest.hebrewDate
+      : today;
+  }
+
+  private suppressesOnahBeinonitAt(
+    sighting: CachedInputEvent,
+    allEvents: CachedInputEvent[],
+    approach: Approach,
+  ): boolean {
+    const throughSighting = allEvents.filter(event =>
+      this.createsHashashot(event) && this.compareInputEvents(event, sighting) <= 0,
+    );
+    return this.calculateVesetPatternState(
+      throughSighting,
+      approach,
+      sighting.hebrewDate,
+    ).suppressesOnahBeinonit;
+  }
+
+  private deriveFixedVeset(
+    events: CachedInputEvent[],
+    asOf: HebrewDateKey,
+    includeConcerns: boolean,
+  ): { pattern: FixedVesetPattern | null; concerns: OutputEvent[] } {
+    const sightings = events
+      .filter(event => this.createsHashashot(event))
+      .filter(event => this.compareHebrewDates(event.hebrewDate, asOf) <= 0)
+      .sort((a, b) => this.compareInputEvents(a, b));
+    let pattern: FixedVesetPattern | null = null;
+    let anchor: CachedInputEvent | undefined;
+    const concerns: OutputEvent[] = [];
+
+    for (let index = 0; index < sightings.length; index++) {
+      const sighting = sightings[index];
+
+      if (pattern) {
+        if (pattern.status === 'active') {
+          while (this.compareHebrewDates(pattern.nextExpected, sighting.hebrewDate) < 0) {
+            if (includeConcerns && anchor) concerns.push(this.fixedVesetConcern(pattern, anchor));
+            pattern.nextExpected = this.nextFixedDate(pattern);
+          }
+          if (this.sightingMatchesPattern(sighting, pattern)) {
+            if (includeConcerns && anchor) concerns.push(this.fixedVesetConcern(pattern, anchor));
+            pattern.consecutiveMisses = 0;
+            pattern.nextExpected = this.nextFixedDate(pattern);
+            anchor = sighting;
+          } else {
+            pattern.consecutiveMisses++;
+            // A sighting on the expected Hebrew date but in the other onah is
+            // a deviation; move the expectation to the following month.
+            if (this.compareHebrewDates(pattern.nextExpected, sighting.hebrewDate) === 0) {
+              pattern.nextExpected = this.nextFixedDate(pattern);
+            }
+            if (pattern.consecutiveMisses === 3) pattern.status = 'dormant';
+          }
+        } else {
+          while (this.compareHebrewDates(pattern.nextExpected, sighting.hebrewDate) < 0) {
+            pattern.nextExpected = this.nextFixedDate(pattern);
+          }
+          if (this.sightingMatchesPattern(sighting, pattern)) {
+            pattern.status = 'active';
+            pattern.consecutiveMisses = 0;
+            pattern.nextExpected = this.nextFixedDate(pattern);
+            anchor = sighting;
+          }
+        }
+      }
+
+      if ((!pattern || pattern.status === 'dormant') && index >= 2) {
+        const established = this.patternFromThree(
+          sightings[index - 2],
+          sightings[index - 1],
+          sighting,
+        );
+        if (established) {
+          pattern = established;
+          anchor = sighting;
+        }
+      }
+    }
+
+    if (pattern) {
+      if (pattern.status === 'active') {
+        // Months passing without a recorded sighting do not uproot the fixed
+        // veset. Advance the display cursor to the current calculation date.
+        while (this.compareHebrewDates(pattern.nextExpected, asOf) < 0) {
+          if (includeConcerns && anchor) concerns.push(this.fixedVesetConcern(pattern, anchor));
+          pattern.nextExpected = this.nextFixedDate(pattern);
+        }
+        if (pattern.status === 'active' && includeConcerns && anchor) {
+          const future = {
+            ...pattern,
+            nextExpected: { ...pattern.nextExpected },
+          };
+          // Future dates are concerns, not deviations. Cancellation is driven
+          // only by the recorded off-pattern sightings processed above.
+          for (let month = 0; month < FIXED_VESET_FUTURE_MONTHS; month++) {
+            concerns.push(this.fixedVesetConcern(future, anchor));
+            future.nextExpected = this.nextFixedDate(future);
+          }
+        }
+      } else {
+        while (this.compareHebrewDates(pattern.nextExpected, asOf) < 0) {
+          pattern.nextExpected = this.nextFixedDate(pattern);
+        }
+      }
+    }
+
+    return { pattern, concerns };
+  }
+
+  /**
+   * Establishment conditions are deliberately explicit: exactly three
+   * consecutive hashash-generating sightings, each one Hebrew month apart,
+   * all in the same onah, with either the same day number or the same non-zero
+   * day-number step for both transitions.
+   */
+  private patternFromThree(
+    first: CachedInputEvent,
+    second: CachedInputEvent,
+    third: CachedInputEvent,
+  ): FixedVesetPattern | null {
+    if (first.ona !== second.ona || second.ona !== third.ona) return null;
+    if (!this.isFollowingHebrewMonth(first.hebrewDate, second.hebrewDate) ||
+        !this.isFollowingHebrewMonth(second.hebrewDate, third.hebrewDate)) return null;
+
+    const firstStep = second.hebrewDate.day - first.hebrewDate.day;
+    const secondStep = third.hebrewDate.day - second.hebrewDate.day;
+    if (firstStep !== secondStep) return null;
+
+    const kind = firstStep === 0 ? 'monthly-date' : 'dilug';
+    const nextExpected = this.nextPatternDate(third.hebrewDate, firstStep);
+    if (!nextExpected) return null;
+    return {
+      kind,
+      status: 'active',
+      ona: third.ona,
+      dayStep: firstStep,
+      nextExpected,
+      consecutiveMisses: 0,
+      establishedByEventId: third.id,
+    };
+  }
+
+  private hasSephardiSemiFixedPattern(
+    events: CachedInputEvent[],
+    approach: Approach,
+    asOf: HebrewDateKey,
+  ): boolean {
+    if (approach.name === ApproachName.CHABAD) return false;
+    const sightings = events
+      .filter(event => this.createsHashashot(event))
+      .filter(event => this.compareHebrewDates(event.hebrewDate, asOf) <= 0)
+      .sort((a, b) => this.compareInputEvents(a, b));
+    if (sightings.length < 4) return false;
+    const lastFour = sightings.slice(-4);
+    return lastFour.slice(1).every((event, index) =>
+      hebrewDateKeyToHDate(event.hebrewDate).abs() -
+        hebrewDateKeyToHDate(lastFour[index].hebrewDate).abs() >= 31,
+    );
+  }
+
+  private isFollowingHebrewMonth(a: HebrewDateKey, b: HebrewDateKey): boolean {
+    const next = addHebrewMonths({ ...a, day: 1 }, 1);
+    return next.year === b.year && next.month === b.month;
+  }
+
+  private nextPatternDate(from: HebrewDateKey, dayStep: number): HebrewDateKey | null {
+    const month = addHebrewMonths({ ...from, day: 1 }, 1);
+    const day = from.day + dayStep;
+    const candidate = hebrewDateKeyToHDate({ ...month, day });
+    return candidate.getFullYear() === month.year &&
+      candidate.getMonth() === month.month &&
+      candidate.getDate() === day
+      ? { ...month, day }
+      : null;
+  }
+
+  private nextFixedDate(pattern: FixedVesetPattern): HebrewDateKey {
+    return this.nextPatternDate(pattern.nextExpected, pattern.dayStep) ??
+      addHebrewMonths(pattern.nextExpected, 1);
+  }
+
+  private sightingMatchesPattern(
+    sighting: CachedInputEvent,
+    pattern: FixedVesetPattern,
+  ): boolean {
+    return sighting.ona === pattern.ona &&
+      this.compareHebrewDates(sighting.hebrewDate, pattern.nextExpected) === 0;
+  }
+
+  private fixedVesetConcern(
+    pattern: FixedVesetPattern,
+    source: CachedInputEvent,
+  ): OutputEvent {
+    const target = hebrewDateKeyToHDate(pattern.nextExpected);
+    const detail = pattern.kind === 'dilug'
+      ? `חשש וסת קבוע בדילוג - ${this.onaLabel(pattern.ona)}`
+      : `חשש וסת קבוע - ${this.onaLabel(pattern.ona)}`;
+    return {
+      id: this.concernId(DayType.VESET_KAVUA, source, target),
+      sourceEventId: source.id,
+      segments: [this.onahRef(pattern.nextExpected, pattern.ona)],
+      CachedInputEventRef: { ...source },
+      simpleDate: target.greg(),
+      date: HDateToNgbDateStruct(target),
+      outputEventType: DayType.VESET_KAVUA,
+      details: [detail],
+    };
+  }
+
+  private compareHebrewDates(a: HebrewDateKey, b: HebrewDateKey): number {
+    return hebrewDateKeyToHDate(a).abs() - hebrewDateKeyToHDate(b).abs();
   }
 
   private getHaflagaHashashot(events: CachedInputEvent[], approach: Approach): OutputEvent[] {

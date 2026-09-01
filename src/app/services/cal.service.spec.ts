@@ -14,7 +14,7 @@ import {
   InputEventType,
   OutputEvent,
 } from '../interfaces/cal';
-import { addHebrewDays, HDateToNgbDateStruct, hDateToHebrewDateKey, NgbDateStructToHDate, sameHebrewDayInNextMonth } from '../utils/date.util';
+import { addHebrewDays, addHebrewMonths, HDateToNgbDateStruct, hDateToHebrewDateKey, hebrewDateKeyToHDate, NgbDateStructToHDate, sameHebrewDayInNextMonth } from '../utils/date.util';
 
 // -----------------------------------------------------------------------------
 // Test helpers
@@ -901,6 +901,271 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
 
       expect(cal.canAddHefsekTahara(new Date('2025-01-23T12:00:00Z'))).toBe(false);
       expect(cal.canAddHefsekTahara(new Date('2025-01-24T12:00:00Z'))).toBe(true);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Fixed and semi-fixed veset state
+  // ---------------------------------------------------------------------------
+  describe('fixed and semi-fixed veset state', () => {
+    const monthlySightings = (
+      days: number[],
+      startMonth = months.TISHREI,
+      startYear = 5787,
+      ona: InputEventOna = InputEventOna.DAY,
+    ) => {
+      const start = hDateToHebrewDateKey(new HDate(1, startMonth, startYear));
+      return days.map((day, index) => makeHebrewEvent(
+        hebrewDateKeyToHDate({ ...addHebrewMonths(start, index), day }),
+        InputEventType.VESET,
+        ona,
+      ));
+    };
+
+    it('establishes a same-date fixed veset only after three consecutive occurrences', () => {
+      const [first, second, third] = monthlySightings([1, 1, 1]);
+      expect(cal.calculateVesetPatternState(
+        [first, second], APPROACH_CHABAD, second.hebrewDate,
+      ).fixed).toBeNull();
+
+      const state = cal.calculateVesetPatternState(
+        [first, second, third], APPROACH_CHABAD, third.hebrewDate,
+      );
+      expect(state.fixed).toEqual(jasmine.objectContaining({
+        kind: 'monthly-date',
+        status: 'active',
+        dayStep: 0,
+        nextExpected: addHebrewMonths(third.hebrewDate, 1),
+      }));
+    });
+
+    it('generates the next fixed concern on the original Night/Day segment', () => {
+      const sightings = monthlySightings([1, 1, 1], months.TISHREI, 5787, InputEventOna.NIGHT);
+      const concerns = cal.getFixedVesetConcerns(
+        sightings, APPROACH_CHABAD, sightings[2].hebrewDate,
+      );
+      expect(concerns.length).toBe(120);
+      expect(concerns[0].outputEventType).toBe(DayType.VESET_KAVUA);
+      expect(concerns[0].segments).toEqual([{
+        hebrewDate: addHebrewMonths(sightings[2].hebrewDate, 1),
+        onah: InputEventOna.NIGHT,
+      }]);
+    });
+
+    it('shows Av, Elul, and Tishrei after future Iyar, Sivan, and Tammuz entries', async () => {
+      const sightings = [months.IYYAR, months.SIVAN, months.TAMUZ].map(month =>
+        makeHebrewEvent(
+          new HDate(1, month, 5787),
+          InputEventType.VESET,
+          InputEventOna.DAY,
+        ));
+      cache.setEvents(sightings);
+
+      const dict = await firstValueFrom(cal.highlightedInputEvents$);
+      const fixed = flatten(dict)
+        .filter(event => event.outputEventType === DayType.VESET_KAVUA);
+      expect(fixed.slice(0, 3).map(event => event.segments[0])).toEqual([
+        { hebrewDate: hDateToHebrewDateKey(new HDate(1, months.AV, 5787)), onah: InputEventOna.DAY },
+        { hebrewDate: hDateToHebrewDateKey(new HDate(1, months.ELUL, 5787)), onah: InputEventOna.DAY },
+        { hebrewDate: hDateToHebrewDateKey(new HDate(1, months.TISHREI, 5788)), onah: InputEventOna.DAY },
+      ]);
+      expect(fixed.length).toBe(120);
+    });
+
+    it('continues every first of the month after Sivan, Tammuz, and Av', async () => {
+      const sightings = [months.SIVAN, months.TAMUZ, months.AV].map(month =>
+        makeHebrewEvent(
+          new HDate(1, month, 5787),
+          InputEventType.VESET,
+          InputEventOna.NIGHT,
+        ));
+      cache.setEvents(sightings);
+
+      const dict = await firstValueFrom(cal.highlightedInputEvents$);
+      const fixed = flatten(dict)
+        .filter(event => event.outputEventType === DayType.VESET_KAVUA);
+      const expectedMonths = [
+        new HDate(1, months.ELUL, 5787),
+        new HDate(1, months.TISHREI, 5788),
+        new HDate(1, months.CHESHVAN, 5788),
+        new HDate(1, months.KISLEV, 5788),
+        new HDate(1, months.TEVET, 5788),
+      ].map(hDateToHebrewDateKey);
+
+      expect(fixed.slice(0, expectedMonths.length).map(event =>
+        event.segments[0].hebrewDate,
+      )).toEqual(expectedMonths);
+      expect(fixed.every(event => event.segments[0].onah === InputEventOna.NIGHT)).toBe(true);
+
+      for (const hdate of [
+        new HDate(1, months.TISHREI, 5788),
+        new HDate(1, months.CHESHVAN, 5788),
+      ]) {
+        const { year, month, day } = HDateToNgbDateStruct(hdate);
+        expect(dict[year][month][day].some(event =>
+          event.outputEventType === DayType.VESET_KAVUA,
+        )).toBe(true);
+      }
+    });
+
+    it('establishes a regular monthly dilug with an explicit equal non-zero step', () => {
+      const sightings = monthlySightings([1, 2, 3]);
+      const state = cal.calculateVesetPatternState(
+        sightings, APPROACH_CHABAD, sightings[2].hebrewDate,
+      );
+      expect(state.fixed).toEqual(jasmine.objectContaining({
+        kind: 'dilug',
+        dayStep: 1,
+        nextExpected: jasmine.objectContaining({ day: 4 }),
+      }));
+    });
+
+    it('does not establish dilug when the two monthly steps differ', () => {
+      const sightings = monthlySightings([1, 2, 4]);
+      expect(cal.calculateVesetPatternState(
+        sightings, APPROACH_CHABAD, sightings[2].hebrewDate,
+      ).fixed).toBeNull();
+    });
+
+    it('keeps a fixed veset after one and two consecutive off-pattern sightings', () => {
+      const sightings = monthlySightings([1, 1, 1]);
+      const firstExpected = addHebrewMonths(sightings[2].hebrewDate, 1);
+      const offPatternOne = makeHebrewEvent(
+        hebrewDateKeyToHDate({ ...firstExpected, day: 2 }),
+        InputEventType.VESET,
+        InputEventOna.DAY,
+      );
+      const offPatternTwo = makeHebrewEvent(
+        hebrewDateKeyToHDate({ ...addHebrewMonths(firstExpected, 1), day: 2 }),
+        InputEventType.VESET,
+        InputEventOna.DAY,
+      );
+
+      const one = cal.calculateVesetPatternState(
+        [...sightings, offPatternOne], APPROACH_CHABAD, offPatternOne.hebrewDate,
+      ).fixed!;
+      const two = cal.calculateVesetPatternState(
+        [...sightings, offPatternOne, offPatternTwo], APPROACH_CHABAD, offPatternTwo.hebrewDate,
+      ).fixed!;
+      expect(one.status).toBe('active');
+      expect(one.consecutiveMisses).toBe(1);
+      expect(two.status).toBe('active');
+      expect(two.consecutiveMisses).toBe(2);
+    });
+
+    it('retains the old pattern as dormant after three off-pattern sightings and restores it on one match', () => {
+      const sightings = monthlySightings([1, 1, 1]);
+      const firstExpected = addHebrewMonths(sightings[2].hebrewDate, 1);
+      const offPattern = [2, 3, 5].map((day, month) => makeHebrewEvent(
+        hebrewDateKeyToHDate({ ...addHebrewMonths(firstExpected, month), day }),
+        InputEventType.VESET,
+        InputEventOna.DAY,
+      ));
+      const dormant = cal.calculateVesetPatternState(
+        [...sightings, ...offPattern], APPROACH_CHABAD, offPattern[2].hebrewDate,
+      ).fixed!;
+      expect(dormant.status).toBe('dormant');
+      expect(dormant.consecutiveMisses).toBe(3);
+
+      const restoration = makeHebrewEvent(
+        hebrewDateKeyToHDate(dormant.nextExpected),
+        InputEventType.VESET,
+        InputEventOna.DAY,
+      );
+      const restored = cal.calculateVesetPatternState(
+        [...sightings, ...offPattern, restoration], APPROACH_CHABAD, restoration.hebrewDate,
+      ).fixed!;
+      expect(restored.status).toBe('active');
+      expect(restored.consecutiveMisses).toBe(0);
+    });
+
+    it('suppresses Onah Beinonit while fixed but keeps Veset HaChodesh from an off-pattern sighting', async () => {
+      const sightings = monthlySightings([1, 1, 1]);
+      const offPatternDate = { ...addHebrewMonths(sightings[2].hebrewDate, 1), day: 2 };
+      const offPattern = makeHebrewEvent(
+        hebrewDateKeyToHDate(offPatternDate), InputEventType.VESET, InputEventOna.DAY,
+      );
+      cache.setEvents([...sightings, offPattern]);
+
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(all.some(event =>
+        event.sourceEventId === offPattern.id && event.outputEventType === DayType.ONA_BEINONIT,
+      )).toBe(false);
+      expect(all.some(event =>
+        event.sourceEventId === offPattern.id && event.outputEventType === DayType.VESET_HACHODESH_DAY,
+      )).toBe(true);
+    });
+
+    it('restores Onah Beinonit on the third consecutive off-pattern sighting', async () => {
+      const sightings = monthlySightings([1, 1, 1]);
+      const firstExpected = addHebrewMonths(sightings[2].hebrewDate, 1);
+      const offPattern = [2, 3, 5].map((day, month) => makeHebrewEvent(
+        hebrewDateKeyToHDate({ ...addHebrewMonths(firstExpected, month), day }),
+        InputEventType.VESET,
+        InputEventOna.DAY,
+      ));
+      cache.setEvents([...sightings, ...offPattern]);
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(all.some(event =>
+        event.sourceEventId === offPattern[2].id && event.outputEventType === DayType.ONA_BEINONIT,
+      )).toBe(true);
+    });
+
+    it('applies the three-cycle >=31-day semi-fixed rule to both Sephardi approaches', () => {
+      const starts = [0, 31, 63, 98];
+      const sightings = starts.map((offset, index) => {
+        const event = makeEvent('2026-01-01', InputEventType.VESET,
+          index % 2 ? InputEventOna.NIGHT : InputEventOna.DAY);
+        event.simpleDate = addDays(event.simpleDate, offset);
+        event.hebrewDate = hDateToHebrewDateKey(new HDate(event.simpleDate));
+        event.date = HDateToNgbDateStruct(new HDate(event.simpleDate));
+        event.id = `long-cycle-${index}`;
+        return event;
+      });
+      for (const sephardi of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+        const state = cal.calculateVesetPatternState(
+          sightings, sephardi, sightings[3].hebrewDate,
+        );
+        expect(state.semiFixedSephardi).toBe(true);
+        expect(state.suppressesOnahBeinonit).toBe(true);
+      }
+      expect(cal.calculateVesetPatternState(
+        sightings, APPROACH_CHABAD, sightings[3].hebrewDate,
+      ).semiFixedSephardi).toBe(false);
+    });
+
+    it('one subsequent cycle below 31 days immediately ends the Sephardi semi-fixed state', () => {
+      const offsets = [0, 31, 63, 98, 127];
+      const sightings = offsets.map((offset, index) => {
+        const hdate = new HDate(addDays(new Date('2026-01-01T12:00:00Z'), offset));
+        const event = makeHebrewEvent(
+          hdate, InputEventType.VESET, index % 2 ? InputEventOna.NIGHT : InputEventOna.DAY,
+        );
+        event.id = `cycle-${index}`;
+        return event;
+      });
+      const state = cal.calculateVesetPatternState(
+        sightings, APPROACH_SEPHARDI_OVADIA, sightings[4].hebrewDate,
+      );
+      expect(state.semiFixedSephardi).toBe(false);
+      expect(state.suppressesOnahBeinonit).toBe(false);
+    });
+
+    it('establishes across the Hebrew year boundary (Av, Elul, Tishrei)', () => {
+      const dates = [
+        new HDate(5, months.AV, 5787),
+        new HDate(5, months.ELUL, 5787),
+        new HDate(5, months.TISHREI, 5788),
+      ];
+      const sightings = dates.map(date =>
+        makeHebrewEvent(date, InputEventType.VESET, InputEventOna.NIGHT));
+      const fixed = cal.calculateVesetPatternState(
+        sightings, APPROACH_CHABAD, sightings[2].hebrewDate,
+      ).fixed!;
+      expect(fixed.status).toBe('active');
+      expect(fixed.nextExpected).toEqual(hDateToHebrewDateKey(
+        new HDate(5, months.CHESHVAN, 5788),
+      ));
     });
   });
 
