@@ -594,11 +594,13 @@ export class CalService {
       .filter(event => this.createsHashashot(event))
       .filter(event => this.compareHebrewDates(event.hebrewDate, asOf) <= 0)
       .sort((a, b) => this.compareInputEvents(a, b));
-    if (sightings.length < 4) return false;
-    const lastFour = sightings.slice(-4);
-    return lastFour.slice(1).every((event, index) =>
+    // Three sightings establish the semi-fixed state when both intervening
+    // cycle lengths are at least 31 elapsed days.
+    if (sightings.length < 3) return false;
+    const lastThree = sightings.slice(-3);
+    return lastThree.slice(1).every((event, index) =>
       hebrewDateKeyToHDate(event.hebrewDate).abs() -
-        hebrewDateKeyToHDate(lastFour[index].hebrewDate).abs() >= 31,
+        hebrewDateKeyToHDate(lastThree[index].hebrewDate).abs() >= 31,
     );
   }
 

@@ -1111,8 +1111,8 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       )).toBe(true);
     });
 
-    it('applies the three-cycle >=31-day semi-fixed rule to both Sephardi approaches', () => {
-      const starts = [0, 31, 63, 98];
+    it('establishes the >=31-day semi-fixed rule after three sightings for both Sephardi approaches', () => {
+      const starts = [0, 31, 63];
       const sightings = starts.map((offset, index) => {
         const event = makeEvent('2026-01-01', InputEventType.VESET,
           index % 2 ? InputEventOna.NIGHT : InputEventOna.DAY);
@@ -1124,18 +1124,43 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       });
       for (const sephardi of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
         const state = cal.calculateVesetPatternState(
-          sightings, sephardi, sightings[3].hebrewDate,
+          sightings, sephardi, sightings[2].hebrewDate,
         );
         expect(state.semiFixedSephardi).toBe(true);
         expect(state.suppressesOnahBeinonit).toBe(true);
       }
       expect(cal.calculateVesetPatternState(
-        sightings, APPROACH_CHABAD, sightings[3].hebrewDate,
+        sightings, APPROACH_CHABAD, sightings[2].hebrewDate,
       ).semiFixedSephardi).toBe(false);
     });
 
+    it('Elul 1, Tishrei 4, Cheshvan 8 suppresses only Onah Beinonit for both Sephardi approaches', async () => {
+      const sightings = [
+        makeHebrewEvent(new HDate(1, months.ELUL, 5787), InputEventType.VESET, InputEventOna.DAY),
+        makeHebrewEvent(new HDate(4, months.TISHREI, 5788), InputEventType.VESET, InputEventOna.DAY),
+        makeHebrewEvent(new HDate(8, months.CHESHVAN, 5788), InputEventType.VESET, InputEventOna.DAY),
+      ];
+      cache.setEvents(sightings);
+
+      for (const sephardi of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+        approach.approach$.next(sephardi);
+        const latestConcerns = flatten(await firstValueFrom(cal.highlightedInputEvents$))
+          .filter(event => event.sourceEventId === sightings[2].id);
+
+        expect(latestConcerns.some(event =>
+          event.outputEventType === DayType.ONA_BEINONIT,
+        )).toBe(false);
+        expect(latestConcerns.some(event =>
+          event.outputEventType === DayType.VESET_HACHODESH_DAY,
+        )).toBe(true);
+        expect(latestConcerns.some(event =>
+          event.outputEventType === DayType.HAFLAGA_DAY,
+        )).toBe(true);
+      }
+    });
+
     it('one subsequent cycle below 31 days immediately ends the Sephardi semi-fixed state', () => {
-      const offsets = [0, 31, 63, 98, 127];
+      const offsets = [0, 31, 63, 92];
       const sightings = offsets.map((offset, index) => {
         const hdate = new HDate(addDays(new Date('2026-01-01T12:00:00Z'), offset));
         const event = makeHebrewEvent(
@@ -1145,10 +1170,34 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
         return event;
       });
       const state = cal.calculateVesetPatternState(
-        sightings, APPROACH_SEPHARDI_OVADIA, sightings[4].hebrewDate,
+        sightings, APPROACH_SEPHARDI_OVADIA, sightings[3].hebrewDate,
       );
       expect(state.semiFixedSephardi).toBe(false);
       expect(state.suppressesOnahBeinonit).toBe(false);
+    });
+
+    it('a short cycle from Shevat 10 to Adar 2 restores Onah Beinonit immediately', async () => {
+      const sightings = [
+        makeHebrewEvent(new HDate(1, months.KISLEV, 5785), InputEventType.VESET, InputEventOna.DAY),
+        makeHebrewEvent(new HDate(5, months.TEVET, 5785), InputEventType.VESET, InputEventOna.DAY),
+        makeHebrewEvent(new HDate(10, months.SHVAT, 5785), InputEventType.VESET, InputEventOna.DAY),
+        makeHebrewEvent(new HDate(2, months.ADAR_I, 5785), InputEventType.VESET, InputEventOna.DAY),
+      ];
+      cache.setEvents(sightings);
+
+      for (const sephardi of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+        approach.approach$.next(sephardi);
+        const state = cal.calculateVesetPatternState(
+          sightings, sephardi, sightings[3].hebrewDate,
+        );
+        expect(state.semiFixedSephardi).toBe(false);
+
+        const latestConcerns = flatten(await firstValueFrom(cal.highlightedInputEvents$))
+          .filter(event => event.sourceEventId === sightings[3].id);
+        expect(latestConcerns.some(event =>
+          event.outputEventType === DayType.ONA_BEINONIT,
+        )).toBe(true);
+      }
     });
 
     it('establishes across the Hebrew year boundary (Av, Elul, Tishrei)', () => {
