@@ -141,7 +141,11 @@ export function getDateParam(hDateSunsetAwareString: string): string {
  * ```
  */
 export function NgbDateStructToHDate(heb: NgbDateStruct): HDate {
-    return new HDate(heb.day, (heb.month + 6) % 12, heb.year);
+    const monthsBeforeNisan = HDate.isLeapYear(heb.year) ? 7 : 6;
+    const hebcalMonth = heb.month <= monthsBeforeNisan
+        ? heb.month + 6
+        : heb.month - monthsBeforeNisan;
+    return new HDate(heb.day, hebcalMonth, heb.year);
 }
 
 /**
@@ -156,10 +160,13 @@ export function NgbDateStructToHDate(heb: NgbDateStruct): HDate {
  * ```
  */
 export function HDateToNgbDateStruct(heb: HDate): NgbDateStruct {
+    const hebcalMonth = heb.getMonth();
+    const monthsBeforeNisan = heb.isLeapYear() ? 7 : 6;
     return {
         day: heb.getDate(),
-        month: (heb.getMonth() + 6) % 12,
+        month: hebcalMonth >= 7
+            ? hebcalMonth - 6
+            : hebcalMonth + monthsBeforeNisan,
         year: heb.getFullYear(),
     };
 }
-

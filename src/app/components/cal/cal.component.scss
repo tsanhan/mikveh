@@ -227,19 +227,19 @@ ngb-datepicker {
 
                 
 
+                // The sighting and every required waiting day share one
+                // explicit visual state, independent of the event subtype.
+                &.nidaDay {
+                  background: var(--blood);
+                  color: white;
+                }
                 &.veset,
                 &.ketemTame,
                 &.bdikaTmea {
-                  background-color: var(--blood);
-                  color: white;
                   border: #e91e6f solid 2px;
                 }
-                &.mahzor {
-                  background-color: var(--blood);
-                  color: white;
-                }
                 &.canStartHefsek {
-                  background-color: var(--hefsek);
+                  background: var(--hefsek);
                   color: white;
                 }
                 // Seven nekiim days: the 7 clean days that follow Hefsek Tahara.
@@ -326,6 +326,17 @@ ngb-datepicker {
                 &.selected {
                   background-color: var(--selected);
                   color: white;
+                }
+                // Keep the halachic state visible on the currently selected
+                // day; use a ring to indicate selection instead of replacing
+                // the event/waiting-day color.
+                &.selected.nidaDay {
+                  background: var(--blood);
+                  box-shadow: inset 0 0 0 3px var(--selected);
+                }
+                &.selected.canStartHefsek {
+                  background: var(--hefsek);
+                  box-shadow: inset 0 0 0 3px var(--selected);
                 }
               }
 

@@ -8,6 +8,8 @@ import { BehaviorSubject, map, Observable, shareReplay, tap } from 'rxjs';
 import { ApproachService } from './approach.service';
 import { CachedCalEvent, CachedInputEvent } from '../interfaces/cal';
 import { Approach, ApproachName } from '../interfaces/approaches';
+import { HDate } from '@hebcal/core';
+import { HDateToNgbDateStruct } from '../utils/date.util';
 
 @Injectable({
   providedIn: 'root',
@@ -104,7 +106,11 @@ export class CacheService {
     if (!inputEvents) {
       await this._calEventsStorage.set('inputEvents', []);
     } else {
-      this._inputEvents$.next(inputEvents);
+      const normalizedInputEvents = inputEvents.map((event: CachedInputEvent) =>
+        this.normalizeInputEvent(event),
+      );
+      this._inputEvents$.next(normalizedInputEvents);
+      await this._calEventsStorage.set('inputEvents', normalizedInputEvents);
     }
 
     // const dm = await this._storage.get('darkMode');
@@ -168,9 +174,18 @@ export class CacheService {
   }
 
   public setInputEvents(event: CachedInputEvent) {
-    const currentEvents = [...this._inputEvents$.getValue(), { ...event }];
+    const currentEvents = [...this._inputEvents$.getValue(), this.normalizeInputEvent(event)];
     this._inputEvents$.next(currentEvents);
     this._calEventsStorage.set('inputEvents', currentEvents);
+  }
+
+  private normalizeInputEvent(event: CachedInputEvent): CachedInputEvent {
+    const simpleDate = new Date(event.simpleDate);
+    return {
+      ...event,
+      simpleDate,
+      date: HDateToNgbDateStruct(new HDate(simpleDate)),
+    };
   }
 
   public getCalEvents(): CachedCalEvent[] {

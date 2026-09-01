@@ -12,15 +12,14 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const nidaDaysFor = (approach: Approach) =>
   approach.name === ApproachName.SEPHARDI_OVADIA ? 4 : 5;
 const nidaDaysForInputEvent = (event: CachedInputEvent, approach: Approach) =>
-  event.type === InputEventType.VESET ? nidaDaysFor(approach) : 5;
+  event.type === InputEventType.VESET ||
+  event.type === InputEventType.BDIKA_TMEA ||
+  (event.type === InputEventType.KETEM_TAME && approach.name === ApproachName.SEPHARDI_OVADIA)
+    ? nidaDaysFor(approach)
+    : 5;
 const isSephardiApproach = (approach: Approach) =>
   approach.name === ApproachName.SEPHARDI_OVADIA ||
   approach.name === ApproachName.SEPHARDI_MORDECHAI_ELIYAHU;
-const isHefsekLenientOvadiaKetem = (event: CachedInputEvent, approach: Approach) =>
-  approach.name === ApproachName.SEPHARDI_OVADIA &&
-  event.type === InputEventType.KETEM_TAME;
-const KETEM_OVADIA_LENIENCY_NOTE =
-  'לפי שיטת הרב עובדיה יש דעה מקילה בכתם שאפשר לעשות הפסק טהרה לפני 4 ימים. ראי בהסברים: הפסק טהרה ושבעה נקיים, ובמקרה מעשי שאלי רב.';
 
 @Injectable({
   providedIn: 'root',
@@ -136,6 +135,7 @@ export class CalService {
     const t = this.startOfDayMs(date);
     const latestSighting = this.latestSightingOnOrBefore(t);
     if (!latestSighting) return false;
+    if (this.hasHefsekOnOrAfter(latestSighting)) return false;
 
     return this.daysSince(latestSighting, t) >= this.minHefsekDiff(latestSighting, approach);
   }
@@ -144,8 +144,8 @@ export class CalService {
    * Returns null if the new event is allowed, or an error message in Hebrew otherwise.
    * Currently blocks a Hefsek Tahara that is added too close to (or before) the
    * latest sighting event – the woman has enough Niddah days before a Hefsek
-   * Tahara is meaningful. Veset follows the selected approach; Ketem Tame and
-   * Bdika Tmea always require 5 days.
+   * Tahara is meaningful. Veset and Bdika Tmea follow the selected approach;
+   * Ketem Tame keeps its separate rule.
    */
   validateNewInputEvent(event: CachedInputEvent): string | null {
     if (event.type !== InputEventType.HEFSEK_TAHARA) return null;
@@ -157,6 +157,10 @@ export class CalService {
 
     if (!lastVesetOrKetem) {
       return 'לא ניתן להוסיף הפסק טהרה ללא וסת, כתם טמא או בדיקה טמאה קודם';
+    }
+
+    if (this.hasHefsekOnOrAfter(lastVesetOrKetem)) {
+      return 'כבר נוסף הפסק טהרה לאחר הווסת/הכתם/הבדיקה האחרונים';
     }
 
     const minNidaDays = nidaDaysForInputEvent(lastVesetOrKetem, approach);
@@ -178,6 +182,14 @@ export class CalService {
         this.startOfDayMs(b.simpleDate) - this.startOfDayMs(a.simpleDate))[0];
   }
 
+  private hasHefsekOnOrAfter(sighting: CachedInputEvent): boolean {
+    const sightingDate = this.startOfDayMs(sighting.simpleDate);
+    return this.cache.getInputEvents().some((event: CachedInputEvent) =>
+      event.type === InputEventType.HEFSEK_TAHARA &&
+      this.startOfDayMs(event.simpleDate) >= sightingDate,
+    );
+  }
+
   private daysSince(event: CachedInputEvent, dateMs: number): number {
     return Math.floor(
       (dateMs - this.startOfDayMs(event.simpleDate)) / MS_PER_DAY,
@@ -191,8 +203,6 @@ export class CalService {
   }
 
   private minHefsekDiff(event: CachedInputEvent, approach: Approach): number {
-    if (isHefsekLenientOvadiaKetem(event, approach)) return 0;
-
     // The bleeding day itself counts as day 1 of niddah, so the earliest
     // possible Hefsek Tahara is on day `minNidaDays` -> diff of `minNidaDays - 1`.
     return nidaDaysForInputEvent(event, approach) - 1;
@@ -286,7 +296,6 @@ export class CalService {
     const rtn: OutputEvent[] = [];
     const onaLabel = sightingEvent.ona === InputEventOna.LAYLA ? 'לילה' : 'יום';
     const forNum = nidaDaysForInputEvent(chainLast, approach);
-    const detailsSuffix = this.detailsSuffixForSighting(sightingEvent, approach);
 
     const vesetSimpleDate = new Date(sightingEvent.simpleDate);
     const chainLastDate = new Date(chainLast.simpleDate);
@@ -295,13 +304,14 @@ export class CalService {
     const totalNidaDays =
       Math.floor((chainLastDate.getTime() - vesetSimpleDate.getTime()) / MS_PER_DAY) + forNum;
 
-    const furstNidaDay: OutputEvent = {
+    const firstNidaDay: OutputEvent = {
       ...{ ...sightingEvent },
+      simpleDate: vesetSimpleDate,
+      date: HDateToNgbDateStruct(simpleDateToHebrew(vesetSimpleDate)),
       CachedInputEventRef: { ...sightingEvent },
       outputEventType: sightingEvent.type,
       details: [
         `${this.sightingLabel(sightingEvent)} – יום 1 לנידה`,
-        ...detailsSuffix,
       ]
     }
     // niddah days 2..totalNidaDays
@@ -318,7 +328,6 @@ export class CalService {
         outputEventType: DayType.MAHZOR,
         details: [
           `יום ${index + 1} לנידה`,
-          ...detailsSuffix,
         ]
       }
       mahzorDays.push(nidaDay);
@@ -337,11 +346,10 @@ export class CalService {
       outputEventType: DayType.CAN_START_CHECK_HEFSEK,
       details: [
         `אפשר להתחיל לבדוק הפסק טהרה`,
-        ...detailsSuffix,
       ]
     }
 
-    rtn.push(furstNidaDay);
+    rtn.push(firstNidaDay);
     rtn.push(...mahzorDays);
     rtn.push(startBdikot);
     if (includeHashashot) {
@@ -515,15 +523,6 @@ export class CalService {
     }
   }
 
-  private detailsSuffixForSighting(event: CachedInputEvent, approach: Approach): string[] {
-    if (
-      event.type === InputEventType.KETEM_TAME &&
-      approach.name === ApproachName.SEPHARDI_OVADIA
-    ) {
-      return [KETEM_OVADIA_LENIENCY_NOTE];
-    }
-    return [];
-  }
   // private eventDto(event: CachedCalEvent, allevents: CachedCalEvent[], index: number, approach: Approach): EventDto[] {
   //   const { type } = event;
 

@@ -19,11 +19,13 @@
             {{i18n.getYearNumerals(month.year)}}
           </div>
           <div class="btn-group d-flex justify-content-end mb-2 ltr" role="group">
-            <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, 1)">
-              <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
-            </ion-button>
-            <ion-button shape="round" size="small" fill="clear" color="dark" (click)="navigate(dp, -1)">
+            <ion-button aria-label="החודש הבא" shape="round" size="small" fill="clear" color="dark"
+              (click)="navigate(dp, 1)">
               <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+            <ion-button aria-label="החודש הקודם" shape="round" size="small" fill="clear" color="dark"
+              (click)="navigate(dp, -1)">
+              <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
             </ion-button>
           </div>
         </div>
@@ -41,6 +43,7 @@
       'hebrew-day': true,
       'outside': date.month !== currentMonth,
       selected,
+      'nidaDay': isNidaDay(date, CalEventDict),
       'veset': isADay(date, CalEventDict, inputEventType.VESET),
       'mahzor': isADay(date, CalEventDict, dayType.MAHZOR),
       'canStartHefsek': isADay(date, CalEventDict, dayType.CAN_START_CHECK_HEFSEK),
@@ -78,22 +81,7 @@
     <div class="text">
       @for (detail of selectedHebDateDetails(); track detail) {
         <div class="detail-line">
-          @if (isKetemLeniencyDetail(detail)) {
-            <span>
-              לפי שיטת הרב עובדיה יש דעה מקילה בכתם שאפשר לעשות הפסק טהרה לפני 4 ימים.
-              ראי בהסברים:
-            </span>
-            <button
-              type="button"
-              class="detail-link"
-              (click)="openHefsekExplanation()"
-            >
-              הפסק טהרה ושבעה נקיים
-            </button>
-            <span>, ובמקרה מעשי שאלי רב.</span>
-          } @else {
-            {{ detail }}
-          }
+          {{ detail }}
         </div>
       }
     </div>
