@@ -253,17 +253,10 @@ ngb-datepicker {
                   background-color: var(--7-nekim);
                   color: black;
                 }
-                // Mikveh day: the evening of nekiim day 7. Rendered in --tvila.
+                // Mikveh: the night on day 8, after seven complete clean days.
                 &.mikvehDay {
                   background-color: var(--tvila);
                   color: white;
-                }
-                // Day 7 carries BOTH nekiim and mikveh: split top/bottom so
-                // the day half (top) shows the nekiim color and the evening
-                // half (bottom) shows the mikveh color.
-                &.sevenCleans.mikvehDay {
-                  background: linear-gradient(to bottom, var(--7-nekim) 50%, var(--tvila) 50%);
-                  color: black;
                 }
                 &.prisha {
                   background-color: var(--prisha);

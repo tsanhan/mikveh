@@ -279,23 +279,27 @@ export class CalService {
         ]
       }
       rtn.push(nekyimDay);
-
-      if (index === 7) {
-        const mikvehDay: OutputEvent = {
-          id: this.concernId(DayType.MIKVEH_DAY, hefsekTaharaEvent, hdate),
-          sourceEventId: hefsekTaharaEvent.id,
-          segments: [this.onahRef(hDateToHebrewDateKey(hdate), InputEventOna.NIGHT)],
-          CachedInputEventRef: { ...hefsekTaharaEvent },
-          simpleDate: newSimpleDate,
-          date,
-          outputEventType: DayType.MIKVEH_DAY,
-          details: [
-            'בערב טבילה במקווה',
-          ],
-        };
-        rtn.push(mikvehDay);
-      }
     }
+
+    // The seven clean days must be complete before immersion. The mikveh is
+    // therefore marked in the night on day 8, not on day 7 itself.
+    const mikvehSimpleDate = new Date(hefsekTaharaEvent.simpleDate);
+    mikvehSimpleDate.setDate(hefsekTaharaEvent.simpleDate.getDate() + 8);
+    const mikvehHDate = simpleDateToHebrew(mikvehSimpleDate);
+    const mikvehDay: OutputEvent = {
+      id: this.concernId(DayType.MIKVEH_DAY, hefsekTaharaEvent, mikvehHDate),
+      sourceEventId: hefsekTaharaEvent.id,
+      segments: [this.onahRef(hDateToHebrewDateKey(mikvehHDate), InputEventOna.NIGHT)],
+      CachedInputEventRef: { ...hefsekTaharaEvent },
+      simpleDate: mikvehSimpleDate,
+      date: HDateToNgbDateStruct(mikvehHDate),
+      outputEventType: DayType.MIKVEH_DAY,
+      details: [
+        'בערב טבילה במקווה',
+      ],
+    };
+    rtn.push(mikvehDay);
+
     return rtn;
   }
   getNidaDaysHashashotForVeset(

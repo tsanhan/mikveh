@@ -14,7 +14,7 @@ import {
   InputEventType,
   OutputEvent,
 } from '../interfaces/cal';
-import { addHebrewDays, addHebrewMonths, HDateToNgbDateStruct, hDateToHebrewDateKey, hebrewDateKeyToHDate, NgbDateStructToHDate, sameHebrewDayInNextMonth } from '../utils/date.util';
+import { addHebrewDays, addHebrewMonths, HDateToNgbDateStruct, hDateToHebrewDateKey, hebrewDateKeyToHDate, NgbDateStructToHDate, sameHebrewDayInNextMonth, simpleDateToHebrew } from '../utils/date.util';
 
 // -----------------------------------------------------------------------------
 // Test helpers
@@ -138,7 +138,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
   // getSevenCleanDays
   // ---------------------------------------------------------------------------
   describe('getSevenCleanDays()', () => {
-    it('returns 7 nekiim days + 1 mikveh marker on day 7 (8 events total)', () => {
+    it('returns 7 nekiim days + 1 mikveh marker on day 8 (8 events total)', () => {
       const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
       const events = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
 
@@ -169,15 +169,26 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       });
     });
 
-    it('mikveh marker shares the Gregorian date of nekiim day 7', () => {
+    it('mikveh marker falls after all 7 full nekiim days, on hefsek+8', () => {
       const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
       const events = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD);
 
       const nekiim7 = events.filter(e => e.outputEventType === DayType.SEVEN_CLEAN)[6];
       const mikveh = events.find(e => e.outputEventType === DayType.MIKVEH_DAY)!;
 
-      expect(mikveh.simpleDate.getTime()).toBe(nekiim7.simpleDate.getTime());
-      expect(dayDiff(hefsek.simpleDate, mikveh.simpleDate)).toBe(7);
+      expect(dayDiff(nekiim7.simpleDate, mikveh.simpleDate)).toBe(1);
+      expect(dayDiff(hefsek.simpleDate, mikveh.simpleDate)).toBe(8);
+    });
+
+    it('mikveh marker occupies only the night on day 8', () => {
+      const hefsek = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
+      const mikveh = cal.getSevenCleanDays(hefsek, [hefsek], APPROACH_CHABAD)
+        .find(e => e.outputEventType === DayType.MIKVEH_DAY)!;
+
+      expect(mikveh.segments).toEqual([{
+        hebrewDate: hDateToHebrewDateKey(simpleDateToHebrew(mikveh.simpleDate)),
+        onah: InputEventOna.NIGHT,
+      }]);
     });
 
     it('mikveh marker has the evening-tvila label', () => {
