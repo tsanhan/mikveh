@@ -20,8 +20,6 @@ import { addHebrewDays, addHebrewMonths, HDateToNgbDateStruct, hDateToHebrewDate
 // Test helpers
 // -----------------------------------------------------------------------------
 
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
-
 const APPROACH_CHABAD: Approach = {
   name: ApproachName.CHABAD,
   nameHeb: 'חב"ד',
@@ -83,7 +81,9 @@ function addDays(date: Date, days: number): Date {
 }
 
 function dayDiff(a: Date, b: Date): number {
-  return Math.round((b.getTime() - a.getTime()) / MS_PER_DAY);
+  // Calendar markers may use midnight while inputs use noon. Compare dates,
+  // independently of those clock times and daylight-saving transitions.
+  return new HDate(b).abs() - new HDate(a).abs();
 }
 
 /** A controllable in-memory CacheService double. */
@@ -468,6 +468,8 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       const day1Markers = all.filter(e => e.outputEventType === InputEventType.VESET);
       expect(day1Markers.length).toBe(1);
       expect(dayDiff(v1.simpleDate, day1Markers[0].simpleDate)).toBe(0);
+      expect(all.filter(e => e.outputEventType === DayType.ONA_BEINONIT)
+        .map(e => e.sourceEventId)).toEqual([v1.id]);
 
       // niddah days = (chainLast - veset)/day + forNum = 3 + 5 = 8
       const mahzor = all.filter(e => e.outputEventType === DayType.MAHZOR);
@@ -629,6 +631,45 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
   // Veset Haflaga
   // ---------------------------------------------------------------------------
   describe('Veset Haflaga', () => {
+    for (const firstHefsekDate of [new HDate(new Date(2025, 0, 5)), new HDate(new Date(2025, 1, 5))]) {
+      for (const shorterInterval of [69, 81]) {
+        it(`Chabad: retains 82 and adds ${shorterInterval} night onot from the third Hefsek (${firstHefsekDate.toString()})`, async () => {
+          const firstHefsekKey = hDateToHebrewDateKey(firstHefsekDate);
+          const eventAt = (offset: number, type: InputEventType, ona = InputEventOna.DAY) =>
+            makeHebrewEvent(hebrewDateKeyToHDate(addHebrewDays(firstHefsekKey, offset)), type, ona);
+          const firstVeset = eventAt(-4, InputEventType.VESET);
+          const firstHefsek = eventAt(0, InputEventType.HEFSEK_TAHARA);
+          const secondVeset = eventAt(41, InputEventType.VESET);
+          const secondHefsek = eventAt(45, InputEventType.HEFSEK_TAHARA);
+          // Night is the first onah of its Hebrew date: 35 dates later is onah 69.
+          const newSightingOffset = 45 + (shorterInterval + 1) / 2;
+          const thirdVeset = eventAt(newSightingOffset, InputEventType.VESET, InputEventOna.NIGHT);
+          const thirdHefsek = eventAt(newSightingOffset + 4, InputEventType.HEFSEK_TAHARA);
+          const haflagot = async () => flatten(await firstValueFrom(cal.highlightedInputEvents$))
+            .filter(e => e.outputEventType === DayType.HAFLAGA_DAY || e.outputEventType === DayType.HAFLAGA_NIGHT);
+          cache.setEvents([firstVeset, firstHefsek, secondVeset, secondHefsek]);
+          const oldConcerns = await haflagot();
+          expect(oldConcerns.length).toBe(1);
+          expect(oldConcerns[0].details).toContain('חשש וסת הפלגה - יום (82 עונות)');
+
+          cal.addEvent(thirdVeset);
+          cal.addEvent(thirdHefsek);
+          const concerns = await haflagot();
+          expect(concerns.length).toBe(2);
+          expect(concerns.every(e => e.sourceEventId === thirdHefsek.id)).toBeTrue();
+          expect(concerns.some(e => e.id === oldConcerns[0].id)).toBeFalse();
+          expect(concerns.find(e => e.outputEventType === DayType.HAFLAGA_DAY)?.details)
+            .toEqual(['חשש וסת הפלגה - יום (82 עונות)']);
+          const shorter = concerns.find(e => e.outputEventType === DayType.HAFLAGA_NIGHT)!;
+          expect(shorter?.details).toEqual([`חשש וסת הפלגה - לילה (${shorterInterval} עונות)`]);
+          expect(shorter?.segments).toEqual([{
+            hebrewDate: addHebrewDays(thirdHefsek.hebrewDate, (shorterInterval + 1) / 2),
+            onah: InputEventOna.NIGHT,
+          }]);
+        });
+      }
+    }
+
     it('Sephardi: counts inclusive days from sighting start to sighting start and marks the latest ona', async () => {
       approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
       const v1 = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
@@ -677,32 +718,32 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     it('Chabad: marks Haflaga after Veset, Hefsek Tahara, and another Veset', async () => {
       const v1 = makeEvent('2025-01-01', InputEventType.VESET, InputEventOna.YOM);
       const h1 = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
-      const v2 = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
+      const v2 = makeEvent('2025-01-20', InputEventType.VESET, InputEventOna.YOM);
       cache.setEvents([v1, h1, v2]);
 
       const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
       const haflaga = all.find(e => e.outputEventType === DayType.HAFLAGA_DAY)!;
 
       expect(haflaga).toBeTruthy();
-      expect(dayDiff(v2.simpleDate, haflaga.simpleDate)).toBe(5);
+      expect(dayDiff(v2.simpleDate, haflaga.simpleDate)).toBe(15);
       expect(haflaga.segments[0].onah).toBe(InputEventOna.DAY);
-      expect(haflaga.details).toContain('חשש וסת הפלגה - יום (10 עונות)');
+      expect(haflaga.details).toContain('חשש וסת הפלגה - יום (30 עונות)');
     });
 
     it('Chabad: when a later Hefsek exists, counts Haflaga from that Hefsek Tahara', async () => {
       const v0 = makeEvent('2025-01-01', InputEventType.VESET, InputEventOna.YOM);
       const h1 = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
-      const v1 = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.YOM);
-      const h2 = makeEvent('2025-01-14', InputEventType.HEFSEK_TAHARA);
+      const v1 = makeEvent('2025-01-20', InputEventType.VESET, InputEventOna.YOM);
+      const h2 = makeEvent('2025-01-24', InputEventType.HEFSEK_TAHARA);
       cache.setEvents([v0, h1, v1, h2]);
 
       const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
       const haflaga = all.find(e => e.outputEventType === DayType.HAFLAGA_DAY)!;
 
       expect(haflaga).toBeTruthy();
-      expect(dayDiff(h2.simpleDate, haflaga.simpleDate)).toBe(5);
+      expect(dayDiff(h2.simpleDate, haflaga.simpleDate)).toBe(15);
       expect(haflaga.segments[0].onah).toBe(InputEventOna.DAY);
-      expect(haflaga.details).toContain('חשש וסת הפלגה - יום (10 עונות)');
+      expect(haflaga.details).toContain('חשש וסת הפלגה - יום (30 עונות)');
     });
 
     it('Chabad: a shorter Haflaga does not cancel a longer Haflaga', async () => {
@@ -710,7 +751,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       const h1 = makeEvent('2025-01-01', InputEventType.HEFSEK_TAHARA);
       const v1 = makeEvent('2025-01-26', InputEventType.VESET, InputEventOna.YOM); // 50 onot
       const h2 = makeEvent('2025-01-30', InputEventType.HEFSEK_TAHARA);
-      const v2 = makeEvent('2025-02-22', InputEventType.VESET, InputEventOna.LAYLA); // 47 onot
+      const v2 = makeEvent('2025-02-22', InputEventType.VESET, InputEventOna.LAYLA); // 45 onot
       const h3 = makeEvent('2025-02-26', InputEventType.HEFSEK_TAHARA);
       cache.setEvents([v0, h1, v1, h2, v2, h3]);
 
@@ -729,14 +770,14 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(haflagot.some(e =>
         dayDiff(h3.simpleDate, e.simpleDate) === 23 &&
         e.outputEventType === DayType.HAFLAGA_NIGHT &&
-        e.details.includes('חשש וסת הפלגה - לילה (47 עונות)'),
+        e.details.includes('חשש וסת הפלגה - לילה (45 עונות)'),
       )).toBe(true);
     });
 
     it('Chabad: a longer Haflaga cancels shorter Haflagot', async () => {
       const v0 = makeEvent('2024-12-28', InputEventType.VESET, InputEventOna.YOM);
       const h1 = makeEvent('2025-01-01', InputEventType.HEFSEK_TAHARA);
-      const v1 = makeEvent('2025-01-24', InputEventType.VESET, InputEventOna.LAYLA); // 47 onot
+      const v1 = makeEvent('2025-01-24', InputEventType.VESET, InputEventOna.LAYLA); // 45 onot
       const h2 = makeEvent('2025-01-28', InputEventType.HEFSEK_TAHARA);
       const v2 = makeEvent('2025-02-22', InputEventType.VESET, InputEventOna.YOM); // 50 onot
       const h3 = makeEvent('2025-02-26', InputEventType.HEFSEK_TAHARA);
@@ -753,6 +794,38 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(haflagot[0].outputEventType).toBe(DayType.HAFLAGA_DAY);
       expect(haflagot[0].details).toContain('חשש וסת הפלגה - יום (50 עונות)');
     });
+
+    for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+      it(`Chabad: adding a ${ona} sighting before the existing concern relocates both intervals after the new Hefsek`, async () => {
+        const firstVeset = makeEvent('2025-08-01', InputEventType.VESET);
+        const firstHefsek = makeEvent('2025-08-05', InputEventType.HEFSEK_TAHARA);
+        const secondVeset = makeEvent('2025-08-30', InputEventType.VESET);
+        const secondHefsek = makeEvent('2025-09-03', InputEventType.HEFSEK_TAHARA);
+        const newVeset = makeEvent('2025-09-21', InputEventType.VESET, ona);
+        const newHefsek = makeEvent('2025-09-25', InputEventType.HEFSEK_TAHARA);
+        const haflagot = async () => flatten(await firstValueFrom(cal.highlightedInputEvents$))
+          .filter(e => e.outputEventType === DayType.HAFLAGA_DAY || e.outputEventType === DayType.HAFLAGA_NIGHT);
+
+        cache.setEvents([firstVeset, firstHefsek, secondVeset, secondHefsek]);
+        const original = await haflagot();
+        expect(original.length).toBe(1);
+        expect(original[0].segments[0].hebrewDate).toEqual(addHebrewDays(secondHefsek.hebrewDate, 25));
+
+        cal.addEvent(newVeset);
+        expect((await haflagot()).length).toBe(2);
+        expect(cal.validateNewInputEvent(newHefsek)).toBeNull();
+        cal.addEvent(newHefsek);
+
+        const relocated = await haflagot();
+        expect(relocated.length).toBe(2);
+        expect(relocated.every(e => e.sourceEventId === newHefsek.id)).toBeTrue();
+        expect(relocated.map(e => e.segments[0])).toEqual(jasmine.arrayContaining([
+          { hebrewDate: addHebrewDays(newHefsek.hebrewDate, 25), onah: InputEventOna.DAY },
+          { hebrewDate: addHebrewDays(newHefsek.hebrewDate, 18), onah: ona },
+        ]));
+        expect(relocated.some(e => e.id === original[0].id)).toBeFalse();
+      });
+    }
   });
 
   // ---------------------------------------------------------------------------
@@ -912,6 +985,135 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
 
       expect(cal.canAddHefsekTahara(new Date('2025-01-23T12:00:00Z'))).toBe(false);
       expect(cal.canAddHefsekTahara(new Date('2025-01-24T12:00:00Z'))).toBe(true);
+    });
+  });
+
+  describe('a sighting interrupts seven clean days', () => {
+    const allApproaches = [APPROACH_CHABAD, APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU];
+
+    for (const selectedApproach of allApproaches) {
+      for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+        it(`${selectedApproach.name}/${ona}: allows a same-day restart and replaces the invalidated count`, async () => {
+          approach.approach$.next(selectedApproach);
+          const veset = makeEvent('2025-01-01', InputEventType.VESET);
+          const firstHefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+          const bdika = makeEvent('2025-01-08', InputEventType.BDIKA_TMEA, ona);
+          const newHefsek = makeEvent('2025-01-08', InputEventType.HEFSEK_TAHARA, ona);
+          cache.setEvents([bdika, firstHefsek, veset]);
+
+          expect(cal.canAddHefsekTahara(bdika.simpleDate)).toBeTrue();
+          expect(cal.validateNewInputEvent(newHefsek)).toBeNull();
+          let output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+          expect(output.filter(e => e.outputEventType === DayType.MIKVEH_DAY)).toEqual([]);
+          expect(output.filter(e => e.outputEventType === DayType.SEVEN_CLEAN).length).toBe(2);
+          const restart = output.find(e => e.sourceEventId === bdika.id &&
+            e.outputEventType === DayType.CAN_START_CHECK_HEFSEK)!;
+          expect(restart.segments).toEqual([{ hebrewDate: bdika.hebrewDate, onah: InputEventOna.DAY }]);
+          expect(output.some(e => e.sourceEventId === bdika.id && e.outputEventType === DayType.MAHZOR)).toBeFalse();
+          if (selectedApproach.name === ApproachName.CHABAD) {
+            expect(output.some(e => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT]
+              .includes(e.outputEventType as DayType))).toBeFalse();
+          }
+          const beinonit = output.filter(e => e.outputEventType === DayType.ONA_BEINONIT);
+          expect(beinonit.length).toBe(1);
+          expect(beinonit[0].sourceEventId).toBe(bdika.id);
+          expect(beinonit[0].segments[0].hebrewDate).toEqual(addHebrewDays(bdika.hebrewDate, 29));
+          expect(output.filter(e => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
+            .includes(e.outputEventType as DayType)).map(e => e.sourceEventId)).toEqual([veset.id, bdika.id]);
+
+          // Insert the same-day Hefsek before the Bdika to exercise canonical ordering.
+          cache.setEvents([newHefsek, bdika, firstHefsek, veset]);
+          output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+          const mikveh = output.filter(e => e.outputEventType === DayType.MIKVEH_DAY);
+          expect(mikveh.length).toBe(1);
+          expect(mikveh[0].sourceEventId).toBe(newHefsek.id);
+          expect(mikveh[0].segments[0].hebrewDate).toEqual(addHebrewDays(newHefsek.hebrewDate, 8));
+          expect(output.filter(e => e.sourceEventId === newHefsek.id &&
+            e.outputEventType === DayType.SEVEN_CLEAN).length).toBe(7);
+          expect(cal.canAddHefsekTahara(bdika.simpleDate)).toBeFalse();
+          if (selectedApproach.name === ApproachName.CHABAD) {
+            expect(output.some(e => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT]
+              .includes(e.outputEventType as DayType))).toBeFalse();
+          }
+        });
+      }
+    }
+
+    for (const day of [6, 12]) {
+      it(`invalidates the original mikveh when clean day ${day - 5} is interrupted`, () => {
+        const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+        const bdika = makeEvent(`2025-01-${String(day).padStart(2, '0')}`, InputEventType.BDIKA_TMEA);
+        const output = cal.getSevenCleanDays(hefsek, [bdika, hefsek], APPROACH_CHABAD);
+        expect(output.length).toBe(day - 6);
+        expect(output.every(e => e.outputEventType === DayType.SEVEN_CLEAN)).toBeTrue();
+      });
+    }
+
+    it('does not restart the waiting period on further sightings before a replacement Hefsek', () => {
+      const veset = makeEvent('2025-01-01', InputEventType.VESET);
+      const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const firstBdika = makeEvent('2025-01-08', InputEventType.BDIKA_TMEA);
+      const laterBdika = makeEvent('2025-01-20', InputEventType.BDIKA_TMEA);
+      cache.setEvents([laterBdika, veset, firstBdika, hefsek]);
+      expect(cal.canAddHefsekTahara(laterBdika.simpleDate)).toBeTrue();
+      expect(cal.validateNewInputEvent(makeEvent('2025-01-20', InputEventType.HEFSEK_TAHARA))).toBeNull();
+    });
+
+    it('treats a sighting after a completed count as a new waiting period', async () => {
+      const veset = makeEvent('2025-01-01', InputEventType.VESET);
+      const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const bdika = makeEvent('2025-01-14', InputEventType.BDIKA_TMEA);
+      cache.setEvents([veset, hefsek, bdika]);
+      expect(cal.canAddHefsekTahara(bdika.simpleDate)).toBeFalse();
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(output.filter(e => e.outputEventType === DayType.MIKVEH_DAY).length).toBe(1);
+    });
+
+    it('a Ketem interrupts the count without replacing the existing average onah', async () => {
+      const veset = makeEvent('2025-01-01', InputEventType.VESET);
+      const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const ketem = makeEvent('2025-01-08', InputEventType.KETEM_TAME);
+      cache.setEvents([veset, hefsek, ketem]);
+      expect(cal.canAddHefsekTahara(ketem.simpleDate)).toBeTrue();
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(output.some(e => e.outputEventType === DayType.MIKVEH_DAY)).toBeFalse();
+      expect(output.find(e => e.outputEventType === DayType.ONA_BEINONIT)?.sourceEventId).toBe(veset.id);
+    });
+
+    it('restores the old count and average onah when an interrupting Bdika is removed', async () => {
+      const veset = makeEvent('2025-01-01', InputEventType.VESET);
+      const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const bdika = makeEvent('2025-01-08', InputEventType.BDIKA_TMEA);
+      cache.setEvents([veset, hefsek, bdika]);
+      cal.removeEvent(bdika);
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(output.filter(e => e.outputEventType === DayType.SEVEN_CLEAN).length).toBe(7);
+      expect(output.find(e => e.outputEventType === DayType.MIKVEH_DAY)?.sourceEventId).toBe(hefsek.id);
+      expect(output.find(e => e.outputEventType === DayType.ONA_BEINONIT)?.sourceEventId).toBe(veset.id);
+    });
+
+    it('keeps a historical average onah that passed before the next sighting', async () => {
+      const first = makeEvent('2025-01-01', InputEventType.VESET);
+      const next = makeEvent('2025-02-05', InputEventType.VESET);
+      cache.setEvents([first, next]);
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(output.filter(e => e.outputEventType === DayType.ONA_BEINONIT).length).toBe(2);
+    });
+
+    it('Chabad: preserves a longer active Haflaga after the restarted count finishes', async () => {
+      const previousVeset = makeEvent('2024-12-01', InputEventType.VESET);
+      const previousHefsek = makeEvent('2024-12-05', InputEventType.HEFSEK_TAHARA);
+      const veset = makeEvent('2025-01-01', InputEventType.VESET);
+      const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const bdika = makeEvent('2025-01-08', InputEventType.BDIKA_TMEA);
+      const restart = makeEvent('2025-01-08', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([previousVeset, previousHefsek, veset, hefsek, bdika, restart]);
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const haflagot = output.filter(e => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT]
+        .includes(e.outputEventType as DayType));
+      expect(haflagot.length).toBe(1);
+      expect(dayDiff(restart.simpleDate, haflagot[0].simpleDate)).toBe(27);
+      expect(haflagot[0].details).toContain('חשש וסת הפלגה - יום (54 עונות)');
     });
   });
 

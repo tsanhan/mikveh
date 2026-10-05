@@ -57,6 +57,7 @@ export class CalService {
               chainLast,
               approach,
               this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
+              sortedInputEvents,
             );
             list.push(...hashashotForVeset);
             break;
@@ -69,13 +70,14 @@ export class CalService {
               approach,
               true,
               this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
+              sortedInputEvents,
             );
             list.push(...hashashotForBdika);
             break;
           }
           case InputEventType.KETEM_TAME: {
             const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-            const nidaDaysForKetem: OutputEvent[] = this.getNidaDaysForSighting(event, chainLast, approach, false);
+            const nidaDaysForKetem: OutputEvent[] = this.getNidaDaysForSighting(event, chainLast, approach, false, false, sortedInputEvents);
             list.push(...nidaDaysForKetem);
             break;
           }
@@ -88,7 +90,18 @@ export class CalService {
       }
       list.push(...this.getFixedVesetConcerns(sortedInputEvents, approach));
       list.push(...this.getHaflagaHashashot(sortedInputEvents, approach));
-      return list;
+      // A new hashash-generating sighting replaces a not-yet-reached average
+      // onah. Monthly concerns remain independent, even when dates coincide.
+      // Sightings absorbed into one continuous bleeding chain do not establish
+      // a separate average onah and must not erase that chain's concern.
+      const sightingStarts = list
+        .filter(event => event.outputEventType === InputEventType.VESET ||
+          event.outputEventType === InputEventType.BDIKA_TMEA)
+        .map(event => event.CachedInputEventRef);
+      return list.filter(concern => concern.outputEventType !== DayType.ONA_BEINONIT ||
+        !sightingStarts.some(event =>
+          this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
+          this.compareHebrewDates(event.hebrewDate, concern.segments[0].hebrewDate) <= 0));
     }),
     map((list: OutputEvent[]) => {
       const rtn: CalEventDict = {};
@@ -215,10 +228,39 @@ export class CalService {
     return d.getTime();
   }
 
-  private minHefsekDiff(event: CachedInputEvent, approach: Approach): number {
+  private minHefsekDiff(
+    event: CachedInputEvent,
+    approach: Approach,
+    allEvents: CachedInputEvent[] = this.cache.getInputEvents(),
+  ): number {
+    if (this.cleanCountRestarts(allEvents).has(event.id)) return 0;
     // The bleeding day itself counts as day 1 of niddah, so the earliest
     // possible Hefsek Tahara is on day `minNidaDays` -> diff of `minNidaDays - 1`.
     return nidaDaysForInputEvent(event, approach) - 1;
+  }
+
+  /** Sightings interrupting a clean count do not start a new waiting period.
+   * Keep that status through repeated sightings until a new count completes.
+   * The calendar models the scheduled mikveh; it has no actual immersion input.
+   */
+  private cleanCountRestarts(events: CachedInputEvent[]): Set<string> {
+    const restarts = new Set<string>();
+    let hefsek: CachedInputEvent | undefined;
+    let interrupted = false;
+    for (const event of [...events].sort((a, b) => this.compareInputEvents(a, b))) {
+      if (event.type === InputEventType.HEFSEK_TAHARA) {
+        hefsek = event;
+        interrupted = false;
+      } else if (this.isSightingEvent(event)) {
+        if (hefsek) {
+          const elapsed = this.compareHebrewDates(event.hebrewDate, hefsek.hebrewDate);
+          interrupted = elapsed >= 1 && elapsed <= 7;
+        }
+        if (interrupted) restarts.add(event.id);
+        hefsek = undefined;
+      }
+    }
+    return restarts;
   }
 
   /**
@@ -239,7 +281,7 @@ export class CalService {
     while (extended) {
       extended = false;
       const cutoff = new Date(latest.simpleDate);
-      const forNum = nidaDaysForInputEvent(latest, approach);
+      const forNum = this.minHefsekDiff(latest, approach, sortedEvents) + 1;
       cutoff.setDate(cutoff.getDate() + forNum - 1);
       const cutoffT = cutoff.getTime();
       const latestT = new Date(latest.simpleDate).getTime();
@@ -259,11 +301,20 @@ export class CalService {
 
   getSevenCleanDays(hefsekTaharaEvent: CachedInputEvent, allEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
     const rtn: OutputEvent[] = [];
+    const interruption = [...allEvents]
+      .filter(event => (this.isSightingEvent(event) || event.type === InputEventType.HEFSEK_TAHARA) &&
+        this.compareInputEvents(event, hefsekTaharaEvent) > 0)
+      .sort((a, b) => this.compareInputEvents(a, b))[0];
     for (let index = 1; index <= 7; index++) {
       const { simpleDate } = hefsekTaharaEvent;
       const newSimpleDate = new Date(simpleDate)
       newSimpleDate.setDate(simpleDate.getDate() + index);
       const hdate = simpleDateToHebrew(newSimpleDate)
+      // Preserve completed historical days, but stop the invalidated count
+      // before the interruption day and never emit its former mikveh night.
+      if (interruption && this.compareHebrewDates(
+        interruption.hebrewDate, hDateToHebrewDateKey(hdate),
+      ) <= 0) return rtn;
       const date = HDateToNgbDateStruct(hdate)
 
       const nekyimDay: OutputEvent = {
@@ -307,6 +358,7 @@ export class CalService {
     chainLast: CachedInputEvent,
     approach: Approach,
     suppressOnahBeinonit = false,
+    allEvents: CachedInputEvent[] = this.cache.getInputEvents(),
   ): OutputEvent[] {
     return this.getNidaDaysForSighting(
       vesetEvent,
@@ -314,6 +366,7 @@ export class CalService {
       approach,
       true,
       suppressOnahBeinonit,
+      allEvents,
     );
   }
 
@@ -323,9 +376,11 @@ export class CalService {
     approach: Approach,
     includeHashashot: boolean,
     suppressOnahBeinonit = false,
+    allEvents: CachedInputEvent[] = this.cache.getInputEvents(),
   ): OutputEvent[] {
     const rtn: OutputEvent[] = [];
-    const forNum = nidaDaysForInputEvent(chainLast, approach);
+    const forNum = this.minHefsekDiff(chainLast, approach, allEvents) + 1;
+    const restartsCleanCount = this.cleanCountRestarts(allEvents).has(sightingEvent.id);
 
     const vesetSimpleDate = new Date(sightingEvent.simpleDate);
     const chainLastDate = new Date(chainLast.simpleDate);
@@ -343,7 +398,9 @@ export class CalService {
       CachedInputEventRef: { ...sightingEvent },
       outputEventType: sightingEvent.type,
       details: [
-        `${this.sightingLabel(sightingEvent)} – יום 1 לנידה`,
+        restartsCleanCount
+          ? `${this.sightingLabel(sightingEvent)} – יש להתחיל מחדש את ספירת שבעת הנקיים`
+          : `${this.sightingLabel(sightingEvent)} – יום 1 לנידה`,
       ]
     }
     // niddah days 2..totalNidaDays
@@ -696,9 +753,17 @@ export class CalService {
     const anchor = pendingHefsek ?? latestSighting;
     if (!anchor || !activeIntervals.length) return [];
 
-    return activeIntervals.map(interval =>
+    const restartingCleanCount = latestSighting && this.cleanCountRestarts(events).has(latestSighting.id);
+    // After an interrupted count there is no prospective immersion until a
+    // replacement Hefsek is recorded. Retain the interval history, but do not
+    // show provisional separation reminders inside this ongoing niddah period.
+    if (restartingCleanCount && !pendingHefsek) return [];
+
+    const concerns = activeIntervals.map(interval =>
       this.haflagaEventFromHefsekOnot(anchor, interval),
     );
+    return concerns.filter(concern => !restartingCleanCount ||
+      this.compareHebrewDates(concern.segments[0].hebrewDate, anchor.hebrewDate) >= 8);
   }
 
   private getSephardiHaflagaHashashot(events: CachedInputEvent[]): OutputEvent[] {
@@ -722,14 +787,16 @@ export class CalService {
   }
 
   private chabadHaflagaIntervalOnot(hefsek: CachedInputEvent, sighting: CachedInputEvent): number {
-    const diffDays = this.daysSince(hefsek, this.startOfDayMs(sighting.simpleDate));
-    return diffDays * 2 + (sighting.ona === InputEventOna.LAYLA ? 1 : 0);
+    // Count calendar days, not elapsed 24-hour periods (which vary across DST).
+    // The first night after the Hefsek is onah 1; the following day is onah 2.
+    const diffDays = this.compareHebrewDates(sighting.hebrewDate, hefsek.hebrewDate);
+    return diffDays * 2 - (sighting.ona === InputEventOna.NIGHT ? 1 : 0);
   }
 
   private haflagaEventFromHefsekOnot(hefsek: CachedInputEvent, interval: number): OutputEvent {
     const ona = interval % 2 === 0 ? InputEventOna.YOM : InputEventOna.LAYLA;
-    const offsetDays = ona === InputEventOna.YOM ? interval / 2 : (interval - 1) / 2;
-    const targetSimpleDate = this.addDays(hefsek.simpleDate, offsetDays);
+    const offsetDays = Math.ceil(interval / 2);
+    const targetSimpleDate = hebrewDateKeyToHDate(addHebrewDays(hefsek.hebrewDate, offsetDays)).greg();
     return this.haflagaEvent(
       hefsek,
       targetSimpleDate,
@@ -857,6 +924,12 @@ export class CalService {
     const dateDiff = hebrewDateKeyToHDate(a.hebrewDate).abs() -
       hebrewDateKeyToHDate(b.hebrewDate).abs();
     if (dateDiff !== 0) return dateDiff;
+
+    // A same-day Hefsek records the clean check after that day's sighting,
+    // regardless of insertion order or a hidden night selection on the form.
+    const hefsekOrder = Number(a.type === InputEventType.HEFSEK_TAHARA) -
+      Number(b.type === InputEventType.HEFSEK_TAHARA);
+    if (hefsekOrder !== 0) return hefsekOrder;
 
     const onahOrder = (onah: InputEventOna) =>
       onah === InputEventOna.NIGHT ? 0 : 1;
