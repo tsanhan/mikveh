@@ -74,7 +74,7 @@ ion-radio-group ::ng-deep {
     }
 
     & ion-radio {
-        background: var(--color-plus);
+        background: var(--app);
         padding: 0px 0.5rem 1px 0.5rem;
         border-radius: 4rem;
 
@@ -85,7 +85,7 @@ ion-radio-group ::ng-deep {
         }
 
         &.radio-checked {
-            background: var(--app);
+            background: var(--color-plus);
             // box-shadow: inset 0px -1px 2px 0px rgba(0, 0, 0, 0.2)
         }
 

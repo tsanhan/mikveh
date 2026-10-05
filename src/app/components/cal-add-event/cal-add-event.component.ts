@@ -1,6 +1,6 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { IonButton, IonIcon, IonRadioGroup, IonRadio } from '@ionic/angular/standalone';
+import { AlertController, IonButton, IonIcon, IonRadioGroup, IonRadio } from '@ionic/angular/standalone';
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { heart, logoApple, pencilOutline, checkmarkOutline } from 'ionicons/icons';
 import { provideIcons } from '@ng-icons/core';
@@ -9,7 +9,6 @@ import { CachedInputEvent, InputEventOna, InputEventType } from 'src/app/interfa
 import { HDate } from '@hebcal/core';
 import { EventsService } from 'src/app/services/events.service';
 import { AsyncPipe } from '@angular/common';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { HDateToNgbDateStruct, hDateToHebrewDateKey } from 'src/app/utils/date.util';
 import { CalService } from 'src/app/services/cal.service';
 
@@ -42,6 +41,8 @@ export class CalAddEventComponent  implements OnInit {
   
   events = inject(EventsService);
   cal = inject(CalService);
+  private alertCtrl = inject(AlertController);
+  isConfirming = false;
   sunriseByDate = (hdate: HDate) => this.events.sunriseByDate(hdate.greg() as Date);
   sunsetByDate = (hdate: HDate, onah: InputEventOna) => {
     const date = hdate.greg() as Date;
@@ -72,7 +73,9 @@ export class CalAddEventComponent  implements OnInit {
     this.closeAddEvent.emit();
   }
 
-  addEvent() {
+  async addEvent() {
+    if (this.isConfirming) return;
+
     const ngbDateStruct = HDateToNgbDateStruct(this.hdate as HDate);
     const simpleDate = this.hdate.greg() as Date;
     const eventToEmit: CachedInputEvent = {
@@ -84,7 +87,38 @@ export class CalAddEventComponent  implements OnInit {
       type: this.eventTypeFC.value,
       ona: this.eventOnaFC.value,
     };
-    this.closeAddEvent.emit(eventToEmit);
+    // Only a night onah needs the reminder about the Hebrew day changing at sunset.
+    if (eventToEmit.type === InputEventType.HEFSEK_TAHARA ||
+        eventToEmit.ona !== InputEventOna.NIGHT) {
+      this.closeAddEvent.emit(eventToEmit);
+      return;
+    }
+
+    this.isConfirming = true;
+    try {
+      const dateLabel = simpleDate.toLocaleDateString('he-IL', {
+        weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric',
+      });
+      const selectedWeekday = simpleDate.toLocaleDateString('he-IL', { weekday: 'long' });
+      const followingDate = new Date(simpleDate);
+      followingDate.setDate(followingDate.getDate() + 1);
+      const followingWeekday = followingDate.toLocaleDateString('he-IL', { weekday: 'long' });
+      const alert = await this.alertCtrl.create({
+        header: 'אישור התאריך והעונה',
+        message: `בחרת עונת לילה בתאריך ${dateLabel}. ראייה ב${selectedWeekday} אחרי השקיעה צריכה להירשם ב${followingWeekday}, בעונת לילה. האם התאריך והעונה נכונים?`,
+        buttons: [
+          { text: 'חזרה לתיקון', role: 'cancel' },
+          { text: 'כן, להוסיף', role: 'confirm' },
+        ],
+      });
+      await alert.present();
+      const { role } = await alert.onDidDismiss();
+      if (role === 'confirm') {
+        this.closeAddEvent.emit(eventToEmit);
+      }
+    } finally {
+      this.isConfirming = false;
+    }
   }
 
 }

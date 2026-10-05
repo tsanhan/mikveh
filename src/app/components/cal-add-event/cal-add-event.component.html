@@ -5,10 +5,10 @@
   בחרי את סוג האירוע
 </div>
 <div class="buttons">
-  <ion-radio-group [formControl]="eventTypeFC" [value]="InputEventTypeEnum.VESET" class="d-flex flex-row gap-2">
+  <ion-radio-group [formControl]="eventTypeFC" class="d-flex flex-row gap-2">
     <ion-radio [value]="InputEventTypeEnum.VESET">ווסת</ion-radio>
-    <ion-radio [value]="InputEventTypeEnum.KETEM_TAME">כתם טמא</ion-radio>
     <ion-radio [value]="InputEventTypeEnum.BDIKA_TMEA">בדיקה טמאה</ion-radio>
+    <ion-radio [value]="InputEventTypeEnum.KETEM_TAME">כתם טמא</ion-radio>
     @if (canAddHefsek) {
       <ion-radio [value]="InputEventTypeEnum.HEFSEK_TAHARA">הפסק טהרה</ion-radio>
     }
@@ -31,7 +31,7 @@
     </div>
   </div>
   <div class="buttons">
-    <ion-radio-group [formControl]="eventOnaFC" [value]="InputEventOnaEnum.NIGHT" class="d-flex flex-row gap-2">
+    <ion-radio-group [formControl]="eventOnaFC" class="d-flex flex-row gap-2">
       <ion-radio [value]="InputEventOnaEnum.NIGHT">🌙 לילה</ion-radio>
       <ion-radio [value]="InputEventOnaEnum.DAY">☀️ יום</ion-radio>
     </ion-radio-group>
@@ -45,7 +45,7 @@
 <div class="buttons">
   <ion-button class="cancel-btn" size="small" expand="block" shape="round" fill="outline"
     (click)="cancelAddEvent()">ביטול</ion-button>
-  <ion-button class="save-btn" size="small" expand="block" shape="round" (click)="addEvent()">
+  <ion-button class="save-btn" size="small" expand="block" shape="round" [disabled]="isConfirming" (click)="addEvent()">
     <ion-icon name="checkmark-outline"></ion-icon>
     הוספה
   </ion-button>
