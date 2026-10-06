@@ -20,8 +20,9 @@
       </div>
 
       <div class="content">
-        @if (this.approachKey$ | async; as approachKey) {
-          @for(contentObj of topic.content[approachKey]; track contentObj; let i = $index){
+        @if (selectedApproach$ | async; as selectedApproach) {
+          @for(contentObj of topic.content[selectedApproach.contentKey ?? selectedApproach.name]; track contentObj; let i = $index){
+          @if (!contentObj.onlyApproaches || contentObj.onlyApproaches.includes(selectedApproach.name)) {
           <div>
             @switch (contentObj.type) {
               @case ('img') {
@@ -59,6 +60,7 @@
             }
 
           </div>
+          }
           }
         }
       </div>

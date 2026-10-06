@@ -11,4 +11,5 @@ export type Content = { [approach: string]: TopicContent[] };
 export type TopicContent = {
   type: 'text' | 'img' | 'table' |'bold' | 'headline';
   data: string;
+  onlyApproaches?: string[];
 };

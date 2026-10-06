@@ -89,6 +89,8 @@ describe('CalAddEventComponent confirmation', () => {
     expect(alertCtrl.create).not.toHaveBeenCalled();
     expect(emit).toHaveBeenCalledOnceWith(jasmine.objectContaining({
       type: InputEventType.HEFSEK_TAHARA,
+      ona: InputEventOna.DAY,
+      simpleDate: new Date(2026, 9, 6),
     }));
   });
 });

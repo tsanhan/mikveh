@@ -85,7 +85,9 @@ export class CalAddEventComponent  implements OnInit {
       simpleDate,
       date: ngbDateStruct,
       type: this.eventTypeFC.value,
-      ona: this.eventOnaFC.value,
+      ona: this.eventTypeFC.value === InputEventType.HEFSEK_TAHARA
+        ? InputEventOna.DAY
+        : this.eventOnaFC.value,
     };
     // Only a night onah needs the reminder about the Hebrew day changing at sunset.
     if (eventToEmit.type === InputEventType.HEFSEK_TAHARA ||

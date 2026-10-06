@@ -15,11 +15,9 @@ const FIXED_VESET_FUTURE_MONTHS = 120;
 const nidaDaysFor = (approach: Approach) =>
   approach.name === ApproachName.SEPHARDI_OVADIA ? 4 : 5;
 const nidaDaysForInputEvent = (event: CachedInputEvent, approach: Approach) =>
-  event.type === InputEventType.VESET ||
-  event.type === InputEventType.BDIKA_TMEA ||
-  (event.type === InputEventType.KETEM_TAME && approach.name === ApproachName.SEPHARDI_OVADIA)
-    ? nidaDaysFor(approach)
-    : 5;
+  event.type === InputEventType.KETEM_TAME
+    ? (approach.name === ApproachName.SEPHARDI_OVADIA ? 1 : 5)
+    : nidaDaysFor(approach);
 @Injectable({
   providedIn: 'root',
 })
@@ -207,6 +205,9 @@ export class CalService {
    */
   validateNewInputEvent(event: CachedInputEvent): string | null {
     if (event.type !== InputEventType.HEFSEK_TAHARA) return null;
+    if (event.ona !== InputEventOna.DAY) {
+      return 'הפסק טהרה ניתן לבצע רק בעונת יום, לפני השקיעה';
+    }
 
     const approach = this.approach.approach$.getValue();
     const newDate = this.startOfDayMs(event.simpleDate);
@@ -226,6 +227,9 @@ export class CalService {
     const minDiff = this.minHefsekDiff(lastVesetOrKetem, approach);
     if (diffDays < minDiff) {
       const missing = minDiff - diffDays;
+      if (minNidaDays === 1) {
+        return `לא ניתן להוסיף הפסק טהרה, טרם הסתיימה ההמתנה מהראייה הקודמת (חסרים ${missing} ימים)`;
+      }
       return `לא ניתן להוסיף הפסק טהרה, נדרשים לפחות ${minNidaDays} ימי נידה מהווסת/כתם/בדיקה האחרון (חסרים ${missing} ימים)`;
     }
     return null;
@@ -265,7 +269,19 @@ export class CalService {
     approach: Approach,
     allEvents: CachedInputEvent[] = this.cache.getInputEvents(),
   ): number {
-    if (this.cleanCountRestarts(allEvents).has(event.id)) return 0;
+    const restarts = this.cleanCountRestarts(allEvents);
+    if (restarts.has(event.id)) return 0;
+    if (event.type === InputEventType.KETEM_TAME && approach.name === ApproachName.SEPHARDI_OVADIA) {
+      // A ketem adds no waiting days, but cannot shorten an existing wait
+      // caused by a veset or an impure examination. Night precedes day on
+      // the stored Hebrew date, so its following daytime needs no date shift.
+      return allEvents.reduce((remaining, prior) => {
+        if (!this.isSightingEvent(prior) || restarts.has(prior.id)) return remaining;
+        const elapsed = this.compareHebrewDates(event.hebrewDate, prior.hebrewDate);
+        if (elapsed < 0) return remaining;
+        return Math.max(remaining, nidaDaysForInputEvent(prior, approach) - 1 - elapsed);
+      }, 0);
+    }
     // The bleeding day itself counts as day 1 of niddah, so the earliest
     // possible Hefsek Tahara is on day `minNidaDays` -> diff of `minNidaDays - 1`.
     return nidaDaysForInputEvent(event, approach) - 1;

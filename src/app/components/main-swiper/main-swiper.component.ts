@@ -19,7 +19,7 @@ import {
 } from 'ionicons/icons';
 import { IonAvatar, IonText, IonImg, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 import { CacheService } from 'src/app/services/cache.service';
-import { map, withLatestFrom } from 'rxjs';
+import { withLatestFrom } from 'rxjs';
 import { ApproachService } from 'src/app/services/approach.service';
 import { TopicNavigationService } from 'src/app/services/topic-navigation.service';
 
@@ -44,7 +44,7 @@ export class MainSwiperComponent implements AfterViewInit {
   @ViewChild('swiper') swiperRef!: ElementRef;
 
   topics$ = this.cache.topics$;
-  approachKey$ = this.approach.approach$.pipe(map(approach => approach.contentKey ?? approach.name));
+  selectedApproach$ = this.approach.approach$;
 
   constructor( ) {
     addIcons({ document, chevronForwardCircle, colorPalette, globe });

@@ -516,6 +516,81 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
   // highlightedInputEvents$ – standalone Ketem / Bdika sightings
   // ---------------------------------------------------------------------------
   describe('highlightedInputEvents$ – standalone Ketem / Bdika sightings', () => {
+    for (const selectedApproach of [APPROACH_CHABAD, APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+      for (const type of [InputEventType.KETEM_TAME, InputEventType.VESET, InputEventType.BDIKA_TMEA]) {
+        for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+          it(`${selectedApproach.name}: ${type} in ${ona} has matching Hefsek eligibility and daytime marker`, async () => {
+            approach.approach$.next(selectedApproach);
+            const sighting = makeEvent('2026-10-06', type, ona);
+            cache.setEvents([sighting]);
+            const expectedWait = selectedApproach.name === ApproachName.SEPHARDI_OVADIA
+              ? (type === InputEventType.KETEM_TAME ? 0 : 3)
+              : 4;
+            const earliest = makeHebrewEvent(
+              hebrewDateKeyToHDate(addHebrewDays(sighting.hebrewDate, expectedWait)),
+              InputEventType.HEFSEK_TAHARA,
+            );
+            const before = makeHebrewEvent(
+              hebrewDateKeyToHDate(addHebrewDays(earliest.hebrewDate, -1)),
+              InputEventType.HEFSEK_TAHARA,
+            );
+            expect(cal.canAddHefsekTahara(sighting.simpleDate)).toBe(expectedWait === 0);
+            expect(cal.canAddHefsekTahara(before.simpleDate)).toBeFalse();
+            expect(cal.validateNewInputEvent(before)).not.toBeNull();
+            expect(cal.canAddHefsekTahara(earliest.simpleDate)).toBeTrue();
+            expect(cal.validateNewInputEvent(earliest)).toBeNull();
+            const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+            const marker = all.find(e => e.outputEventType === DayType.CAN_START_CHECK_HEFSEK)!;
+            expect(marker.segments).toEqual([
+              { hebrewDate: earliest.hebrewDate, onah: InputEventOna.DAY },
+            ]);
+          });
+        }
+      }
+    }
+
+    for (const type of [InputEventType.VESET, InputEventType.BDIKA_TMEA]) {
+      for (const offset of [0, 1, 2, 3]) {
+        it(`Rav Ovadia: a ketem ${offset} days after ${type} does not shorten or extend its waiting period`, async () => {
+          approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+          const sighting = makeEvent('2026-10-06', type);
+          const ketem = makeHebrewEvent(
+            hebrewDateKeyToHDate(addHebrewDays(sighting.hebrewDate, offset)),
+            InputEventType.KETEM_TAME,
+          );
+          cache.setEvents([ketem, sighting]);
+          const earliest = makeEvent('2026-10-09', InputEventType.HEFSEK_TAHARA);
+          expect(cal.canAddHefsekTahara(ketem.simpleDate)).toBe(offset === 3);
+          expect(cal.canAddHefsekTahara(earliest.simpleDate)).toBeTrue();
+          expect(cal.validateNewInputEvent(earliest)).toBeNull();
+          expect(cal.validateNewInputEvent(makeEvent('2026-10-08', InputEventType.HEFSEK_TAHARA)))
+            .not.toBeNull();
+          const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+          const markers = all.filter(e => e.outputEventType === DayType.CAN_START_CHECK_HEFSEK);
+          expect(markers.length).toBeGreaterThan(0);
+          expect(markers.every(e => dayDiff(earliest.simpleDate, e.simpleDate) === 0)).toBeTrue();
+        });
+      }
+    }
+
+    it('counts seven clean days from the day after a same-day Hefsek following a night ketem', async () => {
+      approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
+      const ketem = makeEvent('2026-10-06', InputEventType.KETEM_TAME, InputEventOna.NIGHT);
+      const hefsek = makeEvent('2026-10-06', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([ketem]);
+      expect(cal.validateNewInputEvent(hefsek)).toBeNull();
+      cal.addEvent(hefsek);
+      expect(cal.canAddHefsekTahara(hefsek.simpleDate)).toBeFalse();
+      const all = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const cleanDays = all.filter(e => e.outputEventType === DayType.SEVEN_CLEAN);
+      expect(cleanDays.length).toBe(7);
+      expect(dayDiff(hefsek.simpleDate, cleanDays[0].simpleDate)).toBe(1);
+      const mikveh = all.find(e => e.outputEventType === DayType.MIKVEH_DAY)!;
+      expect(mikveh.segments).toEqual([
+        { hebrewDate: addHebrewDays(hefsek.hebrewDate, 8), onah: InputEventOna.NIGHT },
+      ]);
+    });
+
     it('keeps an Elul sighting and its waiting days on valid visible Hebrew dates', async () => {
       approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
       const bdika = makeEvent('2026-08-16', InputEventType.BDIKA_TMEA);
@@ -538,7 +613,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       });
     });
 
-    it('Ketem Tame opens a 4-day niddah window for Rav Ovadia without a leniency message or hashashot', async () => {
+    it('Ketem Tame allows same-day Hefsek for Rav Ovadia without hashashot', async () => {
       approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
       const ketem = makeEvent('2025-01-10', InputEventType.KETEM_TAME);
       cache.setEvents([ketem]);
@@ -551,11 +626,11 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(dayDiff(ketem.simpleDate, day1.simpleDate)).toBe(0);
 
       const mahzor = all.filter(e => e.outputEventType === DayType.MAHZOR);
-      expect(mahzor.length).toBe(3); // days 2..4
+      expect(mahzor.length).toBe(0);
       expect(mahzor.every(e => e.details.length === 1)).toBe(true);
 
       const start = all.find(e => e.outputEventType === DayType.CAN_START_CHECK_HEFSEK)!;
-      expect(dayDiff(ketem.simpleDate, start.simpleDate)).toBe(3);
+      expect(dayDiff(ketem.simpleDate, start.simpleDate)).toBe(0);
       expect(start.details).toEqual(['אפשר להתחיל לבדוק הפסק טהרה']);
 
       expect(all.some(e => e.outputEventType === DayType.ONA_BEINONIT)).toBe(false);
@@ -890,16 +965,16 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(cal.validateNewInputEvent(day5Hefsek)).toBeNull();
     });
 
-    it('allows Rav Ovadia Hefsek Tahara on day 4, but not earlier, after Ketem Tame', () => {
+    it('allows Rav Ovadia same-day Hefsek after Ketem Tame, but only during daytime', () => {
       approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
-      const ketem = makeEvent('2025-01-10', InputEventType.KETEM_TAME);
-      cache.setEvents([ketem]);
+      cache.setEvents([makeEvent('2025-01-10', InputEventType.KETEM_TAME, InputEventOna.NIGHT)]);
 
-      const day3Hefsek = makeEvent('2025-01-12', InputEventType.HEFSEK_TAHARA);
-      expect(cal.validateNewInputEvent(day3Hefsek)).toMatch(/לפחות 4 ימי נידה/);
-
-      const day4Hefsek = makeEvent('2025-01-13', InputEventType.HEFSEK_TAHARA);
-      expect(cal.validateNewInputEvent(day4Hefsek)).toBeNull();
+      expect(cal.validateNewInputEvent(makeEvent('2025-01-09', InputEventType.HEFSEK_TAHARA)))
+        .toMatch(/ללא וסת/);
+      expect(cal.validateNewInputEvent(makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA)))
+        .toBeNull();
+      expect(cal.validateNewInputEvent(makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA, InputEventOna.NIGHT)))
+        .toMatch(/רק בעונת יום/);
     });
 
     it('allows Hefsek Tahara on day 4 after Bdika Tmea for Rav Ovadia', () => {
@@ -949,11 +1024,11 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(cal.canAddHefsekTahara(new Date('2025-01-13T12:00:00Z'))).toBe(true);
     });
 
-    it('returns true on day 4, but not earlier, after a Rav Ovadia Ketem Tame', () => {
+    it('returns true on the ketem date, but not before, for Rav Ovadia', () => {
       approach.approach$.next(APPROACH_SEPHARDI_OVADIA);
       cache.setEvents([makeEvent('2025-01-10', InputEventType.KETEM_TAME)]);
-      expect(cal.canAddHefsekTahara(new Date('2025-01-12T12:00:00Z'))).toBe(false);
-      expect(cal.canAddHefsekTahara(new Date('2025-01-13T12:00:00Z'))).toBe(true);
+      expect(cal.canAddHefsekTahara(new Date('2025-01-09T12:00:00Z'))).toBe(false);
+      expect(cal.canAddHefsekTahara(new Date('2025-01-10T12:00:00Z'))).toBe(true);
     });
 
     it('returns false before day 5 after a non-Ovadia Ketem Tame', () => {
@@ -1033,7 +1108,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
           const veset = makeEvent('2025-01-01', InputEventType.VESET);
           const firstHefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
           const bdika = makeEvent('2025-01-08', InputEventType.BDIKA_TMEA, ona);
-          const newHefsek = makeEvent('2025-01-08', InputEventType.HEFSEK_TAHARA, ona);
+          const newHefsek = makeEvent('2025-01-08', InputEventType.HEFSEK_TAHARA);
           cache.setEvents([bdika, firstHefsek, veset]);
 
           expect(cal.canAddHefsekTahara(bdika.simpleDate)).toBeTrue();
