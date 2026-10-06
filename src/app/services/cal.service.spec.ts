@@ -1154,7 +1154,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       for (const type of [InputEventType.VESET, InputEventType.BDIKA_TMEA]) {
         for (const date of ['2025-01-06', '2025-01-12']) {
           for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
-            it(`${selectedApproach.name}/${type}/${date}/${ona}: replaces both concerns in an interrupted count`, async () => {
+            it(`${selectedApproach.name}/${type}/${date}/${ona}: replaces both concerns without a short haflaga in an interrupted count`, async () => {
               approach.approach$.next(selectedApproach);
               const original = makeEvent('2025-01-01', InputEventType.VESET);
               const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
@@ -1170,6 +1170,8 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
                   .includes(e.outputEventType as DayType));
                 expect(monthly.map(e => e.sourceEventId)).toEqual([sighting.id]);
                 expect(monthly[0].segments[0].onah).toBe(ona);
+                expect(output.some(e => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT]
+                  .includes(e.outputEventType as DayType))).toBeFalse();
               }
               cal.removeEvent(sighting);
               const restored = flatten(await firstValueFrom(cal.highlightedInputEvents$));
@@ -1179,6 +1181,58 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
           }
         }
       }
+
+      it(`${selectedApproach.name}: repeated interruptions remove the old haflaga and the next cycle starts from the latest sighting`, async () => {
+        approach.approach$.next(selectedApproach);
+        const prior = makeEvent('2024-12-01', InputEventType.VESET);
+        const original = makeEvent('2025-01-01', InputEventType.VESET);
+        const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+        const interruption = makeEvent('2025-01-08', InputEventType.BDIKA_TMEA);
+        const laterInterruption = makeEvent('2025-01-10', InputEventType.VESET, InputEventOna.NIGHT);
+        const replacement = makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA);
+        const next = makeEvent('2025-02-01', InputEventType.VESET, InputEventOna.NIGHT);
+        const haflagot = async () => flatten(await firstValueFrom(cal.highlightedInputEvents$))
+          .filter(e => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT].includes(e.outputEventType as DayType));
+
+        cache.setEvents([hefsek, original, prior]);
+        expect((await haflagot()).length).toBe(1);
+        cal.addEvent(interruption);
+        expect(await haflagot()).toEqual([]);
+        cal.addEvent(laterInterruption);
+        expect(await haflagot()).toEqual([]);
+        cal.addEvent(replacement);
+        expect(await haflagot()).toEqual([]);
+        cal.addEvent(next);
+        const concerns = await haflagot();
+        expect(concerns.length).toBe(1);
+        expect(concerns[0].sourceEventId).toBe(next.id);
+        expect(concerns[0].segments).toEqual([
+          { hebrewDate: addHebrewDays(next.hebrewDate, 22), onah: InputEventOna.NIGHT },
+        ]);
+        expect(concerns[0].details).toContain('חשש וסת הפלגה - לילה (23 ימים)');
+
+        // Deleting the interruptions restores the original interval.
+        cal.removeEvent(next);
+        cal.removeEvent(laterInterruption);
+        cal.removeEvent(interruption);
+        const restored = await haflagot();
+        expect(restored.length).toBe(1);
+        expect(restored[0].sourceEventId).toBe(original.id);
+        expect(restored[0].details).toContain('חשש וסת הפלגה - יום (32 ימים)');
+      });
+
+      it(`${selectedApproach.name}: a sighting after seven completed clean days still creates a haflaga`, async () => {
+        approach.approach$.next(selectedApproach);
+        const original = makeEvent('2025-01-01', InputEventType.VESET);
+        const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+        const next = makeEvent('2025-01-13', InputEventType.VESET);
+        cache.setEvents([next, hefsek, original]);
+        const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+        const concerns = output.filter(e => e.outputEventType === DayType.HAFLAGA_DAY);
+        expect(concerns.length).toBe(1);
+        expect(concerns[0].sourceEventId).toBe(next.id);
+        expect(concerns[0].details).toContain('חשש וסת הפלגה - יום (13 ימים)');
+      });
 
       it(`${selectedApproach.name}: repeated interruptions replace only the current cycle's monthly concerns`, async () => {
         approach.approach$.next(selectedApproach);

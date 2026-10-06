@@ -823,6 +823,10 @@ export class CalService {
 
     const previous = sightings[sightings.length - 2];
     const current = sightings[sightings.length - 1];
+    // A sighting that interrupts seven clean days replaces the previous
+    // sighting's concerns; their short gap does not establish a haflaga.
+    // Keep the new sighting as the starting point for the next cycle.
+    if (this.cleanCountRestarts(events).has(current.id)) return [];
     const diffDays = this.daysSince(previous, this.startOfDayMs(current.simpleDate));
     const intervalDays = diffDays + 1;
     const targetSimpleDate = this.addDays(current.simpleDate, diffDays);
