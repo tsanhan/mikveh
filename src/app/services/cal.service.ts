@@ -91,17 +91,19 @@ export class CalService {
       list.push(...this.getFixedVesetConcerns(sortedInputEvents, approach));
       list.push(...this.getHaflagaHashashot(sortedInputEvents, approach));
       // A new hashash-generating sighting replaces a not-yet-reached average
-      // onah. Monthly concerns remain independent, even when dates coincide.
+      // onah, including when the sighting interrupts seven clean days.
       // Sightings absorbed into one continuous bleeding chain do not establish
       // a separate average onah and must not erase that chain's concern.
       const sightingStarts = list
         .filter(event => event.outputEventType === InputEventType.VESET ||
           event.outputEventType === InputEventType.BDIKA_TMEA)
         .map(event => event.CachedInputEventRef);
-      return list.filter(concern => concern.outputEventType !== DayType.ONA_BEINONIT ||
+      const currentConcerns = list.filter(concern => concern.outputEventType !== DayType.ONA_BEINONIT ||
         !sightingStarts.some(event =>
           this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
           this.compareHebrewDates(event.hebrewDate, concern.segments[0].hebrewDate) <= 0));
+      return approach.name === ApproachName.CHABAD ? currentConcerns :
+        this.filterMonthlyConcernsAfterInterruption(currentConcerns, sortedInputEvents);
     }),
     map((list: OutputEvent[]) => {
       const rtn: CalEventDict = {};
@@ -131,6 +133,36 @@ export class CalService {
 
 
   constructor() { }
+
+  private filterMonthlyConcernsAfterInterruption(
+    concerns: OutputEvent[],
+    sortedEvents: CachedInputEvent[],
+  ): OutputEvent[] {
+    const restarts = this.cleanCountRestarts(sortedEvents);
+    const cycles = new Map<string, string>();
+    // Use generated sighting starts, so events absorbed into a continuous
+    // bleeding chain do not split that chain's cycle or replace its concerns.
+    const starts = concerns.filter(event => this.isSightingEvent(event.CachedInputEventRef) &&
+      event.outputEventType === event.CachedInputEventRef.type)
+      .map(event => event.CachedInputEventRef);
+    let cycle = '';
+    for (const event of starts) {
+      if (!restarts.has(event.id)) cycle = event.id;
+      cycles.set(event.id, cycle);
+    }
+    const replacements = starts.filter(event => restarts.has(event.id) &&
+      this.createsHashashot(event));
+    return concerns.filter(concern => {
+      if (concern.outputEventType !== DayType.VESET_HACHODESH_DAY &&
+        concern.outputEventType !== DayType.VESET_HACHODESH_NIGHT) return true;
+      // Replace future monthly concerns from this interrupted count only.
+      // Historical concerns and those from prior completed counts remain.
+      return !replacements.some(event =>
+        cycles.get(event.id) === cycles.get(concern.CachedInputEventRef.id) &&
+        this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
+        this.compareHebrewDates(event.hebrewDate, concern.segments[0].hebrewDate) <= 0);
+    });
+  }
 
 
 
@@ -451,7 +483,10 @@ export class CalService {
       if (!suppressOnahBeinonit) {
         rtn.push(this.calculateOnahBeinonit(sightingEvent, approach));
       }
-      rtn.push(this.calculateVesetHaChodesh(sightingEvent));
+      const throughSighting = allEvents.filter(event => this.compareInputEvents(event, sightingEvent) <= 0);
+      if (!this.hasSephardiSemiFixedPattern(throughSighting, approach, sightingEvent.hebrewDate)) {
+        rtn.push(this.calculateVesetHaChodesh(sightingEvent));
+      }
     }
 
     return rtn;
@@ -655,13 +690,13 @@ export class CalService {
       .filter(event => this.createsHashashot(event))
       .filter(event => this.compareHebrewDates(event.hebrewDate, asOf) <= 0)
       .sort((a, b) => this.compareInputEvents(a, b));
-    // Three sightings establish the semi-fixed state when both intervening
-    // cycle lengths are at least 31 elapsed days.
-    if (sightings.length < 3) return false;
-    const lastThree = sightings.slice(-3);
-    return lastThree.slice(1).every((event, index) =>
+    // Three consecutive long intervals require four sightings. The first
+    // sighting is the starting point, not a completed interval.
+    if (sightings.length < 4) return false;
+    const lastFour = sightings.slice(-4);
+    return lastFour.slice(1).every((event, index) =>
       hebrewDateKeyToHDate(event.hebrewDate).abs() -
-        hebrewDateKeyToHDate(lastThree[index].hebrewDate).abs() >= 31,
+        hebrewDateKeyToHDate(lastFour[index].hebrewDate).abs() >= 31,
     );
   }
 
