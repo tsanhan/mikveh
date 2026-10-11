@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HDate } from '@hebcal/core';
 import { AlertController } from '@ionic/angular/standalone';
+import { of } from 'rxjs';
 import { InputEventOna, InputEventType } from 'src/app/interfaces/cal';
 import { CalService } from 'src/app/services/cal.service';
 import { EventsService } from 'src/app/services/events.service';
@@ -20,10 +21,14 @@ describe('CalAddEventComponent confirmation', () => {
       onDidDismiss: () => dismissed,
     } as HTMLIonAlertElement);
     TestBed.configureTestingModule({
+      imports: [CalAddEventComponent],
       providers: [
         { provide: AlertController, useValue: alertCtrl },
         { provide: CalService, useValue: { canAddHefsekTahara: () => true } },
-        { provide: EventsService, useValue: {} },
+        { provide: EventsService, useValue: {
+          sunriseByDate: () => of('06:00'),
+          sunsetByDate: () => of('18:00'),
+        } },
       ],
     });
     component = TestBed.runInInjectionContext(() => new CalAddEventComponent());
@@ -33,12 +38,13 @@ describe('CalAddEventComponent confirmation', () => {
     emit = spyOn(component.closeAddEvent, 'emit');
   });
 
-  it('confirms a night event using the selected weekday and the following weekday', async () => {
+  it('explains the selected night from the preceding sunset to sunrise and where the next night belongs', async () => {
     const saving = component.addEvent();
     expect(emit).not.toHaveBeenCalled();
     const options = alertCtrl.create.calls.mostRecent().args[0]!;
     expect(options.message).toContain('עונת לילה');
     expect(options.message).toContain('6.10.2026');
+    expect(options.message).toContain('כלומר, הראייה שלך היא בין יום שני אחרי השקיעה ליום שלישי עד הזריחה');
     expect(options.message).toContain('ראייה ביום שלישי אחרי השקיעה צריכה להירשם ביום רביעי, בעונת לילה');
     expect(options.buttons).toContain(jasmine.objectContaining({ text: 'כן, להוסיף' }));
     dismiss({ role: 'confirm' });
@@ -48,7 +54,7 @@ describe('CalAddEventComponent confirmation', () => {
       ona: InputEventOna.NIGHT,
       simpleDate: new Date(2026, 9, 6),
     }));
-    expect(component.isConfirming).toBeFalse();
+    expect(component.isConfirming()).toBeFalse();
   });
 
   it('saves a day event without showing the night-onah confirmation', async () => {
@@ -70,9 +76,36 @@ describe('CalAddEventComponent confirmation', () => {
       expect(emit).not.toHaveBeenCalled();
       expect(component.eventTypeFC.value).toBe(InputEventType.BDIKA_TMEA);
       expect(component.eventOnaFC.value).toBe(InputEventOna.NIGHT);
-      expect(component.isConfirming).toBeFalse();
+      expect(component.isConfirming()).toBeFalse();
     });
   }
+
+  it('re-enables the rendered add button after returning for correction and allows another click', async () => {
+    const fixture = TestBed.createComponent(CalAddEventComponent);
+    fixture.componentRef.setInput('hdate', component.hdate);
+    fixture.componentRef.setInput('selectedOna', InputEventOna.NIGHT);
+    fixture.autoDetectChanges();
+    const addButton = fixture.nativeElement.querySelector('.save-btn') as HTMLIonButtonElement;
+    const addEvent = spyOn(fixture.componentInstance, 'addEvent').and.callThrough();
+    const fixtureEmit = spyOn(fixture.componentInstance.closeAddEvent, 'emit');
+
+    addButton.click();
+    fixture.detectChanges();
+    expect(addButton.disabled).toBeTrue();
+    fixture.ngZone!.runOutsideAngular(() => dismiss({ role: 'cancel' }));
+    await addEvent.calls.mostRecent().returnValue;
+    await fixture.whenStable();
+
+    expect(addButton.disabled).toBeFalse();
+    expect(fixtureEmit).not.toHaveBeenCalled();
+
+    fixture.componentInstance.eventOnaFC.setValue(InputEventOna.DAY);
+    fixture.detectChanges();
+    addButton.click();
+    await addEvent.calls.mostRecent().returnValue;
+    expect(addEvent).toHaveBeenCalledTimes(2);
+    expect(fixtureEmit).toHaveBeenCalledOnceWith(jasmine.objectContaining({ ona: InputEventOna.DAY }));
+  });
 
   it('opens one confirmation and emits once for repeated add clicks', async () => {
     const saving = component.addEvent();

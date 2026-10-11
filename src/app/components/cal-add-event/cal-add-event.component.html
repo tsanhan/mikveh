@@ -45,7 +45,7 @@
 <div class="buttons">
   <ion-button class="cancel-btn" size="small" expand="block" shape="round" fill="outline"
     (click)="cancelAddEvent()">ביטול</ion-button>
-  <ion-button class="save-btn" size="small" expand="block" shape="round" [disabled]="isConfirming" (click)="addEvent()">
+  <ion-button class="save-btn" size="small" expand="block" shape="round" [disabled]="isConfirming()" (click)="addEvent()">
     <ion-icon name="checkmark-outline"></ion-icon>
     הוספה
   </ion-button>

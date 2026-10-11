@@ -1,7 +1,7 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { AlertController, IonButton, IonIcon, IonRadioGroup, IonRadio } from '@ionic/angular/standalone';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { heart, logoApple, pencilOutline, checkmarkOutline } from 'ionicons/icons';
 import { provideIcons } from '@ng-icons/core';
 import { featherEdit3 } from '@ng-icons/feather-icons';
@@ -42,7 +42,7 @@ export class CalAddEventComponent  implements OnInit {
   events = inject(EventsService);
   cal = inject(CalService);
   private alertCtrl = inject(AlertController);
-  isConfirming = false;
+  isConfirming = signal(false);
   sunriseByDate = (hdate: HDate) => this.events.sunriseByDate(hdate.greg() as Date);
   sunsetByDate = (hdate: HDate, onah: InputEventOna) => {
     const date = hdate.greg() as Date;
@@ -74,7 +74,7 @@ export class CalAddEventComponent  implements OnInit {
   }
 
   async addEvent() {
-    if (this.isConfirming) return;
+    if (this.isConfirming()) return;
 
     const ngbDateStruct = HDateToNgbDateStruct(this.hdate as HDate);
     const simpleDate = this.hdate.greg() as Date;
@@ -96,18 +96,21 @@ export class CalAddEventComponent  implements OnInit {
       return;
     }
 
-    this.isConfirming = true;
+    this.isConfirming.set(true);
     try {
       const dateLabel = simpleDate.toLocaleDateString('he-IL', {
         weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric',
       });
       const selectedWeekday = simpleDate.toLocaleDateString('he-IL', { weekday: 'long' });
+      const precedingDate = new Date(simpleDate);
+      precedingDate.setDate(precedingDate.getDate() - 1);
+      const precedingWeekday = precedingDate.toLocaleDateString('he-IL', { weekday: 'long' });
       const followingDate = new Date(simpleDate);
       followingDate.setDate(followingDate.getDate() + 1);
       const followingWeekday = followingDate.toLocaleDateString('he-IL', { weekday: 'long' });
       const alert = await this.alertCtrl.create({
         header: 'אישור התאריך והעונה',
-        message: `בחרת עונת לילה בתאריך ${dateLabel}. ראייה ב${selectedWeekday} אחרי השקיעה צריכה להירשם ב${followingWeekday}, בעונת לילה. האם התאריך והעונה נכונים?`,
+        message: `בחרת עונת לילה בתאריך ${dateLabel}. כלומר, הראייה שלך היא בין ${precedingWeekday} אחרי השקיעה ל${selectedWeekday} עד הזריחה. ראייה ב${selectedWeekday} אחרי השקיעה צריכה להירשם ב${followingWeekday}, בעונת לילה. האם התאריך והעונה נכונים?`,
         buttons: [
           { text: 'חזרה לתיקון', role: 'cancel' },
           { text: 'כן, להוסיף', role: 'confirm' },
@@ -119,7 +122,7 @@ export class CalAddEventComponent  implements OnInit {
         this.closeAddEvent.emit(eventToEmit);
       }
     } finally {
-      this.isConfirming = false;
+      this.isConfirming.set(false);
     }
   }
 
