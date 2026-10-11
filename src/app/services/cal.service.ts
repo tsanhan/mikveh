@@ -144,8 +144,44 @@ export class CalService {
       !sightingStarts.some(event =>
         this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
         this.compareHebrewDates(event.hebrewDate, concern.segments[0].hebrewDate) <= 0));
-    return approach.name === ApproachName.CHABAD ? currentConcerns :
-      this.filterMonthlyConcernsAfterInterruption(currentConcerns, sortedInputEvents);
+    return approach.name === ApproachName.CHABAD
+      ? this.filterChabadMonthlyConcernsDuringNiddah(currentConcerns, sortedInputEvents)
+      : this.filterMonthlyConcernsAfterInterruption(currentConcerns, sortedInputEvents);
+  }
+
+  private filterChabadMonthlyConcernsDuringNiddah(
+    events: OutputEvent[],
+    sortedInputs: CachedInputEvent[],
+  ): OutputEvent[] {
+    const onahIndex = (segment: OnahRef) =>
+      hebrewDateKeyToHDate(segment.hebrewDate).abs() * 2 +
+        (segment.onah === InputEventOna.DAY ? 1 : 0);
+    const niddahPeriods: Array<{ start: number; end: number }> = [];
+    let start: number | undefined;
+    let end = Infinity;
+    for (const input of sortedInputs) {
+      const currentOnah = onahIndex(this.onahRef(input.hebrewDate, input.ona));
+      if (start !== undefined && currentOnah >= end) {
+        niddahPeriods.push({ start, end });
+        start = undefined;
+        end = Infinity;
+      }
+      if (this.isSightingEvent(input)) {
+        start ??= currentOnah;
+        // A sighting during seven clean days cancels the scheduled completion.
+        end = Infinity;
+      } else if (input.type === InputEventType.HEFSEK_TAHARA && start !== undefined) {
+        // The calendar schedules immersion in the night after seven complete
+        // clean days. Until a Hefsek is recorded the niddah period remains open.
+        end = onahIndex(this.onahRef(addHebrewDays(input.hebrewDate, 8), InputEventOna.NIGHT));
+      }
+    }
+    if (start !== undefined) niddahPeriods.push({ start, end });
+    return events.filter(event =>
+      (event.outputEventType !== DayType.VESET_HACHODESH_DAY &&
+        event.outputEventType !== DayType.VESET_HACHODESH_NIGHT) ||
+      !event.segments.some(segment => niddahPeriods.some(period =>
+        onahIndex(segment) >= period.start && onahIndex(segment) < period.end)));
   }
 
   private filterMonthlyConcernsAfterInterruption(
