@@ -38,71 +38,8 @@ export class CalService {
   // );
 
   highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
-    map(([inputEvents, approach]: [CachedInputEvent[], Approach]) => {
-      const list: OutputEvent[] = [];
-      // split by veset
-      const sortedInputEvents = [...inputEvents].sort((a, b) => this.compareInputEvents(a, b));
-      // Sighting events that have already been absorbed into an earlier
-      // niddah chain – don't generate a second Hefsek for them.
-      const handled = new Set<CachedInputEvent>();
-      for (const event of sortedInputEvents) {
-        if (handled.has(event)) continue;
-        switch (event.type) {
-          case InputEventType.VESET: {
-            const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-            const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(
-              event,
-              chainLast,
-              approach,
-              this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
-              sortedInputEvents,
-            );
-            list.push(...hashashotForVeset);
-            break;
-          }
-          case InputEventType.BDIKA_TMEA: {
-            const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-            const hashashotForBdika: OutputEvent[] = this.getNidaDaysForSighting(
-              event,
-              chainLast,
-              approach,
-              true,
-              this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
-              sortedInputEvents,
-            );
-            list.push(...hashashotForBdika);
-            break;
-          }
-          case InputEventType.KETEM_TAME: {
-            const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-            const nidaDaysForKetem: OutputEvent[] = this.getNidaDaysForSighting(event, chainLast, approach, false, false, sortedInputEvents);
-            list.push(...nidaDaysForKetem);
-            break;
-          }
-          case InputEventType.HEFSEK_TAHARA: {
-            const sevenCleanDays: OutputEvent[] = this.getSevenCleanDays(event, sortedInputEvents, approach);
-            list.push(...sevenCleanDays);
-            break;
-          }
-        }
-      }
-      list.push(...this.getFixedVesetConcerns(sortedInputEvents, approach));
-      list.push(...this.getHaflagaHashashot(sortedInputEvents, approach));
-      // A new hashash-generating sighting replaces a not-yet-reached average
-      // onah, including when the sighting interrupts seven clean days.
-      // Sightings absorbed into one continuous bleeding chain do not establish
-      // a separate average onah and must not erase that chain's concern.
-      const sightingStarts = list
-        .filter(event => event.outputEventType === InputEventType.VESET ||
-          event.outputEventType === InputEventType.BDIKA_TMEA)
-        .map(event => event.CachedInputEventRef);
-      const currentConcerns = list.filter(concern => concern.outputEventType !== DayType.ONA_BEINONIT ||
-        !sightingStarts.some(event =>
-          this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
-          this.compareHebrewDates(event.hebrewDate, concern.segments[0].hebrewDate) <= 0));
-      return approach.name === ApproachName.CHABAD ? currentConcerns :
-        this.filterMonthlyConcernsAfterInterruption(currentConcerns, sortedInputEvents);
-    }),
+    map(([inputEvents, approach]: [CachedInputEvent[], Approach]) =>
+      this.calculateCalendarEvents(inputEvents, approach)),
     map((list: OutputEvent[]) => {
       const rtn: CalEventDict = {};
       const aggregateDailyEvents = true;
@@ -131,6 +68,85 @@ export class CalService {
 
 
   constructor() { }
+
+  private calculateCalendarEvents(inputEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
+    const list: OutputEvent[] = [];
+    // split by veset
+    const sortedInputEvents = [...inputEvents].sort((a, b) => this.compareInputEvents(a, b));
+    // Sighting events that have already been absorbed into an earlier
+    // niddah chain – don't generate a second Hefsek for them.
+    const handled = new Set<CachedInputEvent>();
+    for (const event of sortedInputEvents) {
+      if (handled.has(event)) continue;
+      switch (event.type) {
+        case InputEventType.VESET: {
+          const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
+          const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(
+            event,
+            chainLast,
+            approach,
+            this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
+            sortedInputEvents,
+          );
+          list.push(...hashashotForVeset);
+          break;
+        }
+        case InputEventType.BDIKA_TMEA: {
+          const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
+          const hashashotForBdika: OutputEvent[] = this.getNidaDaysForSighting(
+            event,
+            chainLast,
+            approach,
+            true,
+            this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
+            sortedInputEvents,
+          );
+          list.push(...hashashotForBdika);
+          break;
+        }
+        case InputEventType.KETEM_TAME: {
+          const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
+          const nidaDaysForKetem: OutputEvent[] = this.getNidaDaysForSighting(event, chainLast, approach, false, false, sortedInputEvents);
+          list.push(...nidaDaysForKetem);
+          break;
+        }
+        case InputEventType.HEFSEK_TAHARA: {
+          const sevenCleanDays: OutputEvent[] = this.getSevenCleanDays(event, sortedInputEvents, approach);
+          list.push(...sevenCleanDays);
+          break;
+        }
+        case InputEventType.BDIKA_TEHORA: {
+          list.push({
+            id: this.concernId(event.type, event, hebrewDateKeyToHDate(event.hebrewDate)),
+            sourceEventId: event.id,
+            segments: [this.onahRef(event.hebrewDate, event.ona)],
+            CachedInputEventRef: { ...event },
+            simpleDate: event.simpleDate,
+            date: event.date,
+            outputEventType: event.type,
+            details: [`✓ בדיקה טהורה - ${this.onaLabel(event.ona)}`],
+          });
+          break;
+        }
+      }
+    }
+    list.push(...this.getFixedVesetConcerns(sortedInputEvents, approach));
+    list.push(...this.getHaflagaHashashot(sortedInputEvents, approach));
+    // A new hashash-generating sighting replaces a not-yet-reached average
+    // onah, including when the sighting interrupts seven clean days.
+    // Sightings absorbed into one continuous bleeding chain do not establish
+    // a separate average onah and must not erase that chain's concern.
+    const sightingStarts = list
+      .filter(event => event.outputEventType === InputEventType.VESET ||
+        event.outputEventType === InputEventType.BDIKA_TMEA)
+      .map(event => event.CachedInputEventRef);
+    const currentConcerns = list.filter(concern => concern.outputEventType !== DayType.ONA_BEINONIT ||
+      !sightingStarts.some(event =>
+        this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
+        this.compareHebrewDates(event.hebrewDate, concern.segments[0].hebrewDate) <= 0));
+    return approach.name === ApproachName.CHABAD ? currentConcerns :
+      this.filterMonthlyConcernsAfterInterruption(currentConcerns, sortedInputEvents);
+  }
 
   private filterMonthlyConcernsAfterInterruption(
     concerns: OutputEvent[],
@@ -196,14 +212,37 @@ export class CalService {
     return this.daysSince(latestSighting, t) >= this.minHefsekDiff(latestSighting, approach);
   }
 
+  /** Uses the same final concerns as the calendar, including replaced/suppressed concerns. */
+  pureCheckOnot(hebrewDate: HebrewDateKey): InputEventOna[] {
+    const concernTypes: Array<DayType | InputEventType> = [
+      DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT,
+      DayType.ONA_BEINONIT, DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT,
+    ];
+    const concerns = this.calculateCalendarEvents(
+      this.cache.getInputEvents(), this.approach.approach$.getValue(),
+    );
+    const onot = new Set(concerns
+      .filter(event => concernTypes.includes(event.outputEventType))
+      .flatMap(event => event.segments)
+      .filter(segment => this.compareHebrewDates(segment.hebrewDate, hebrewDate) === 0)
+      .map(segment => segment.onah));
+    return [InputEventOna.NIGHT, InputEventOna.DAY].filter(ona => onot.has(ona));
+  }
+
   /**
    * Returns null if the new event is allowed, or an error message in Hebrew otherwise.
-   * Currently blocks a Hefsek Tahara that is added too close to (or before) the
+   * Restricts pure checks to the calendar's concern onot and blocks a
+   * Hefsek Tahara that is added too close to (or before) the
    * latest sighting event – the woman has enough Niddah days before a Hefsek
    * Tahara is meaningful. Veset and Bdika Tmea follow the selected approach;
    * Ketem Tame keeps its separate rule.
    */
   validateNewInputEvent(event: CachedInputEvent): string | null {
+    if (event.type === InputEventType.BDIKA_TEHORA) {
+      return this.pureCheckOnot(event.hebrewDate).includes(event.ona)
+        ? null
+        : 'ניתן לסמן בדיקה טהורה רק בעונת חשש של וסת החודש, עונה בינונית או וסת הפלגה';
+    }
     if (event.type !== InputEventType.HEFSEK_TAHARA) return null;
     if (event.ona !== InputEventOna.DAY) {
       return 'הפסק טהרה ניתן לבצע רק בעונת יום, לפני השקיעה';

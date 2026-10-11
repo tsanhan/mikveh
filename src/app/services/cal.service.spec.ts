@@ -134,6 +134,103 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     cal = TestBed.inject(CalService);
   });
 
+  describe('pure checks in concern onot', () => {
+    const approaches = [APPROACH_CHABAD, APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU];
+    for (const selectedApproach of approaches) {
+      for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+        it(`${selectedApproach.name}/${ona}: allows pure checks in monthly, average and haflaga onot`, async () => {
+          approach.approach$.next(selectedApproach);
+          cache.setEvents([
+            makeEvent('2025-01-01', InputEventType.VESET, ona),
+            makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA),
+            makeEvent('2025-01-20', InputEventType.VESET, ona),
+          ]);
+          const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+          const types = [
+            ona === InputEventOna.DAY ? DayType.VESET_HACHODESH_DAY : DayType.VESET_HACHODESH_NIGHT,
+            DayType.ONA_BEINONIT,
+            ona === InputEventOna.NIGHT ? DayType.HAFLAGA_NIGHT : DayType.HAFLAGA_DAY,
+          ];
+          for (const type of types) {
+            const concern = output.find(event => event.outputEventType === type)!;
+            expect(concern).withContext(type).toBeDefined();
+            for (const segment of concern.segments) {
+              const check = makeHebrewEvent(hebrewDateKeyToHDate(segment.hebrewDate), InputEventType.BDIKA_TEHORA, segment.onah);
+              expect(cal.pureCheckOnot(segment.hebrewDate)).toContain(segment.onah);
+              expect(cal.validateNewInputEvent(check)).withContext(type).toBeNull();
+            }
+          }
+        });
+      }
+    }
+
+    it('rejects checks outside concern dates, including a Hefsek date and a pure check by itself', () => {
+      const check = makeEvent('2025-01-10', InputEventType.BDIKA_TEHORA);
+      for (const inputs of [[], [check], [makeEvent('2025-01-10', InputEventType.HEFSEK_TAHARA)],
+        [makeEvent('2025-01-10', InputEventType.KETEM_TAME)]]) {
+        cache.setEvents(inputs);
+        expect(cal.pureCheckOnot(check.hebrewDate)).toEqual([]);
+        expect(cal.validateNewInputEvent(check)).toContain('רק בעונת חשש');
+      }
+    });
+
+    it('rejects the other onah for a Sephardi concern and enables both onot for Chabad average onah', () => {
+      const sighting = makeEvent('2025-01-01', InputEventType.VESET, InputEventOna.NIGHT);
+      const check = makeHebrewEvent(hebrewDateKeyToHDate(addHebrewDays(sighting.hebrewDate, 29)), InputEventType.BDIKA_TEHORA, InputEventOna.DAY);
+      cache.setEvents([sighting]);
+      for (const sephardi of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+        approach.approach$.next(sephardi);
+        expect(cal.pureCheckOnot(check.hebrewDate)).toEqual([InputEventOna.NIGHT]);
+        expect(cal.validateNewInputEvent(check)).not.toBeNull();
+      }
+      approach.approach$.next(APPROACH_CHABAD);
+      expect(cal.pureCheckOnot(check.hebrewDate)).toEqual([InputEventOna.NIGHT, InputEventOna.DAY]);
+      expect(cal.validateNewInputEvent(check)).toBeNull();
+    });
+
+    it('rejects a former average concern that was replaced by a later sighting', () => {
+      const sighting = makeEvent('2025-02-01', InputEventType.VESET);
+      cache.setEvents([sighting, makeEvent('2025-02-12', InputEventType.VESET)]);
+      const formerDate = addHebrewDays(sighting.hebrewDate, 29);
+      expect(cal.pureCheckOnot(formerDate)).toEqual([]);
+    });
+
+    for (const selectedApproach of approaches) {
+      it(`${selectedApproach.name}: a pure check is rendered and removable without changing cycles or concerns`, async () => {
+        approach.approach$.next(selectedApproach);
+        const first = makeEvent('2025-01-01', InputEventType.VESET);
+        const latest = makeEvent('2025-01-20', InputEventType.VESET);
+        cache.setEvents([first, makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA), latest]);
+        const baseline = await firstValueFrom(cal.highlightedInputEvents$);
+        const check = makeHebrewEvent(hebrewDateKeyToHDate(addHebrewDays(latest.hebrewDate, 29)), InputEventType.BDIKA_TEHORA);
+        expect(cal.validateNewInputEvent(check)).toBeNull();
+        cal.addEvent(check);
+        const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+        expect(output.filter(event => event.outputEventType !== InputEventType.BDIKA_TEHORA)).toEqual(flatten(baseline));
+        const checkOutput = output.find(event => event.outputEventType === InputEventType.BDIKA_TEHORA)!;
+        expect(checkOutput.segments).toEqual([{ hebrewDate: check.hebrewDate, onah: InputEventOna.DAY }]);
+        expect(checkOutput.details).toEqual(['✓ בדיקה טהורה - יום']);
+        expect(cache.getInputEvents()).toContain(jasmine.objectContaining({ id: check.id, type: InputEventType.BDIKA_TEHORA }));
+        expect(cal.canAddHefsekTahara(check.simpleDate)).toBeTrue();
+        cal.removeEvent(check);
+        expect(await firstValueFrom(cal.highlightedInputEvents$)).toEqual(baseline);
+      });
+    }
+
+    it('does not extend a niddah chain or interrupt seven clean days', async () => {
+      const sighting = makeEvent('2025-01-01', InputEventType.VESET);
+      const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([sighting, hefsek]);
+      const baseline = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      cache.setEvents([sighting, hefsek,
+        makeEvent('2025-01-02', InputEventType.BDIKA_TEHORA),
+        makeEvent('2025-01-08', InputEventType.BDIKA_TEHORA),
+      ]);
+      const after = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(after.filter(event => event.outputEventType !== InputEventType.BDIKA_TEHORA)).toEqual(baseline);
+    });
+  });
+
   // ---------------------------------------------------------------------------
   // getSevenCleanDays
   // ---------------------------------------------------------------------------

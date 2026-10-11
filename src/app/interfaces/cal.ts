@@ -106,6 +106,7 @@ export enum InputEventType {
   REIYA = 'reiya',                        // ראייה
   KETEM_TAME = 'ketemTame',               // כתם טמא
   BDIKA_TMEA = 'bdikaTmea',               // בדיקה טמאה 
+  BDIKA_TEHORA = 'bdikaTehora',           // בדיקה טהורה בעונת חשש
   VESET = 'veset'                         // וסת
 }
 

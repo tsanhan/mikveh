@@ -5,10 +5,13 @@
   בחרי את סוג האירוע
 </div>
 <div class="buttons">
-  <ion-radio-group [formControl]="eventTypeFC" class="d-flex flex-row gap-2">
+  <ion-radio-group [formControl]="eventTypeFC" class="d-flex flex-row flex-wrap gap-2">
     <ion-radio [value]="InputEventTypeEnum.VESET">ווסת</ion-radio>
     <ion-radio [value]="InputEventTypeEnum.BDIKA_TMEA">בדיקה טמאה</ion-radio>
     <ion-radio [value]="InputEventTypeEnum.KETEM_TAME">כתם טמא</ion-radio>
+    @if (pureCheckOnot.length) {
+      <ion-radio [value]="InputEventTypeEnum.BDIKA_TEHORA">בדיקה טהורה</ion-radio>
+    }
     @if (canAddHefsek) {
       <ion-radio [value]="InputEventTypeEnum.HEFSEK_TAHARA">הפסק טהרה</ion-radio>
     }
@@ -21,7 +24,7 @@
 } @else {
   <div class="text">
     <div>
-      בחרי את עונת הראיה
+      {{eventTypeFC.value === InputEventTypeEnum.BDIKA_TEHORA ? 'בחרי את עונת הבדיקה' : 'בחרי את עונת הראיה'}}
     </div>
     <div class="subtitle">
       <span>זמני
@@ -32,11 +35,14 @@
   </div>
   <div class="buttons">
     <ion-radio-group [formControl]="eventOnaFC" class="d-flex flex-row gap-2">
-      <ion-radio [value]="InputEventOnaEnum.NIGHT">🌙 לילה</ion-radio>
-      <ion-radio [value]="InputEventOnaEnum.DAY">☀️ יום</ion-radio>
+      <ion-radio [value]="InputEventOnaEnum.NIGHT" [disabled]="isPureCheckOnahUnavailable(InputEventOnaEnum.NIGHT)">🌙 לילה</ion-radio>
+      <ion-radio [value]="InputEventOnaEnum.DAY" [disabled]="isPureCheckOnahUnavailable(InputEventOnaEnum.DAY)">☀️ יום</ion-radio>
     </ion-radio-group>
   </div>
   <div class="text">
+    @if (eventTypeFC.value === InputEventTypeEnum.BDIKA_TEHORA) {
+      <div class="subtitle">ניתן לסמן בדיקה טהורה רק בעונת החשש המסומנת בלוח.</div>
+    }
     <div class="subtitle">
       עונת יום - מזריחה לשקיעה עונת לילה - משקיעה לזריחה
     </div>
@@ -45,7 +51,7 @@
 <div class="buttons">
   <ion-button class="cancel-btn" size="small" expand="block" shape="round" fill="outline"
     (click)="cancelAddEvent()">ביטול</ion-button>
-  <ion-button class="save-btn" size="small" expand="block" shape="round" [disabled]="isConfirming()" (click)="addEvent()">
+  <ion-button class="save-btn" size="small" expand="block" shape="round" [disabled]="isConfirming() || isPureCheckOnahUnavailable(eventOnaFC.value)" (click)="addEvent()">
     <ion-icon name="checkmark-outline"></ion-icon>
     הוספה
   </ion-button>

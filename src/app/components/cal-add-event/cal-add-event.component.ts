@@ -1,7 +1,8 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { AlertController, IonButton, IonIcon, IonRadioGroup, IonRadio } from '@ionic/angular/standalone';
-import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { heart, logoApple, pencilOutline, checkmarkOutline } from 'ionicons/icons';
 import { provideIcons } from '@ng-icons/core';
 import { featherEdit3 } from '@ng-icons/feather-icons';
@@ -42,6 +43,7 @@ export class CalAddEventComponent  implements OnInit {
   events = inject(EventsService);
   cal = inject(CalService);
   private alertCtrl = inject(AlertController);
+  private destroyRef = inject(DestroyRef);
   isConfirming = signal(false);
   sunriseByDate = (hdate: HDate) => this.events.sunriseByDate(hdate.greg() as Date);
   sunsetByDate = (hdate: HDate, onah: InputEventOna) => {
@@ -55,6 +57,7 @@ export class CalAddEventComponent  implements OnInit {
   // True when the woman has at least one prior sighting (Veset / Ketem / Bdika Tmea)
   // on or before the selected date – Hefsek Tahara is meaningless without one.
   canAddHefsek = false;
+  pureCheckOnot: InputEventOna[] = [];
 
   constructor() { 
     addIcons({ logoApple, pencilOutline,heart, featherEdit3, checkmarkOutline  });
@@ -63,9 +66,20 @@ export class CalAddEventComponent  implements OnInit {
   ngOnInit() {
     this.eventOnaFC.setValue(this.selectedOna);
     this.canAddHefsek = this.cal.canAddHefsekTahara(this.hdate.greg() as Date);
+    this.pureCheckOnot = this.cal.pureCheckOnot(hDateToHebrewDateKey(this.hdate));
     if (!this.canAddHefsek && this.eventTypeFC.value === InputEventType.HEFSEK_TAHARA) {
       this.eventTypeFC.setValue(InputEventType.VESET);
     }
+    this.eventTypeFC.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(type => {
+      if (type === InputEventType.BDIKA_TEHORA && this.pureCheckOnot.length &&
+          !this.pureCheckOnot.includes(this.eventOnaFC.value)) {
+        this.eventOnaFC.setValue(this.pureCheckOnot[0]);
+      }
+    });
+  }
+
+  isPureCheckOnahUnavailable(ona: InputEventOna): boolean {
+    return this.eventTypeFC.value === InputEventType.BDIKA_TEHORA && !this.pureCheckOnot.includes(ona);
   }
 
   cancelAddEvent() {
@@ -89,8 +103,10 @@ export class CalAddEventComponent  implements OnInit {
         ? InputEventOna.DAY
         : this.eventOnaFC.value,
     };
-    // Only a night onah needs the reminder about the Hebrew day changing at sunset.
+    // The night-onah reminder is for sightings; checks are saved directly.
     if (eventToEmit.type === InputEventType.HEFSEK_TAHARA ||
+        eventToEmit.type === InputEventType.BDIKA_TEHORA ||
+        eventToEmit.type === InputEventType.BDIKA_TMEA ||
         eventToEmit.ona !== InputEventOna.NIGHT) {
       this.closeAddEvent.emit(eventToEmit);
       return;

@@ -112,13 +112,15 @@ export class CalComponent  {
     [InputEventType.VESET]: 'ווסת',
     [InputEventType.KETEM_TAME]: 'כתם טמא',
     [InputEventType.BDIKA_TMEA]: 'בדיקה טמאה',
+    [InputEventType.BDIKA_TEHORA]: 'בדיקה טהורה',
     [InputEventType.HEFSEK_TAHARA]: 'הפסק טהרה',
     [InputEventType.REIYA]: 'ראיה',
   };
 
   inputEventLabel(e: CachedInputEvent): string {
     const base = this.inputEventTypeLabels[e.type] ?? e.type;
-    if (e.type === InputEventType.VESET || e.type === InputEventType.KETEM_TAME || e.type === InputEventType.BDIKA_TMEA) {
+    if (e.type === InputEventType.VESET || e.type === InputEventType.KETEM_TAME ||
+        e.type === InputEventType.BDIKA_TMEA || e.type === InputEventType.BDIKA_TEHORA) {
       const ona = e.ona === 'layla' ? 'לילה' : 'יום';
       return `${base} (${ona})`;
     }
@@ -307,6 +309,7 @@ export class CalComponent  {
       'veset': this.isEventForOna(date, calEventDict, InputEventType.VESET, ona),
       'ketemTame': this.isEventForOna(date, calEventDict, InputEventType.KETEM_TAME, ona),
       'bdikaTmea': this.isEventForOna(date, calEventDict, InputEventType.BDIKA_TMEA, ona),
+      'bdikaTehora': this.isEventForOna(date, calEventDict, InputEventType.BDIKA_TEHORA, ona),
       'canStartHefsek': this.isEventForOna(date, calEventDict, DayType.CAN_START_CHECK_HEFSEK, ona),
       'sevenCleans': this.isEventForOna(date, calEventDict, DayType.SEVEN_CLEAN, ona),
       'mikvehDay': this.isEventForOna(date, calEventDict, DayType.MIKVEH_DAY, ona),

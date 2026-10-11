@@ -12,8 +12,10 @@ describe('CalAddEventComponent confirmation', () => {
   let alertCtrl: jasmine.SpyObj<AlertController>;
   let dismiss: (result: { role: string }) => void;
   let emit: jasmine.Spy;
+  let allowedCheckOnot: InputEventOna[];
 
   beforeEach(() => {
+    allowedCheckOnot = [];
     const dismissed = new Promise<{ role: string }>(resolve => dismiss = resolve);
     alertCtrl = jasmine.createSpyObj('AlertController', ['create']);
     alertCtrl.create.and.resolveTo({
@@ -24,7 +26,10 @@ describe('CalAddEventComponent confirmation', () => {
       imports: [CalAddEventComponent],
       providers: [
         { provide: AlertController, useValue: alertCtrl },
-        { provide: CalService, useValue: { canAddHefsekTahara: () => true } },
+        { provide: CalService, useValue: {
+          canAddHefsekTahara: () => true,
+          pureCheckOnot: () => allowedCheckOnot,
+        } },
         { provide: EventsService, useValue: {
           sunriseByDate: () => of('06:00'),
           sunsetByDate: () => of('18:00'),
@@ -69,12 +74,12 @@ describe('CalAddEventComponent confirmation', () => {
 
   for (const role of ['cancel', 'backdrop']) {
     it(`keeps the form and selections when dismissed with ${role}`, async () => {
-      component.eventTypeFC.setValue(InputEventType.BDIKA_TMEA);
+      component.eventTypeFC.setValue(InputEventType.KETEM_TAME);
       const saving = component.addEvent();
       dismiss({ role });
       await saving;
       expect(emit).not.toHaveBeenCalled();
-      expect(component.eventTypeFC.value).toBe(InputEventType.BDIKA_TMEA);
+      expect(component.eventTypeFC.value).toBe(InputEventType.KETEM_TAME);
       expect(component.eventOnaFC.value).toBe(InputEventOna.NIGHT);
       expect(component.isConfirming()).toBeFalse();
     });
@@ -126,4 +131,57 @@ describe('CalAddEventComponent confirmation', () => {
       simpleDate: new Date(2026, 9, 6),
     }));
   });
+
+  it('shows the pure-check option only on concern dates and restricts the onah to the concern', () => {
+    const fixture = TestBed.createComponent(CalAddEventComponent);
+    fixture.componentRef.setInput('hdate', component.hdate);
+    fixture.componentRef.setInput('selectedOna', InputEventOna.NIGHT);
+    fixture.detectChanges();
+    const radios = () => Array.from(fixture.nativeElement.querySelectorAll('ion-radio')) as HTMLIonRadioElement[];
+    expect(radios().some(radio => radio.value === InputEventType.BDIKA_TEHORA)).toBeFalse();
+    fixture.destroy();
+
+    allowedCheckOnot = [InputEventOna.DAY];
+    const concernFixture = TestBed.createComponent(CalAddEventComponent);
+    concernFixture.componentRef.setInput('hdate', component.hdate);
+    concernFixture.componentRef.setInput('selectedOna', InputEventOna.NIGHT);
+    concernFixture.detectChanges();
+    const pureRadio = Array.from(concernFixture.nativeElement.querySelectorAll('ion-radio'))
+      .find((radio: any) => radio.value === InputEventType.BDIKA_TEHORA);
+    expect(pureRadio).toBeDefined();
+    concernFixture.componentInstance.eventTypeFC.setValue(InputEventType.BDIKA_TEHORA);
+    concernFixture.detectChanges();
+    expect(concernFixture.componentInstance.eventOnaFC.value).toBe(InputEventOna.DAY);
+    const onahRadios = Array.from(concernFixture.nativeElement.querySelectorAll('ion-radio')) as HTMLIonRadioElement[];
+    expect(onahRadios.find(radio => radio.value === InputEventOna.NIGHT)!.disabled).toBeTrue();
+    expect(onahRadios.find(radio => radio.value === InputEventOna.DAY)!.disabled).toBeFalse();
+    expect(concernFixture.nativeElement.textContent).toContain('בחרי את עונת הבדיקה');
+    expect(concernFixture.nativeElement.querySelector('.save-btn').disabled).toBeFalse();
+  });
+
+  it('saves a pure day check with its own event type and selected onah', async () => {
+    allowedCheckOnot = [InputEventOna.DAY];
+    component.pureCheckOnot = allowedCheckOnot;
+    component.eventTypeFC.setValue(InputEventType.BDIKA_TEHORA);
+    await component.addEvent();
+    expect(alertCtrl.create).not.toHaveBeenCalled();
+    expect(emit).toHaveBeenCalledOnceWith(jasmine.objectContaining({
+      type: InputEventType.BDIKA_TEHORA,
+      ona: InputEventOna.DAY,
+    }));
+  });
+
+  for (const type of [InputEventType.BDIKA_TEHORA, InputEventType.BDIKA_TMEA]) {
+    it(`saves a night ${type} directly without confirmation`, async () => {
+      component.pureCheckOnot = [InputEventOna.NIGHT];
+      component.eventTypeFC.setValue(type);
+      await component.addEvent();
+      expect(alertCtrl.create).not.toHaveBeenCalled();
+      expect(emit).toHaveBeenCalledOnceWith(jasmine.objectContaining({
+        type,
+        ona: InputEventOna.NIGHT,
+      }));
+      expect(component.isConfirming()).toBeFalse();
+    });
+  }
 });

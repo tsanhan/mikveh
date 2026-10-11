@@ -62,6 +62,7 @@ ion-radio-group ::ng-deep {
 
     & .radio-group-wrapper {
         display: flex;
+        flex-wrap: wrap;
         width: 100%;
         gap: 0.4rem;
         justify-content: flex-start;

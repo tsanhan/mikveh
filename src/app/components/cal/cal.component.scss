@@ -423,6 +423,21 @@ ngb-datepicker-navigation {
       content: none;
     }
 
+    &.bdikaTehora::before {
+      content: '✓';
+      position: absolute;
+      left: 0.2rem;
+      top: 0.1rem;
+      color: #14532d;
+      background: white;
+      border-radius: 50%;
+      font-size: 0.65rem;
+      line-height: 0.85rem;
+      width: 0.85rem;
+      height: 0.85rem;
+      font-weight: 700;
+    }
+
     &.nidaDay {
       background: var(--blood);
     }
