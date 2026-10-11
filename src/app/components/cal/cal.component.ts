@@ -69,6 +69,7 @@ export class CalComponent  {
   selectedDayDetails: WritableSignal<string[]> = signal([]);
   selectedOnah: WritableSignal<InputEventOna> = signal(InputEventOna.DAY);
   nowHDate = new HDate(new Date());
+  visibleMonth: { year: number; month: number } = HDateToNgbDateStruct(this.nowHDate);
   selectedHebDate$ = new BehaviorSubject<NgbDateStruct>(HDateToNgbDateStruct(this.nowHDate));
   i18n = inject(NgbDatepickerI18n);
   calendar = inject(NgbCalendar);

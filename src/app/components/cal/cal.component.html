@@ -1,5 +1,6 @@
 @if(!showEventModal()){
 <ngb-datepicker class="hebrew rtl" #dp [ngModel]="selectedHebDate$ | async" [displayMonths]="1" [firstDayOfWeek]="7"
+  [startDate]="visibleMonth" (navigate)="visibleMonth = $event.next"
   [dayTemplate]="dt" [dayTemplateData]="dayTemplateData" [contentTemplate]="c" (ngModelChange)="onDateSelect($event)"
   navigation="none" [weekdays]="'short'">
 

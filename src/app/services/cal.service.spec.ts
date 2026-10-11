@@ -207,17 +207,44 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(cal.pureCheckOnot(target)).toContain(InputEventOna.DAY);
     });
 
-    it('keeps the period open beyond five days until a Hefsek is recorded', async () => {
+    for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+      it(`${ona}: keeps a sighting's own monthly concern without any Hefsek`, async () => {
+        const sighting = source(ona);
+        const target = sameHebrewDayInNextMonth(sighting.hebrewDate)!;
+        cache.setEvents([sighting]);
+        expect((await monthly(sighting)).length).toBe(1);
+        expect(cal.pureCheckOnot(target)).toContain(ona);
+      });
+    }
+
+    it('keeps a newer period open beyond five days until a Hefsek is recorded', async () => {
       const sighting = source(InputEventOna.DAY);
       const target = sameHebrewDayInNextMonth(sighting.hebrewDate)!;
-      cache.setEvents([sighting]);
+      const newSighting = atOffset(target, -15, InputEventType.VESET);
+      cache.setEvents([sighting, newSighting]);
       expect(await monthly(sighting)).toEqual([]);
       expect(cal.pureCheckOnot(target)).toEqual([]);
+      expect((await monthly(newSighting)).length).toBe(1);
 
-      const hefsek = atOffset(sighting.hebrewDate, 4, InputEventType.HEFSEK_TAHARA);
+      const hefsek = atOffset(newSighting.hebrewDate, 4, InputEventType.HEFSEK_TAHARA);
       cal.addEvent(hefsek);
       expect((await monthly(sighting)).length).toBe(1);
       cal.removeEvent(hefsek);
+      expect(await monthly(sighting)).toEqual([]);
+    });
+
+    it('keeps a monthly concern when a new sighting starts after its date', async () => {
+      const sighting = source(InputEventOna.DAY);
+      const target = sameHebrewDayInNextMonth(sighting.hebrewDate)!;
+      cache.setEvents([sighting, atOffset(target, 1, InputEventType.VESET)]);
+      expect((await monthly(sighting)).length).toBe(1);
+    });
+
+    it('keeps a historical monthly concern suppressed when another sighting is added after its date', async () => {
+      const sighting = source(InputEventOna.DAY);
+      const target = sameHebrewDayInNextMonth(sighting.hebrewDate)!;
+      cache.setEvents([sighting, atOffset(target, -2, InputEventType.KETEM_TAME),
+        atOffset(target, 2, InputEventType.VESET)]);
       expect(await monthly(sighting)).toEqual([]);
     });
 
@@ -314,7 +341,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     });
 
     it('rejects the other onah for a Sephardi concern and allows only day for Chabad average onah', () => {
-      const sighting = makeEvent('2025-01-01', InputEventType.VESET, InputEventOna.NIGHT);
+      const sighting = makeHebrewEvent(new HDate(10, months.NISAN, 5786), InputEventType.VESET, InputEventOna.NIGHT);
       const check = makeHebrewEvent(hebrewDateKeyToHDate(addHebrewDays(sighting.hebrewDate, 29)), InputEventType.BDIKA_TEHORA, InputEventOna.DAY);
       cache.setEvents([sighting]);
       for (const sephardi of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
@@ -1354,7 +1381,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
               expect(average[0].segments[0].hebrewDate).toEqual(addHebrewDays(sighting.hebrewDate, 29));
               const monthly = output.filter(e => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
                 .includes(e.outputEventType as DayType));
-              expect(monthly.map(e => e.sourceEventId)).toEqual(events.includes(replacement) ? [original.id, sighting.id] : []);
+              expect(monthly.map(e => e.sourceEventId)).toEqual(events.includes(replacement) ? [original.id, sighting.id] : [sighting.id]);
               if (events.includes(replacement)) {
                 expect(monthly.find(e => e.sourceEventId === sighting.id)!.segments[0].onah).toBe(ona);
               }
@@ -1399,7 +1426,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
           expect(beinonit[0].segments[0].hebrewDate).toEqual(addHebrewDays(bdika.hebrewDate, 29));
           expect(output.filter(e => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
             .includes(e.outputEventType as DayType)).map(e => e.sourceEventId))
-            .toEqual(selectedApproach.name === ApproachName.CHABAD ? [] : [bdika.id]);
+            .toEqual([bdika.id]);
 
           // Insert the same-day Hefsek before the Bdika to exercise canonical ordering.
           cache.setEvents([newHefsek, bdika, firstHefsek, veset]);
