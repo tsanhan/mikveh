@@ -292,6 +292,8 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
             const concern = output.find(event => event.outputEventType === type)!;
             expect(concern).withContext(type).toBeDefined();
             for (const segment of concern.segments) {
+              if (selectedApproach.name === ApproachName.CHABAD && type === DayType.ONA_BEINONIT &&
+                  segment.onah === InputEventOna.NIGHT) continue;
               const check = makeHebrewEvent(hebrewDateKeyToHDate(segment.hebrewDate), InputEventType.BDIKA_TEHORA, segment.onah);
               expect(cal.pureCheckOnot(segment.hebrewDate)).toContain(segment.onah);
               expect(cal.validateNewInputEvent(check)).withContext(type).toBeNull();
@@ -311,7 +313,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       }
     });
 
-    it('rejects the other onah for a Sephardi concern and enables both onot for Chabad average onah', () => {
+    it('rejects the other onah for a Sephardi concern and allows only day for Chabad average onah', () => {
       const sighting = makeEvent('2025-01-01', InputEventType.VESET, InputEventOna.NIGHT);
       const check = makeHebrewEvent(hebrewDateKeyToHDate(addHebrewDays(sighting.hebrewDate, 29)), InputEventType.BDIKA_TEHORA, InputEventOna.DAY);
       cache.setEvents([sighting]);
@@ -321,7 +323,38 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
         expect(cal.validateNewInputEvent(check)).not.toBeNull();
       }
       approach.approach$.next(APPROACH_CHABAD);
-      expect(cal.pureCheckOnot(check.hebrewDate)).toEqual([InputEventOna.NIGHT, InputEventOna.DAY]);
+      expect(cal.pureCheckOnot(check.hebrewDate)).toEqual([InputEventOna.DAY]);
+      expect(cal.validateNewInputEvent(check)).toBeNull();
+    });
+
+    for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+      it(`Chabad/${ona}: rejects a night pure check for average onah while keeping both concern segments`, async () => {
+        approach.approach$.next(APPROACH_CHABAD);
+        const sighting = makeHebrewEvent(new HDate(10, months.NISAN, 5786), InputEventType.VESET, ona);
+        cache.setEvents([sighting]);
+        const target = addHebrewDays(sighting.hebrewDate, 29);
+        const average = flatten(await firstValueFrom(cal.highlightedInputEvents$))
+          .find(event => event.outputEventType === DayType.ONA_BEINONIT)!;
+        expect(average.segments.map(segment => segment.onah)).toEqual([InputEventOna.NIGHT, InputEventOna.DAY]);
+        expect(cal.pureCheckOnot(target)).toEqual([InputEventOna.DAY]);
+        const nightCheck = makeHebrewEvent(hebrewDateKeyToHDate(target), InputEventType.BDIKA_TEHORA, InputEventOna.NIGHT);
+        const dayCheck = { ...nightCheck, ona: InputEventOna.DAY };
+        expect(cal.validateNewInputEvent(nightCheck)).not.toBeNull();
+        expect(cal.validateNewInputEvent(dayCheck)).toBeNull();
+      });
+    }
+
+    it('still allows a night check for a monthly concern that coincides with Chabad average onah', async () => {
+      approach.approach$.next(APPROACH_CHABAD);
+      const sighting = makeHebrewEvent(new HDate(10, months.IYYAR, 5786), InputEventType.VESET, InputEventOna.NIGHT);
+      const hefsek = makeHebrewEvent(hebrewDateKeyToHDate(addHebrewDays(sighting.hebrewDate, 4)), InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([sighting, hefsek]);
+      const target = addHebrewDays(sighting.hebrewDate, 29);
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(output.some(event => event.outputEventType === DayType.VESET_HACHODESH_NIGHT &&
+        event.segments.some(segment => hebrewDateKeyToHDate(segment.hebrewDate).abs() === hebrewDateKeyToHDate(target).abs()))).toBeTrue();
+      expect(cal.pureCheckOnot(target)).toEqual([InputEventOna.NIGHT, InputEventOna.DAY]);
+      const check = makeHebrewEvent(hebrewDateKeyToHDate(target), InputEventType.BDIKA_TEHORA, InputEventOna.NIGHT);
       expect(cal.validateNewInputEvent(check)).toBeNull();
     });
 

@@ -157,6 +157,9 @@ describe('CalAddEventComponent confirmation', () => {
     expect(onahRadios.find(radio => radio.value === InputEventOna.DAY)!.disabled).toBeFalse();
     expect(concernFixture.nativeElement.textContent).toContain('בחרי את עונת הבדיקה');
     expect(concernFixture.nativeElement.querySelector('.save-btn').disabled).toBeFalse();
+    concernFixture.componentInstance.eventTypeFC.setValue(InputEventType.VESET);
+    concernFixture.detectChanges();
+    expect(onahRadios.find(radio => radio.value === InputEventOna.NIGHT)!.disabled).toBeFalse();
   });
 
   it('saves a pure day check with its own event type and selected onah', async () => {

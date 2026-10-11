@@ -254,12 +254,15 @@ export class CalService {
       DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT,
       DayType.ONA_BEINONIT, DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT,
     ];
-    const concerns = this.calculateCalendarEvents(
-      this.cache.getInputEvents(), this.approach.approach$.getValue(),
-    );
+    const approach = this.approach.approach$.getValue();
+    const concerns = this.calculateCalendarEvents(this.cache.getInputEvents(), approach);
     const onot = new Set(concerns
       .filter(event => concernTypes.includes(event.outputEventType))
-      .flatMap(event => event.segments)
+      // Chabad observes the full average onah, but its check is only by day.
+      .flatMap(event => event.segments.filter(segment =>
+        approach.name !== ApproachName.CHABAD ||
+        event.outputEventType !== DayType.ONA_BEINONIT ||
+        segment.onah === InputEventOna.DAY))
       .filter(segment => this.compareHebrewDates(segment.hebrewDate, hebrewDate) === 0)
       .map(segment => segment.onah));
     return [InputEventOna.NIGHT, InputEventOna.DAY].filter(ona => onot.has(ona));
