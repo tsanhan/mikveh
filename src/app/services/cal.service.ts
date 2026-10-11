@@ -9,7 +9,6 @@ import { addHebrewDays, addHebrewMonths, HDateToNgbDateStruct, hDateToHebrewDate
 import { get, set } from 'lodash';
 import { HDate } from '@hebcal/core';
 
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
 /** Practical calendar-rendering horizon for an active monthly fixed veset. */
 const FIXED_VESET_FUTURE_MONTHS = 120;
 const nidaDaysFor = (approach: Approach) =>
@@ -249,7 +248,8 @@ export class CalService {
     if (!latestSighting) return false;
     if (this.hasHefsekOnOrAfter(latestSighting)) return false;
 
-    return this.daysSince(latestSighting, t) >= this.minHefsekDiff(latestSighting, approach);
+    return this.compareHebrewDates(hDateToHebrewDateKey(new HDate(date)), latestSighting.hebrewDate) >=
+      this.minHefsekDiff(latestSighting, approach);
   }
 
   /** Uses the same final concerns as the calendar, including replaced/suppressed concerns. */
@@ -305,7 +305,7 @@ export class CalService {
     }
 
     const minNidaDays = nidaDaysForInputEvent(lastVesetOrKetem, approach);
-    const diffDays = this.daysSince(lastVesetOrKetem, newDate);
+    const diffDays = this.compareHebrewDates(event.hebrewDate, lastVesetOrKetem.hebrewDate);
     const minDiff = this.minHefsekDiff(lastVesetOrKetem, approach);
     if (diffDays < minDiff) {
       const missing = minDiff - diffDays;
@@ -331,12 +331,6 @@ export class CalService {
     return this.cache.getInputEvents().some((event: CachedInputEvent) =>
       event.type === InputEventType.HEFSEK_TAHARA &&
       this.startOfDayMs(event.simpleDate) >= sightingDate,
-    );
-  }
-
-  private daysSince(event: CachedInputEvent, dateMs: number): number {
-    return Math.floor(
-      (dateMs - this.startOfDayMs(event.simpleDate)) / MS_PER_DAY,
     );
   }
 
@@ -516,8 +510,8 @@ export class CalService {
     const chainLastDate = new Date(chainLast.simpleDate);
     // Niddah days run from the first sighting up to (chainLast + forNum - 1),
     // because the sighting day itself counts as day 1 of niddah.
-    const totalNidaDays =
-      Math.floor((chainLastDate.getTime() - vesetSimpleDate.getTime()) / MS_PER_DAY) + forNum;
+    // Count Hebrew calendar dates, including when the chain crosses a clock change.
+    const totalNidaDays = this.compareHebrewDates(chainLast.hebrewDate, sightingEvent.hebrewDate) + forNum;
 
     const firstNidaDay: OutputEvent = {
       id: this.concernId(sightingEvent.type, sightingEvent, simpleDateToHebrew(vesetSimpleDate)),
@@ -909,9 +903,9 @@ export class CalService {
     // sighting's concerns; their short gap does not establish a haflaga.
     // Keep the new sighting as the starting point for the next cycle.
     if (this.cleanCountRestarts(events).has(current.id)) return [];
-    const diffDays = this.daysSince(previous, this.startOfDayMs(current.simpleDate));
+    const diffDays = this.compareHebrewDates(current.hebrewDate, previous.hebrewDate);
     const intervalDays = diffDays + 1;
-    const targetSimpleDate = this.addDays(current.simpleDate, diffDays);
+    const targetSimpleDate = hebrewDateKeyToHDate(addHebrewDays(current.hebrewDate, diffDays)).greg();
 
     return [
       this.haflagaEvent(
@@ -972,12 +966,6 @@ export class CalService {
 
   private onaLabel(ona: InputEventOna): string {
     return ona === InputEventOna.LAYLA ? 'לילה' : 'יום';
-  }
-
-  private addDays(date: Date, days: number): Date {
-    const d = new Date(date);
-    d.setDate(d.getDate() + days);
-    return d;
   }
 
   private isSightingEvent(event: CachedInputEvent): boolean {

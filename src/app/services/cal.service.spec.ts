@@ -134,6 +134,67 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     cal = TestBed.inject(CalService);
   });
 
+  describe('calendar days across daylight-saving transitions', () => {
+    const transitions = [
+      { name: 'spring', start: new Date(2026, 2, 25), first: new Date(2026, 2, 1), second: new Date(2026, 3, 1) },
+      { name: 'autumn', start: new Date(2026, 9, 23), first: new Date(2026, 9, 1), second: new Date(2026, 10, 1) },
+    ];
+    const eventAt = (date: Date, type: InputEventType, offset = 0, ona = InputEventOna.DAY) =>
+      makeHebrewEvent(new HDate(date).add(offset, 'd'), type, ona);
+
+    for (const transition of transitions) {
+      for (const selectedApproach of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+        for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+          it(`${transition.name}/${selectedApproach.name}/${ona}: preserves the inclusive Haflaga interval and target date`, async () => {
+            approach.approach$.next(selectedApproach);
+            const first = eventAt(transition.first, InputEventType.VESET);
+            const second = eventAt(transition.second, InputEventType.VESET, 0, ona);
+            cache.setEvents([first, second]);
+
+            const concerns = flatten(await firstValueFrom(cal.highlightedInputEvents$))
+              .filter(event => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT].includes(event.outputEventType as DayType));
+            expect(concerns.length).toBe(1);
+            expect(concerns[0].segments).toEqual([{
+              hebrewDate: addHebrewDays(second.hebrewDate, 31), onah: ona,
+            }]);
+            expect(concerns[0].details).toEqual([
+              `חשש וסת הפלגה - ${ona === InputEventOna.DAY ? 'יום' : 'לילה'} (32 ימים)`,
+            ]);
+          });
+        }
+      }
+
+      for (const selectedApproach of [APPROACH_CHABAD, APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+        it(`${transition.name}/${selectedApproach.name}: permits Hefsek exactly on the eligible calendar day`, () => {
+          approach.approach$.next(selectedApproach);
+          cache.setEvents([eventAt(transition.start, InputEventType.VESET)]);
+          const minimumOffset = selectedApproach.name === ApproachName.SEPHARDI_OVADIA ? 3 : 4;
+          const early = eventAt(transition.start, InputEventType.HEFSEK_TAHARA, minimumOffset - 1);
+          const eligible = eventAt(transition.start, InputEventType.HEFSEK_TAHARA, minimumOffset);
+
+          expect(cal.canAddHefsekTahara(early.simpleDate)).toBeFalse();
+          expect(cal.validateNewInputEvent(early)).not.toBeNull();
+          expect(cal.canAddHefsekTahara(eligible.simpleDate)).toBeTrue();
+          expect(cal.validateNewInputEvent(eligible)).toBeNull();
+        });
+      }
+
+      it(`${transition.name}: preserves every day of a Chabad niddah chain extended across the clock change`, async () => {
+        const first = eventAt(transition.start, InputEventType.VESET);
+        const later = eventAt(transition.start, InputEventType.BDIKA_TMEA, 3);
+        cache.setEvents([first, later]);
+
+        const events = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+        const niddahDates = events
+          .filter(event => event.outputEventType === InputEventType.VESET || event.outputEventType === DayType.MAHZOR)
+          .map(event => event.segments[0].hebrewDate);
+        expect(niddahDates).toEqual(Array.from({ length: 8 }, (_, offset) => addHebrewDays(first.hebrewDate, offset)));
+        const hefsek = events.find(event => event.outputEventType === DayType.CAN_START_CHECK_HEFSEK)!;
+        expect(hefsek.segments[0].hebrewDate).toEqual(addHebrewDays(first.hebrewDate, 7));
+      });
+    }
+  });
+
   describe('Chabad monthly concerns during niddah', () => {
     const source = (ona: InputEventOna) => makeHebrewEvent(
       new HDate(10, months.NISAN, 5786), InputEventType.VESET, ona,
