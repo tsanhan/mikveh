@@ -1882,6 +1882,94 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       expect(restored.consecutiveMisses).toBe(0);
     });
 
+    for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+      it(`Chabad/${ona}: clears accumulated longer haflagot when a dormant fixed veset returns`, async () => {
+        const sightings = monthlySightings([5, 5, 5, 25, 23, 19, 5, 4], months.TISHREI, 5787, ona);
+        const withHefsek = (recorded: CachedInputEvent[]) => recorded.flatMap(sighting => [
+          sighting,
+          makeHebrewEvent(hebrewDateKeyToHDate(addHebrewDays(sighting.hebrewDate, 4)),
+            InputEventType.HEFSEK_TAHARA),
+        ]);
+        const haflagot = (output: OutputEvent[]) => output.filter(event =>
+          [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT].includes(event.outputEventType as DayType));
+        const dormantEvents = withHefsek(sightings.slice(0, 6));
+        cache.setEvents(dormantEvents);
+        const dormantOutput = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+        expect(cal.calculateVesetPatternState(dormantEvents, APPROACH_CHABAD,
+          sightings[5].hebrewDate).fixed?.status).toBe('dormant');
+        expect(haflagot(dormantOutput).length).toBe(3);
+        expect(dormantOutput.some(event => event.sourceEventId === sightings[5].id &&
+          event.outputEventType === DayType.ONA_BEINONIT)).toBeTrue();
+
+        // Restoration clears the intervals immediately, and a later Hefsek
+        // must not bring them back under a new anchor.
+        for (const restoredEvents of [
+          [...dormantEvents, sightings[6]],
+          withHefsek(sightings.slice(0, 7)),
+        ]) {
+          cache.setEvents([...restoredEvents].reverse());
+          const restoredOutput = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+          expect(cal.calculateVesetPatternState(restoredEvents, APPROACH_CHABAD,
+            sightings[6].hebrewDate).fixed?.status).toBe('active');
+          expect(haflagot(restoredOutput)).toEqual([]);
+          expect(restoredOutput.some(event => event.outputEventType === DayType.VESET_KAVUA &&
+            event.sourceEventId === sightings[6].id)).toBeTrue();
+          expect(restoredOutput.some(event => event.sourceEventId === sightings[6].id &&
+            event.outputEventType === DayType.ONA_BEINONIT)).toBeFalse();
+        }
+
+        // A subsequent deviation creates only its own interval.
+        cache.setEvents(withHefsek(sightings));
+        const laterHaflagot = haflagot(flatten(await firstValueFrom(cal.highlightedInputEvents$)));
+        expect(laterHaflagot.length).toBe(1);
+
+        // Removing the restoring sighting recalculates the original history.
+        cache.setEvents([...dormantEvents, sightings[6]]);
+        cal.removeEvent(sightings[6]);
+        expect(haflagot(flatten(await firstValueFrom(cal.highlightedInputEvents$))))
+          .toEqual(haflagot(dormantOutput));
+      });
+    }
+
+    for (const selectedApproach of [APPROACH_CHABAD, APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+      it(`${selectedApproach.name}: cancels haflagot on establishment and restoration, but not on a wrong-onah sighting`, async () => {
+        approach.approach$.next(selectedApproach);
+        const sightings = monthlySightings([5, 5, 5, 25, 23, 19, 5]);
+        const withHefsek = (recorded: CachedInputEvent[]) => recorded.flatMap(sighting => [
+          sighting,
+          makeHebrewEvent(hebrewDateKeyToHDate(addHebrewDays(sighting.hebrewDate, 4)),
+            InputEventType.HEFSEK_TAHARA),
+        ]);
+        const hasHaflaga = async (recorded: CachedInputEvent[]) => {
+          cache.setEvents(withHefsek(recorded));
+          return flatten(await firstValueFrom(cal.highlightedInputEvents$)).some(event =>
+            [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT].includes(event.outputEventType as DayType));
+        };
+        expect(await hasHaflaga(sightings.slice(0, 2))).toBeTrue();
+        expect(await hasHaflaga(sightings.slice(0, 3))).toBeFalse();
+        expect(await hasHaflaga([
+          ...sightings.slice(0, 6),
+          makeHebrewEvent(hebrewDateKeyToHDate(sightings[6].hebrewDate),
+            InputEventType.VESET, InputEventOna.NIGHT),
+        ])).toBeTrue();
+        expect(await hasHaflaga(sightings)).toBeFalse();
+      });
+    }
+
+    it('requires three occurrences to reestablish an old fixed veset after a different one replaces it', () => {
+      const sightings = monthlySightings([5, 5, 5, 10, 10, 10, 5, 5, 5]);
+      for (const count of [7, 8]) {
+        const fixed = cal.calculateVesetPatternState(sightings.slice(0, count),
+          APPROACH_CHABAD, sightings[count - 1].hebrewDate).fixed!;
+        expect(fixed.establishedByEventId).toBe(sightings[5].id);
+        expect(fixed.nextExpected.day).toBe(10);
+      }
+      const reestablished = cal.calculateVesetPatternState(sightings,
+        APPROACH_CHABAD, sightings[8].hebrewDate).fixed!;
+      expect(reestablished.establishedByEventId).toBe(sightings[8].id);
+      expect(reestablished.nextExpected.day).toBe(5);
+    });
+
     it('suppresses Onah Beinonit while fixed but keeps Veset HaChodesh from an off-pattern sighting', async () => {
       const sightings = monthlySightings([1, 1, 1]);
       const offPatternDate = { ...addHebrewMonths(sightings[2].hebrewDate, 1), day: 2 };

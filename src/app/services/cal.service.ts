@@ -651,7 +651,11 @@ export class CalService {
     events: CachedInputEvent[],
     asOf: HebrewDateKey,
     includeConcerns: boolean,
-  ): { pattern: FixedVesetPattern | null; concerns: OutputEvent[] } {
+  ): {
+    pattern: FixedVesetPattern | null;
+    concerns: OutputEvent[];
+    lastFixedSighting?: CachedInputEvent;
+  } {
     const sightings = events
       .filter(event => this.createsHashashot(event))
       .filter(event => this.compareHebrewDates(event.hebrewDate, asOf) <= 0)
@@ -736,7 +740,7 @@ export class CalService {
       }
     }
 
-    return { pattern, concerns };
+    return { pattern, concerns, lastFixedSighting: anchor };
   }
 
   /**
@@ -846,9 +850,18 @@ export class CalService {
   }
 
   private getHaflagaHashashot(events: CachedInputEvent[], approach: Approach): OutputEvent[] {
+    const { lastFixedSighting } = this.deriveFixedVeset(
+      events, this.defaultPatternEvaluationDate(events), false,
+    );
+    // Establishing or returning to the fixed veset cancels accumulated
+    // haflagot. Keep that boundary even if later deviations make it dormant;
+    // only intervals starting with this sighting can create new concerns.
+    const sinceFixedSighting = lastFixedSighting
+      ? events.slice(events.indexOf(lastFixedSighting))
+      : events;
     return approach.name === ApproachName.CHABAD
-      ? this.getChabadHaflagaHashashot(events)
-      : this.getSephardiHaflagaHashashot(events);
+      ? this.getChabadHaflagaHashashot(sinceFixedSighting)
+      : this.getSephardiHaflagaHashashot(sinceFixedSighting);
   }
 
   private getChabadHaflagaHashashot(events: CachedInputEvent[]): OutputEvent[] {
