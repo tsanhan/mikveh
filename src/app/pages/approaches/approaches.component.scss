@@ -1,21 +1,24 @@
-
-
-
-ion-content::part(scroll)::before{
-  // background: linear-gradient(0turn, #EAA7A7, #ffffff);
-  bottom: 1%;
-
-}
 ion-content {
   --background: var(--app);
 }
-// ion-footer::part(background) {
-//   background: #b3372a;
-// }
 
-ion-footer {
-  height: 11vh;
+.topics-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }
 
+app-day-times-header {
+  flex: 0 0 auto;
+}
 
+app-main-swiper {
+  flex: 1 1 0;
+  min-height: 0;
+}
 
+ion-footer {
+  height: clamp(72px, 11vh, 96px);
+  height: clamp(72px, 11dvh, 96px);
+}

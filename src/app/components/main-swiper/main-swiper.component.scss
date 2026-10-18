@@ -1,125 +1,116 @@
-
 :host {
   display: block;
+  min-height: 0;
   background: var(--app);
-}
-
-
-.swiper-wrapper {
-  display: inherit;
-}
-
-swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: fit-content;
-  background: var(--app);
-
-}
-
-swiper-slide img {
-  // width: 100%;
-  // height: 100%;
-  object-fit: cover;
-  width: -webkit-fill-available;
 }
 
 swiper-container {
+  display: block;
   width: 100%;
-  // height: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  display: inherit;
-  background: var(--app);
-  --swiper-navigation-color: #fff;
-  --swiper-pagination-color: #fff
+  height: 100%;
 }
 
 swiper-slide {
-  background-size: cover;
-  background-position: center;
-  max-height: 72vh;
+  height: 100%;
+  min-height: 0;
+  text-align: center;
+  background: var(--app);
 }
-
-.main-swiper {
-  // height: 100%;
-  width: 100%;
-}
-
-.header {
-  & .title {
-    text-align: center;
-    font-family: 'Frank Ruhl Libre';
-    font-weight: 400;
-  }
-
-  & .subtitle {
-    text-align: center;
-    font-family: 'Narkis Block MF Regular A';
-    font-weight: 400;
-  }
-}
-
-ion-avatar {
-  border: black 1px solid;
-  margin: 0 auto;
-}
-
-
 
 ion-card {
-  --background: var(--app);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
   margin: 0;
-  box-shadow: 0 0 0 0 !important;
-  -webkit-box-shadow: 0 0 0 0 !important;
-
+  box-shadow: none;
+  --background: var(--app);
 }
 
-ion-card-title {}
+ion-card > .img {
+  flex: 0 0 auto;
+  width: 100%;
+  height: clamp(64px, 18vh, 150px);
+  height: clamp(64px, 18dvh, 150px);
+  object-fit: cover;
+}
 
-ion-card-subtitle {
-  font-family: 'VarelaRound';
-  text-align: center;
-  font-size: 0.75rem;
-  color: black;
+.card-header {
+  flex: 0 0 auto;
+  padding: 0.5rem 1rem;
 }
 
 .content {
-  overflow: scroll;
-  // height: -webkit-fill-available;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  height: 45vh;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior-y: contain;
+  padding: 0 1rem 1rem;
   font-family: 'VarelaRound';
   font-size: 1rem;
-  color: black;
-  padding: 0 1.5rem;
+  color: #111;
   background: var(--app);
 
-
-  /* Firefox */
-  &::-webkit-scrollbar {
-    display: none;
+  > div + div {
+    margin-top: 1rem;
   }
 
-  & div:not(:first-child) {
-    margin: 1rem auto;
+  img {
+    max-width: 100%;
+    object-fit: contain;
   }
 }
 
-ion-img::part(image) {
-  width: -webkit-fill-available;
+.topic-table-wrapper {
+  margin-block: 1rem;
 }
 
-ion-col {
+.topic-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  color: #111;
+  font-size: 0.875rem;
+  line-height: 1.6;
 
-  border: solid 1px var(--app);
-  background-color: var(--app);
-  color: var(--app);
-  text-align: center;
+  th,
+  td {
+    padding: 0.5rem;
+    border: 1px solid #a77a7a;
+    vertical-align: top;
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+
+  thead th {
+    background: var(--buttons);
+    text-align: center;
+  }
+
+  th:first-child {
+    width: 38%;
+  }
+
+  tbody th {
+    font-weight: normal;
+  }
+
+  tbody tr:nth-child(even) {
+    background: rgb(255 255 255 / 25%);
+  }
+}
+
+@media (max-height: 500px) {
+  ion-card > .img {
+    height: 40px;
+  }
+
+  .card-header {
+    padding-block: 0.25rem;
+  }
+
+  .card-title {
+    font-size: 1.5rem !important;
+    line-height: 1.2;
+  }
 }

@@ -17,7 +17,6 @@ import {
   document,
   globe,
 } from 'ionicons/icons';
-import { IonAvatar, IonText, IonImg, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 import { CacheService } from 'src/app/services/cache.service';
 import { withLatestFrom } from 'rxjs';
 import { ApproachService } from 'src/app/services/approach.service';
@@ -25,11 +24,7 @@ import { TopicNavigationService } from 'src/app/services/topic-navigation.servic
 
 @Component({
     selector: 'app-main-swiper',
-    imports: [CommonModule, 
-      // IonAvatar, 
-      // IonText,
-      //  IonImg,
-        IonGrid, IonCol, IonRow, AsyncPipe],
+    imports: [CommonModule, AsyncPipe],
     templateUrl: './main-swiper.component.html',
     styleUrl: './main-swiper.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
