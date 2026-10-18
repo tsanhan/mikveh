@@ -80,6 +80,25 @@ Main pieces of code:
 
 ---
 
+## Reviewed Hebrew content
+
+The [Google Docs review folder](https://drive.google.com/drive/folders/1IgZlGHdgqoOng1TFGq9wnfzl1t40WoB8) is the source of truth for the app's explanatory content. The rabbi edits these documents first; update the app from those edits. Do not change the review documents to match older app text.
+
+The five documents cover Chabad, Rav Ovadia Yosef, Rav Mordechai Eliyahu, the introduction and stories. Their latest imported snapshots are in `content/google-docs/`, including document URLs and revision IDs. These are local snapshots, not a live connection to Drive. Refresh all five from the connected Google Docs reader before importing a new review. Preserve paragraph text, paragraph-wide bold flags, named styles, native list definitions and bullets, and every table row/cell in the snapshot structure. A paragraph is marked bold when all its nonempty text runs are bold in the source.
+
+Import the refreshed snapshots and check for differences with:
+
+```bash
+python3 scripts/sync_reviewed_topics.py --write
+python3 scripts/sync_reviewed_topics.py
+```
+
+The importer keeps the source wording, punctuation, list numbers and table markers. It normalizes whitespace for mobile display and skips empty layout paragraphs. It replaces all explanatory content, including shared introduction/stories, so omissions, duplicates and old app-only paragraphs cannot survive an import. Calendar calculations are maintained separately.
+
+After importing, build and verify the app, then rebuild the Android APK. A previously generated APK still contains the content from its own build.
+
+---
+
 ## Running the app yourself
 
 You need [Node.js](https://nodejs.org/) (v18+) installed.

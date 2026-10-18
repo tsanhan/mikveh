@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-18",
+  "source_of_truth": "https://drive.google.com/drive/folders/1IgZlGHdgqoOng1TFGq9wnfzl1t40WoB8",
+  "normalization": "Whitespace only; punctuation, spelling, numbering, and native table markers preserved. Empty layout paragraphs skipped.",
+  "paragraphs_verified": 929,
+  "table_cells_verified": 594,
+  "tables_verified": 6,
+  "topic_approach_sections_verified": 30,
+  "independent_native_source_comparison": "passed",
+  "rendered_mobile_dom_comparison": "passed for all three approaches, introduction and stories",
+  "layout_checks": {
+    "cases": 150,
+    "footerClickWorked": true,
+    "errors": [],
+    "missingBlocks": [],
+    "missingTables": [],
+    "horizontalOverflow": [],
+    "overlapFooter": [],
+    "unreachableEnd": [],
+    "brokenImages": [],
+    "tableCounts": [
+      {
+        "approach": "chabad",
+        "tables": [
+          {
+            "rows": 46,
+            "columns": 3,
+            "invisibleCells": 0,
+            "cells": 138
+          },
+          {
+            "rows": 27,
+            "columns": 3,
+            "invisibleCells": 0,
+            "cells": 81
+          }
+        ]
+      },
+      {
+        "approach": "sfarad_ovadia",
+        "tables": [
+          {
+            "rows": 38,
+            "columns": 3,
+            "invisibleCells": 0,
+            "cells": 114
+          },
+          {
+            "rows": 21,
+            "columns": 3,
+            "invisibleCells": 0,
+            "cells": 63
+          }
+        ]
+      },
+      {
+        "approach": "sfarad_mordechai_eliyahu",
+        "tables": [
+          {
+            "rows": 40,
+            "columns": 3,
+            "invisibleCells": 0,
+            "cells": 120
+          },
+          {
+            "rows": 26,
+            "columns": 3,
+            "invisibleCells": 0,
+            "cells": 78
+          }
+        ]
+      }
+    ]
+  },
+  "calendar_logic_changed": false,
+  "apk": "dist/android/mikveh-2026-10-18-docs-sync-debug.apk",
+  "source_revisions": {
+    "intro": {
+      "document_id": "18UV4QV1m7r9C92y9DLx3ybnimOdvkfUG3WgXZSVhaWQ",
+      "url": "https://docs.google.com/document/d/18UV4QV1m7r9C92y9DLx3ybnimOdvkfUG3WgXZSVhaWQ",
+      "revision": "AHj4eMQSVoNulCWDxId7mUwVDlknhZROHjs7SII4bWl9qf8423cqR5O-hzjlxLqUnJfidoQMDNQSRA8GTgYH9u38A8tWz_B44Ljm31U5UV8"
+    },
+    "ovadia": {
+      "document_id": "1Pm1YcFoWM2kwQFokxf5zFrKVmQ7zEkPRzzZcxN_zpWY",
+      "url": "https://docs.google.com/document/d/1Pm1YcFoWM2kwQFokxf5zFrKVmQ7zEkPRzzZcxN_zpWY",
+      "revision": "AHj4eMS6g8ekaft5t8xmgOzNS1-hnWSw8RwI22_4xIwyVAVE3MHADUCXaWCegbIkASQUS9QckGFEIOg2a_JeH1ZmS8JJjJAfVea5X6SOREA"
+    },
+    "eliyahu": {
+      "document_id": "1cUxSOqSEbyaCQO7LrdCQrjLLKGgbLyKu4C4HNcxkg2w",
+      "url": "https://docs.google.com/document/d/1cUxSOqSEbyaCQO7LrdCQrjLLKGgbLyKu4C4HNcxkg2w",
+      "revision": "AHj4eMSkYv9SCxQNhbycX2AtVtp92-02kKfoheQXsuWPbUUnZFKI_fjQgBYnHqbLvlKAWApPA4A3aN5pGnyodIzUdw2igmjcfaExojd4-q0"
+    },
+    "stories": {
+      "document_id": "1BCZNWo0a9eHmcMnEuyolRbMRCuqD11L88HbX4VF68uY",
+      "url": "https://docs.google.com/document/d/1BCZNWo0a9eHmcMnEuyolRbMRCuqD11L88HbX4VF68uY",
+      "revision": "AHj4eMSE4GUlDQ3EJKvNkcV0tItuX3WcK2K71UgdYrflqebaklI15EnkpZzTJfqQn3__VlCMCJuY1iAq8bOwHM6wk59HRrxWhZugQiu0xCA"
+    },
+    "chabad": {
+      "document_id": "1fneyxtY3idG3WAH-ytQDEuJde3oycMvQgyFyJ1XiQUU",
+      "url": "https://docs.google.com/document/d/1fneyxtY3idG3WAH-ytQDEuJde3oycMvQgyFyJ1XiQUU",
+      "revision": "AHj4eMSuTa65IKvBCrxTWh0bUPzaqa_y7eIb64JaH60WeeB6JYENUyei6KCdOfCfJdNQSbVQrPcIW2eS9jzlKYwqkj5SbA5gKPMynH7surU"
+    }
+  }
+}

@@ -1,0 +1,5604 @@
+{
+  "id": "1cUxSOqSEbyaCQO7LrdCQrjLLKGgbLyKu4C4HNcxkg2w",
+  "title": "דיני טהרה הרב מרדכי אליהו",
+  "url": "https://docs.google.com/document/d/1cUxSOqSEbyaCQO7LrdCQrjLLKGgbLyKu4C4HNcxkg2w",
+  "revision": "AHj4eMSkYv9SCxQNhbycX2AtVtp92-02kKfoheQXsuWPbUUnZFKI_fjQgBYnHqbLvlKAWApPA4A3aN5pGnyodIzUdw2igmjcfaExojd4-q0",
+  "tabs": [
+    {
+      "id": "t.0",
+      "lists": {
+        "kix.list.1": {
+          "listProperties": {
+            "nestingLevels": [
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%0.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%1.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%2.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%3.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%4.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%5.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%6.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%7.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%8.",
+                "startNumber": 1
+              }
+            ]
+          }
+        },
+        "kix.list.2": {
+          "listProperties": {
+            "nestingLevels": [
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%0.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%1.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%2.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%3.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%4.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%5.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%6.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%7.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%8.",
+                "startNumber": 1
+              }
+            ]
+          }
+        },
+        "kix.list.3": {
+          "listProperties": {
+            "nestingLevels": [
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%0.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%1.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%2.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%3.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%4.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%5.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "DECIMAL",
+                "glyphFormat": "%6.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ALPHA",
+                "glyphFormat": "%7.",
+                "startNumber": 1
+              },
+              {
+                "glyphType": "ROMAN",
+                "glyphFormat": "%8.",
+                "startNumber": 1
+              }
+            ]
+          }
+        }
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "דיני טהרה \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הרב מרדכי אליהו\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הדינים הינם ע\"פ פסקי הרב מרן הראשון לציון הרב מרדכי אליהו \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "(בספרו דרכי טהרה השלם).\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חלוקת נושאים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כיצד אשה נאסרת\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.2"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "דיני הרחקות\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.2"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "תהליך הטהרה\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.2"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ימי עונות החשש\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.2"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "דיני מעוברת ויולדת\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.2"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כיצד אשה נאסרת?\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "איסור נדה חל על כל אשה, פנויה, נשואה, מעוברת ומניקה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כל מראה אדום (או נוטה לאדום) או שחור - אוסר.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "יתכן וקיים פצע או עור מגורה בנרתיק או בצוואר הרחם וניתן לתלות בו את מראה הדם שנמצא.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "נכון להיות בקשר עם רב מורה הוראה, ולא לפסוק על דעת עצמך, לא להקל ולא להחמיר!\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "שני אופנים נוספים להיטמא שלא נדונו כאן הן דם בתולים ודם לידה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "קבלת ווסת\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כל אשה המקבלת את ווסתה, הינה טמאה ואסורה על בעלה. היות וכיום נשים אינן בקיאות בהרגשה המלווה את יציאת הדם מהרחם, לכן כאשר יש חשש שהרגישה את ההרגשות האוסרות אותה, תעשה מיד בדיקה, ותייעץ עם רב מורה הוראה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ההרגשות האוסרות הן\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\"פתיחת המקור\"- פתיחת צוואר הרחם.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\"שמזדעזע גופה\"- כמין צמרמורת.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בדיקות וקינוח\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם מצאת מראה דם על עד הבדיקה, אפילו נקודה אחת קטנה, הנך אסורה על בעלך מין התורה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "במקרה של ספק או אם לדעתך יש במה לתלות את המראה, כגון: חשש לפצע בנרתיק או אם ידייך היו מלוכלכות וכד', שאלי רב מורה הוראה מה דינך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם מצאת מראה דם על קינוח כגון על טישו או מגבון אחרי עשיית צרכים, דינו ככתם.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " דיני כתמים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חכמים גזרו שבמידה ונמצא כתם האוסר על גופך, בגדיך, סדינך וכדו', גם אם לא הרגשת ביציאת הדם, את אסורה. עלייך לעבור את כל תהליך הטהרה, הכולל:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "להמתין 5 ימים,\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לעשות הפסק טהרה\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לספור שבעה נקיים, \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ולטבול במקווה כשרה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם ראית כתם, הוא לא יכנס לחישובי הווסתות.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "במידה ולדעתך 'יש במה לתלות' את המצאות הכתם, לדוגמא, שיש לך פצע על הגוף, או שהתעסקת בדברים אדומים (סלק, צבע אדום וכד'), פני לרב מורה הוראה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "גם אם בדקת את עצמך לאחר שנמצא הכתם, והבדיקה היתה טהורה, את לא טהורה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ישנם שלושה פרמטרים נוספים בקשר לכתם חוץ מצבע, והם:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "גודל הכתם - כתם מטמא אך ורק מגודל של 'כגריס ועוד', שיעור זה קרוב לגודלו של מטבע 10 של אגורות. אם ברור לך שהכתם שמצאת קטן מהגודל הנ\"ל, את טהורה. במידה ואינך בטוחה בקשר לגודל הכתם, התייעצי עם רב מורה הוראה. (גם במקרה שהכתם אינו עגול אלא ארוך/מרובע וכו' וקשה לך לאמוד את גודלו).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אין הבדל בין כתם הנמצא על בגד לבין הנמצא על גופך (ולא על בגד או סדין). יש מחמירים לצרף כתמים קטנים מגריס שנמצאו על הגוף לכדי גודל של גריס ועוד. אמנם התייעצי עם רב מורה הוראה. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "צבע הבגד - הכתם אוסר רק אם נמצא על בגד לבן. אך אם נמצא על בגד צבעוני ואפילו על צבע בהיר ממש, את טהורה. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לכן, ע\"פ עצת חז\"ל, יש ללבוש לבנים צבעונים בימים בהם את טהורה, כדי לא להיכנס לשאלות בקשר לכתמים.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כתם שנמצא על בגד שחלקו צבעוני וחלקו לבן, ורק בצירוף שניהם מגיע לגודל של 'גריס ועוד', טהור. אמנם יש להחמיר אף במקרה שהכתם על החלק הלבן מגיע לגודל המטמא, אך עובר ומפריד בין שני חלקי הלבן, חלק צבוע (בגד מנומר).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "סוג הבד - כתם אוסר רק כאשר נמצא על גבי דבר 'המקבל טומאה'. נא לפנות לרב לבירור, בעת צורך, אם לא ברור האם הכתם נמצא על דבר המקבל טומאה או לא. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "פדים מקבלים טומאה ולכן כתם הנמצא עליהם, מטמא. \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בדיקות רפואיות:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם רופא בדק אותך בזמן שאת טהורה, הבדיקה יכולה לטמא אותך. הדבר תלוי האם במהלך הבדיקה הרחם נפתח יותר ממצבו הרגיל והטבעי.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "על כן, בכל בדיקה פנימית, יש לברר עם הרופא על אופי הבדיקה (וסוג המכשיר וחדר לנרתיק או ולרחם), ולהתייעץ עם רב האם הבדיקה מטמאה. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "נכון לעשות בדיקות פנימיות, אם מתאפשר הדבר, בימים בהם אינך טהורה.\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אמרה טמאה אני..\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אמרת לבעלך טמאה אני ואח\"כ טענת שלא התכוונת ברצינות - הנך לא טהורה! אלא אם כן חזרת בך תוך כדי דיבור. במידה ונתת סיבה הגיונית שהובילה אותך לומר זאת, מעיקר הדין הנך נאמנת וניתן להקל אך בעלך יכול להחמיר על עצמו מצד מידת חסידות. פני לרב להכרעה במקרה הצורך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "דיני הרחקות:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מהזמן של ראיית הדם ועד לאחר הטבילה אתם אסורים ב-\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "תשמיש המיטה\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חיבוק ונישוק\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הרחקות נוספות: \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "נגיעה והושטה:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בעלך לא יכול לגעת בך כלל, גם לא בבגדים שעלייך, הן באופן ישיר והן באופן עקיף (כגון ע\"י חפץ או רוח פיו ואפילו רוח שנוצרה ע\"י פעולה שהוא עושה).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "גם הבגדים שלכם לא יגעו זה בזה. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אין לו להריח בשמים שעלייך או על בגדיך (להריח מבקבוק הבושם שלך - מותר), על כן ראוי למעט להתבשם במשך זמן זה. נכון למעט להתקשט ככל האפשר.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אינך יכולה להדליק נר, סיגריה וכדו' ממקור אש שבידיו וכן להיפך. נר הבדלה מותר לך להחזיק לו. וכן מותר לו להתחמם ממקור אש שאת מחזיקה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לא תוכלו להושיט אחד לשני חפצים, גם אם מדובר בחפץ ארוך. וכן לזרוק חפצים אחד לשני - אסור. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "(בשעת הצורך, ניתן לזרוק את החפץ כלפי מעלה, והשני יתפוס אותו).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הניחו החפץ, והשני יטול אותו.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "תוכלי למסור תינוק לבעלך, במידה שהתינוק יוצא מעצמו אל אביו. אך תינוק קטן, לא תוכלי למסור לידי בעלך. הניחי את התינוק על הספה/מיטה/עגלה ובעלך יקח אותו משם. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אינך יכולה לגעת בשום דבר (כגון חפץ או תינוק וכד') שבעלך מחזיק. (ובשעת הדחק יש להתיר כגון תינוק שצריך לקחת תרופה והוא מתנגד, וקשה לך לתת לו את התרופה לבד.) וכל שכן להחזיק/לסחוב/לדחוף יחד חפץ, כגון עגלת תינוק או עגלת סופר. ובשעת הדחק, כשאין אפשרות להרים לבד חפץ כגון להעלות עגלה במדרגות - מותר. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מותר לגעת יחד באותו החפץ מבלי להזיז אותו.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הסתכלות :\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אסור לבעלך להסתכל  בגופך במקומות שדרכם להיות מכוסים. במקומות שדרכם להיות גלויים מותר לו להסתכל. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מקומות המכוסים הינם: \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1.השיער \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2. כל הגוף החל מהצוואר (היכן שמתחיל להתרחב) עד כפות הרגליים (כולל) \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "3. ידיים עד המרפק (כולל).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "על כן מן הראוי לכסות את אותם המקומות.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "דיבור, שמיעת קול שירה ומתנה:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אסור לו לצחוק איתך באופן של קלות ראש ולא לדבר איתך דיבורים אינטימיים. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אסור לבעלך לשמוע אותך שרה הן כשאת לבד והן כשישנם עוד אנשים השרים יחד אתך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " וכשאת שרה כדי להרדים את התינוק, ואין אפשרות אחרת להרדים אותו אלה באופן זה, הוא יוכל לשמוע אותך שרה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מיטות ובגדים:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לא תוכלו לישון יחד באותה מיטה, אפילו אם כל אחד מכם לבוש בבגדיו ואינכם נוגעים זה בזה. על כן יש להרחיק המיטות אחת מהשנייה, מרחק סביר, כדי שלא תגיעו למצב בו אתם נוגעים אחד בשני בזמן השינה. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מיטות המחוברות לדופן אחת עם מסילה המאפשרת לקרב או לרחק את המיטות אחת מהשנייה אינן נחשבות כמיטות מחוברות.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בעלך לא יוכל לשבת על מיטתך אפילו אם את אינך נמצאת בחדר או בבית. וכל שכן לשכב עליה. אם את נמצאת מחוץ לעיר, מותר לו לשבת על המיטה שלך ואף לשכב עליה. לך מותר לשבת על מיטתו, גם כשהוא נמצא בחדר. ולשכב על מיטתו, מותר לך רק כשאינו בבית.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אין להחליף את כלי המיטה שלכם (סדינים, כריות ושמיכות) אחד עם השני אלא אם כן הם אינם מיוחדים לכם. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אין לבעלך להשתמש בבגד שלך (גם כשלא קיים איסור \"בל תלבש\").\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ישיבה על ספסל אחד\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אין לשבת יחד על ספסל מתנדנד, אפילו אם הוא ארוך וכל אחד מכם יושב בקצה אחר. אבל אם הספסל אינו מתנדנד, אלה מחובר לקיר או לקרקע וכד' - מותר. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לא תוכלו  לשבת יחד על ספה או על מושב אחורי של רכב, אלא אם כן אינכם מרגישים את תנועות גופו של הבן זוג.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בשעת הדחק, ניתן להקל בהפסק אדם או חפץ המונח בינכם. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " גם כאשר הישיבה מותרת, נדרשת זהירות ושימת לב כדי שלא תגיעו למצב של נגיעה אחד בשני. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "יציאה לטיול\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לא תוכלו לצאת רק שניכם לטיול ברכב. אבל אם עוד אנשים מצטרפים לנסיעה, או שאתם נוסעים באוטובוס - מותר. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "טוב להחמיר שלא לטייל לבדכם בגנות ופרדסים.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אכילה ושתיה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "היכר בשעת האכילה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כדי שתוכלי לאכול או לשתות יחד על אותו השולחן, תצטרכו לעשות \"היכר\" (ושניכם צריכים להיות מודעים להיכר שעל השולחן). היכר אינו נדרש כאשר אתם אוכלים עם עוד אנשים אפילו הם ילדים. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "גם אם אוכלים יחד ללא שולחן, נדרש היכר.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "באופן כללי, ישנם ארבע סוגי היכר:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "1.להניח חפץ/מאכל על השולחן\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "פרטי התנאים:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כשהחפץ או המאכל מונח בין הבעל לאשה דוקא. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כשאין דרכו להיות על השולחן בשעת האכילה (או שמשנים את מקומו הקבוע שעל השולחן), ומותר להשתמש בו.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מאכל יוכל לשמש כהיכר רק בתנאי שאין משתמשים בו בזמן הסעודה (כגון- בקבוק שתיה סגור או ככר לחם שלם).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כל שינוי שעשוי להזכיר לבני הזוג שאינם יכולים לבוא לידי קירבה קביל.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "2. אכילה על מפות נפרדות:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " פרטי התנאים-\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כשניכר לעין שמדובר בשתי מפות.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כשאין רגילות לאכול כך בזמן הטהרה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "דוגמאות: כשאוכלים על שתי מפות נפרדות.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "או כאשר אחד אוכל על מפה, והשני על השולחן עצמו. כשמניחים מפיון /פלייליסט תחת הצלחת.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כאשר משנים את מקום הישיבה הקבוע ליד השולחן.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אכילה מצלחות נפרדות, כאשר בדרך כלל רגילים לאכול מצלחת אחת, והשינוי ניכר.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "3.אכילה מקערה אחת:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בזמן שאינך טהורה, לא תאכלו לאכול מקערה אחת או משקית אחת וכדו', גם כאשר אינכם לוקחים דבר מאכל מהקערה או מהשקית בו זמנית.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "האפשרות לאכול מאותה הקערה או השקית תתאפשר רק אם תטלו את דבר המאכל מהקערה המרכזית, ותניחו אותו בצלחת שלכם (מספיק שאחד מכם יעשה זאת). \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4. אכילת שיריים שלך: \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בעלך אינו יכול לאכול/לשתות את השיריים שלך (ואינו מועיל להוסיף אוכל נוסף לצלחת), אמנם לך מותר לאכול או לשתות את שלו.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בעלך יוכל לאכול או לשתות ממה שהותרת רק בתנאים הבאים:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם מישהו אחר אכל/שתה אחרייך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם השיריים הורקו לכלי אחר (גם אם הוחזר אח\"כ לשלך). \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם יצאת מהחדר (ואין לו לבקש ממך לצאת). \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם חזרת באמצע, מותר לו להמשיך. לא מספיקה הסבת הראש לכיוון אחר.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הגדרת שיריים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "שיריים הם דבר מאכל או משקה. טעימה (כדי לבדוק את הטעם או החמימות), אינה נחשבת שיירים. מאכל מרכזי (ככר לחם, קערה מרכזית,קנקן שתיה מרכזי וכדו'), אינו נחשב כמאכל האישי שלך וכשיריים שלך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם בעלך אינו יודע ששתית או אכלת מאותה הכוס או הצלחת, אינך צריכה להגיד לו דבר. אם שתית את כל מה שהיה בכוס וחזרו ומילאו הכוס, מותר לבעלך לשתות מהכוס למרות שלא נשטפה, אך טוב להחמיר לשטוף את הכוס תחילה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מלאכות נוספות אסורות\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מזיגת הכוס\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לא תוכלי למזוג ולהושיט לבעלך בפניו כוס יין/מיץ ענבים/שתיה חריפה. וכן אין למזוג ישירות לכוס או לצלחת שמונחת בפניו. כמו כן יש להחמיר בהושטה בלבד (אף אם מזגה שלא בפניו). טוב להחמיר בזה כשאפשר, גם כאשר מדובר במאכלים. את הכוס או הצלחת עם המשקה או המאכל, תוכלי להגיש לבעלך בשינוי, שלא כדרכך. לדוגמא, ביד שמאל או שתניחי את הצלחת או הכוס במרחק מה ממנו, שידרוש ממנו לקרב אליו.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בעלך לא יוכל לשלוח לך כוס של יין או שאר משקה חשוב. לכן אין לו להעביר לך כוס של קידוש. בעלך יניח את הגביע על השולחן במקומו, ואת תקחי משם את הכוס.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הצעת המיטה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לא תוכלי להציע את מיטתו (וראוי להחמיר שגם הוא לא יציע מיטתך), בפניו אלא כשיצא מהחדר. אם המיטה אינה שלו,אלא שכעת מעוניין לשכב עליה, הדבר גם כן אסור. הצעת המיטה הינה פריסת הסדין והשמיכה, אך להחליף מצעים בפניו מותר (משום שזה טורח ולא דרך חיבה).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "רחיצת פניו ידיו ורגליו \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אינך יכולה ליצוק מים על פניו, ידיו, רגליו וכד' של בעלך, גם אם אינך נוגעת בו. כמו כן יש להחמיר לא להכין או להביא לו מים (בכלי) לרחיצה. וכן שלא לפתוח ברז אמבטיה/כיור על מנת שבעלך ישתמש במים. מותר להכין ספל לנטילת ידיים.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חולי \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם בעלך חולה ח\"ו, ואינו מסוגל להסתדר בכוחות עצמו, ואין אפשרות להשיג אדם אחר שיכול לטפל בו (אפילו בתשלום), מותר לך לעשות כן. אם אין באפשרותכם לשכור מישהו שיטפל בבעלך, אינכם צריכים להלוות כסף לצורך כך. שימי לב לא לגעת בו ישירות אלא ע\"י הפסק דבר כגון כפפות וכדו'. כמו כן לא  תוכלי להציע מיטתו בפניו ולא לרחוץ פניו ידיו ורגליו. אם לא קיימת אפשרות אחרת, והדבר מוכרח לצורך רפואתו - מותר. אם את חולה ח\"ו, אסור לבעלך לטפל בך. במידה ואין אף אחד שיכול לטפל בך במקומו, אפילו בתשלום, נהגו להקל במקרה של (אפשרות לבוא לידי) סכנה. אם בעלך רופא, הוא לא יוכל להקיז לך דם, לא למשש לך דופק וכדו', אלא אם כן את חולה שיש בה סכנה, ואין רופא אחר בנמצא. אם בעלך מטפל בך, הוא ישתמש בכפפות וכד', כדי שלא יגע בבשרך באופן ישיר.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "דינים נוספים \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ראוי שלא תלכי לבית החיים בימי נדתך (בימים בהם את רואה דם). מותר לך להיכנס לבית כנסת בימי נדתך, ויש המחמירות בזה משום כבוד בית הכנסת. אין להסתכל בספר התורה בימי נדתך. אך בימי ספירת שבעת הנקיים - מותר. גם בימי נדתך הנך מחויבת בכל התפילות והברכות (ע\\\"כ נוסיף בתפילות ובקשות על הגאולה אמיתית ושלימה).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "נכון להדר בכל הקשור בדיני ההרחקות, וכל המרבה הרי זה משובח\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "(רק בחומרות שהובאו בפוסקים!).\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הפסק טהרה ושבעה נקיים:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "תהליך הטהרה \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "המתנת חמישה ימים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חז\\\"ל תיקנו אשר כל אשה שראתה דם, בטרם תוכל להתחיל את שבעת הנקיים, נדרשת להמתין חמישה ימים לפני שתתחיל את תהליך הטהרה. במידה והיית מותרת. אם היית אסורה על בעלך, כמו שהיית בתוך שבעת הנקיים וראית דם על לבנים לבנים, סדין לבן או עד בדיקה (אז תצטרכי להתחיל מחדש את תהליך הטהרה), אינך צריכה להמתין חמישה ימים נוספים, אלה לנסות לעשות הפסק טהרה מיד באותו היום, ולספור שבעה נקיים. היום בו התחלת לראות דם, הוא היום הראשון לחמישה הימים הקודמים להפסק הטהרה. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הפסק הטהרה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "שטיפה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ביום החמישי מראייתך, לפני שקיעת החמה (לכתחילה, אם אין הדבר אפשרי, רחצי עצמך מוקדם יותר, לאחר שפסק דמך). מנהג טוב, לרחוץ כל הגוף ובפרט בין ירכותיך ובנרתיק. אם רחיצת כל הגוף לא מתאפשרת לך, שטפי פלג גופך התחתון בלבד. ואם גם זה אינו מתאפשר, רחצי היטב את אותו המקום בלבד. אם את בדרך, קנחי היטב עם מגבון את אותו המקום. בדיעבד, אם שכחת, ועשית בדיקת הפסק טהרה ללא שטיפה או קינוח, אין הדבר מעכב את תהליך הטהרה. בשבת, יו\"ט, יום כיפור ותשעה באב, רחצי רק את אותו המקום. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בדיקה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לאחר ששטפת עצמך, כ-10 עד 30 דקות לפני השקיעה, בדקי את עד הבדיקה באור יום והכניסי אותו בעומק הנרתיק. סובבי לכל הצדדים, בחורים ובסדקים. הוציאי את עד הבדיקה ובדקי אותו שוב לאור יום.אם יש סימני דם על עד הבדיקה, חכי כמה דקות (על מנת לא לפצוע את עצמך עקב יובש במקום), ועשי בדיקה חוזרת. בכל מקרה של ספק על המראה (הן להקל והן להחמיר), נא לשאול רב. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מוך דחוק\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לאחר שבדיקת הפסק הטהרה יצאה נקיה מדם, קחי עד נקי, (או השתמשי באותו העד שבדקת עצמך כבר), והשאירי אותו באותו המקום (בעומק הנרתיק), מכמה דקות לפני שקיעת החמה עד לאחר צאת הכוכבים. אם העד יצא נקי, למחרת תוכלי להתחיל לספור שבעה נקיים. (אם קיים ספק בקשר לבדיקת הפסק הטהרה, ואין לך זמן לבדוק שוב לפני השקיעה, הכניסי את המוך דחוק עצמו לכל הצדדים, בחורים ובסדקים על מנת שיוכל להיחשב לך כהפסק, במידה והרב יפסוק כי בדיקת הפסק הטהרה לא הייתה נקיה).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "שבעה נקיים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "היום הראשון לטהרתך, הוא היום שלמחרת הפסק הטהרה. כלומר, הוא היום השישי לראיית הדם. את העד בדקי באור יום, לפני הבדיקה ולאחריה.אם קיים ספק, שאלי רב! אין לעשות בדיקות נוספות מעבר לדרישה ההלכתית (בדיקת הפסק טהרה+מוך+2 בדיקות בכל יום משבעת הנקיים, סה\\\"כ- 15 בדיקות).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בדיקות\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בכל יום משבעת הנקיים בדקי עצמך פעמיים. בבוקר בקומך משנתך, ולפני שקיעת החמה. בדיעבד אם פספסת בדיקה הנך יכול להמשיך ולספור. הבדיקות היחידות שממש מעכבות אותך מלטבול, הם- הפסק הטהרה, והבדיקות ביום הראשון והשביעי (אחת בכל יום). אשה שהסיחה דעתה מספירתה מסיבה כלשהי (בעל במילואים וכדו'), צריכה להתחיל לספור מחדש שבעה נקיים.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לבישת והצעת לבנים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לבשי לבנים לבנים ופרסי סדין לבן על מיטתך, מהלילה של ההפסק טהרה ועד הטבילה. בדקי את הלבנים והסדין לוודא שהם אכן נקיים מכל סימן של דם. בדיעבד, אם שכחת ללבוש לבנים לבנים ולפרוס על מיטתך סדין לבן, הדבר אינו יעכב את תהליך הטהרה. אין צורך להוציא בפה - \\\"היום יום פלוני לספירת ליבוני\\\". אבל ספרי במחשבתך בכל יום את מנין הימים הנקיים. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ראית דם במהלך שבעת הנקיים? פסקי עוד אותו היום בטהרה והתחילי לספור מחדש!\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הלכות טבילה:)\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חפיפה:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "דיני חפיפה ועיון\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ישנם מספר הכנות הנדרשות על מנת לטבול כדין ולהיטהר, והם חפיפה (מתקנת חכמים) ועיון (מהתורה) כדלהלן.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "התחילי בחפיפה (רחיצת כל חלקי גופך), מבעוד יום - מלפני שקיעת החמה, ומשכי את ההכנות אל תוך הלילה – עד לאחר צאת הכוכבים. אם לא התחלת מבעוד יום, הכיני עצמך לטבילה בלילה במשך שעה אחת. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "את כל ההכנות לטבילה בצעי במתינות ובנחת, בביתך או בבית הטבילה. באם חפפת בבית, בבית הטבילה חשוב שתחזרי על שלוש פעולות נחוצות, והן: שטיפת הגוף והשיער במים חמים. סירוק כל מקומות השיער.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ועיון.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם חל ליל טבילתך במוצאי שבת/יום טוב, מנהג יפה הוא שתעשי כל ההכנות כאילו את טובלת בערב שבת או ערב יום טוב (ובמוצאי שבת/יום טוב חפפי שוב שיער ראשך וגופך, הסתרקי, נקי חלל הפה והשיניים ועייני היטב בגופך).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "פרטי דיני ההכנה לטבילה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ביום הטבילה ישנן הנוהגות במנהג היפה, להימנע מלאכול בשר/עוף וכן כל אותם הדברים שטבעם להיכנס בין השיניים כגון - תירס, מנגו, תפוז וכדו'.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מנהג יפה נוסף, לא ללוש בצק ביום הטבילה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "רחצי היטב כל חלקי גופך וחפפי מקומות כינוסי השיער במים חמים וסבון. אם מתאפשר לך לשבת באמבטיה במשך כמה דקות, כדי לרכך את האיברים, כך יהיה לך קל יותר להתנקות לקראת הטבילה, הרי זה משובח.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בשעת הרחיצה או מיד לאחריה סרקי שיער ראשך ופספסי עם אצבעותייך במקומות כינוסי השיער שבגוף, כדי לבדוק שהם נקיים ואין בהם קשרים. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "שטפי היטב במים חמים מקומות בית הקמטים ובית הסתרים.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "נקי את עינייך, אפך ואוזניך ככל הניתן.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "נקי היטב את שינייך (ע\\\"י קיסם/חוט דנטלי וכדו') על מנת לוודא שאין בהם דברים שיכולים להוות חציצה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "קצצי ציפורני ידייך ורגלייך ובדקי שהם נקיים מכל לכלוך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "האשה נדרשת לעיין בכל גופה (להסתכל במקום אותם רואה ולמשש במקומות שאינה רואה) על מנת לוודא שלא תהיינה שום חציצה בינה לבין המים בשעת הטבילה. אם את חופפת סמוך לזמן הטבילה, תוכלי לעיין בשעת החפיפה. אך אם עובר זמן בין החפיפה לטבילה, תשובי לעיין סמוך לטבילה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לפני הטבילה בדקי אם את צריכה להתפנות. אם כן, שטפי היטב את החלק התחתון.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם הלכת יחפה מחדר ההכנה לבור הטבילה, בדקי את כפות רגלייך כדי לוודא שהן נקיות או שובי לשטוף אותן (חשוב לא ללכת יחף מחדר ההכנה לבור הטבילה).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.3"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "פירוט מקומות כינוסי השיער\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "שיער הראש, שיער בית השחי, שיער בית הערווה, הריסים והגבות- לכתחילה יש להחשיבם כמקום כינוס שיער. שערות הידיים והרגליים - אינן נחשבות למקומות כינוסי שיער, ועל כן אין צורך לסרק אותן. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מקומות כינוסי השיער (למעט שיער הידיים והרגליים), מצריכים סירוק או פספוס עם האצבעות. את שיער הראש יש לסרק במסרק בעל שיניים צפופות. סירוק במברשת שיער או פספוס בלבד, לא יועיל).\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "פירוט מקומות בית הקמטים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בית השחי, תחת הסנטר והצוואר, בין הרגליים, תחת החזה, מקומות כפלי שומן, קמטים הנוצרים עם הגיל\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בית הסתרים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בין אצבעות הרגליים, נקבי האף, תעלות האוזניים, חלל הפה והשיניים, בית הערווה ונקב הצואה\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הטבור\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\u000b דיני חציצה:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "צורפה טבלה המסכמת את דיני החציצה, אם מתעורר ספק כלשהו בקשר לחציצות בזמן הטבילה או לאחריה, התייעצי עם רב מורה הוראה מה הדין.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "הגדרה:\n",
+                  "bold": true,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "חוצץ:\n",
+                  "bold": true,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אינו חוצץ:\n",
+                  "bold": true,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "על כל גופה (אף שאינה מקפידה)\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "על רוב גופה ומקפידה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "על רוב גופה ואינה מקפידה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "במיעוט הגוף ומקפידה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "במיעוט הגוף ואינה מקפידה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. לכתחילה להסיר\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אחרות מקפידות והיא אינה מקפידה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "מקפידה ואחרות אינן מקפידות\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "מקפידה לעיתים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. היינו לעיתים קרובות\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "תקפיד רק לאחר זמן\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "מונח על הגוף ברפיון\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. לכתחילה להסיר\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "ברוב השיער\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "באחד ממקומות כינוסי השיער\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "ירוקת ולפלוף בעין\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "בתוך העין אם יבש והתחיל להוריק. בזווית העין אפילו לחים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "עיניים, ריסים וגבות צבועים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אין ממשות, או יש ממשות אך צבע מושלם: כן. בדיעבד\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "עדשות מגע\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם הרגילות להוציאן כל יום. ואם טבלה תלוי אם מקפידה להסירן לפני שינה/רחצה או לא\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "לכלוך באוזן\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אם נמצא בחלק המגולה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אם נמצא בחלק הנסתר \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "סתימה/כתר זמני\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן.\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "שניים תותבות ופלטה ליישור שיניים זמניים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אלא אם כבר חזרה לביתה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "סתימה או כתר קבוע\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "תותבות או פלטה ליישור שיניים קבועות\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "text": "או גשר\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "תפרים בחניכיים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם מרגישה ע\"י הלשון\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "דם יבש\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "דם לח, דבק, בצק וכו' דביקים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "לחה בעור/מוגלה/גלד\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם יצא והתייבש\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם נמצא בתוך הפצע סגור אך תרככו במים חמים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "תפרים \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם עומדים להוצאה. אלא אם תצטרך לחכות זמן רב להוצאתם\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם נמסים מאליהם\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "פלסטר\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "משחה על גבי פצע\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. כאשר לא נספג\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "תחבושת על פצע\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "גבס\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "שאלת רב\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "מלמולי עור\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. לכתחילה תשפשף ותסירו\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. בדיעבד\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "עור נקלף על השפתיים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אלא אם נודע אחרי שחזרה לביתה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "יבלות על העור\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "נפרדה אפי' מיעוטה \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. במחוברת לבשר\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כתמים על הגוף\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם נמס במי המקוה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כתמים שאין בהם ממשות (יוד, דיו, חנה)\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. ניתן להקל\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "לא בדקה צרכיה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "התקן תוך רחמי\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם שטפה היטב לוודא שהחוט נקי ולא נדבק לדפנות\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "צואה על הגוף\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "צואה בפי הטבעת\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "עגילים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "כן. אם הדוקים ורגילים להוציאם לעיתים קרובות\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אם אינה מוציאתו אלא לעיתים רחוקות בלבד\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": " \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "הגדרה:\n",
+                  "bold": true,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "עלתה טבילתה:\n",
+                  "bold": true,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "    לא עלתה טבילתה:\n",
+                  "bold": true,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "       שערות קלועות\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "שאלת רב\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "         אביזרי שיער\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " כן.\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "צואת האף\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "בדיעבד אם מונח בעומק \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אם עומד בשפת החוטם והוא יבש\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "         חורי העגילים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "לנקותם היטב \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "חלל הפה והשיניים כשלא בדקה לפני הטבילה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "באם בדקה אחר הטבילה ומצאה שהמקום נקי \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "טבלה ובפיה דבר מאכל\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " בדיעבד אם אינו דבוק \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "נמצא דבר הדבוק בפה או בשיניים\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "לא גזזה ציפורני הידיים/רגליים והיו נקיות\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אלא אם כבר שימשה עם בעלה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "ציפורן שפירשה רובה/מיעוטה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אלא אם כבר שימשה עם בעלה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "    מצאה לכלוך בציפורן \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "       כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "המגדלות ציפורניים לנוי/לצורך מלאכתן\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " כן. בדיעבד ושעת הדחק\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "הבונות\\הצובעות ציפורניהן \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " בדיעבד כשהצבע שלם והציפורניים נקיות \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "איפור \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "בדיעבד אם שלם או שאין ממשות\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "באם נפגם\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "תכשיטים על היד וכדו'\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "אם רפוי וחזרה לביתה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "לא רחצה 'באותו המקום' \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " בדיעבד\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "חפפה כל שערותיה ובדקה עצמה אך לא רחצה עצמה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " כן.\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "לא סירקה\\פספסה שערה שבראש או הגוף\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "        כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "לא בטוחה אם חפפה שיער ראשה או אם בדקה עצמה \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " כן.\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "   סירקה כששיערה יבש \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "        כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "   שיערה צבוע \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " כן. אם נראים שרשי שערותיה, תצבע שוב לכתחילה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "      כינים וביצי כינים \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "סירקה והוציאה ככל יכולתה ואינה מקפידה במעט שנשאר\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": " שערה קשורה עם שערה נוספת\\או סביב עצמה            \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "        \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "text": "        כן. \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "שערות קשורות סביב עצמן או נקשרו לשתי שערות \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " כן. קשר אחד\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "      שיער דבוק מחמת זיעה\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "  כן. \t\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "paragraph",
+                  "text": "   עד בדיקה\\שיירי צמר גפן\\שיירי נייר טואלטשנמצאו לאחר הטבילה בעומק 'אותו המקום' \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": " \n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ],
+              [
+                {
+                  "type": "paragraph",
+                  "text": "\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                },
+                {
+                  "type": "paragraph",
+                  "text": " כן.\n",
+                  "bold": false,
+                  "style": {
+                    "namedStyleType": "NORMAL_TEXT"
+                  }
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " זמן הטבילה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לאחר שהשלמת את שבעת הימים הנקיים, ועשית חפיפה ועיון כנדרש, טבלי בלילה - לאחר צאת הכוכבים (של היום השביעי).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "האישה נטהרת מטומאתה על ידי טבילה במקוה כשרה בלבד. כל עוד האשה לא טבלה (או טבלה לא כדין), היא אינה נטהרת אפילו עברו כמה שנים מאז נטמאה, וצריכה להמשיך לנהוג בפרישה והרחקות. \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "באם אינך יכולה לטבול במוצאי היום השביעי לספירתך, שאלי רב מה ניתן לעשות. מיד כאשר הדבר מתאפשר מבחינה מעשית והלכתית ישנו חיוב לטבול, גם אם את בהריון או שקיימתם מצוות פריה ורבייה. עלייך להסתיר ליל טבילתך, אלא אם את צריכה לברר הלכה וכד'. אם ליל הטבילה חל בליל שבת/במוצאי שבת/במוצאי יום טוב, את יכולה לטבול. גם אם ליל טבילתך חל קודם לכן, ומאיזו סיבה לא טבלת בזמן, את מותרת לטבול בזמנים אלה. (עדיף שתטבלי בבין השמשות ולא אחר צאת הכוכבים).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "יש הנוהגות לומר \\\"לשם יחוד..\\\" לפני כניסתן לבור הטבילה. מי המקווה צריכים להגיע לגובה של 30 סנטימטר מעל טבורך. בזמן הטבילה אל תזקפי עצמך מידי ואל תתכופפי הרבה. הצורה הנכונה לטבול היא כאישה הקורעת מעל קערת בצק כאשר ידיה ורגליה פרוסות מעט לצדדים, כדי שלא יצמדו לגוף. אל תעצמי חזק את העיניים ואל תפקחי אותן בחוזקה, אלא בצורה רפויה. אל תסגרי את פיך וידייך בחוזקה. פסקי רגלייך קצת והטי גופך מעט קדימה, זרועותייך מוגבהות מעט ופרוסות לצדדים ואצבעותייך פסוקות מעט. שימי לב שהמרפק לא מכופף מדי. כל זאת כדי לאפשר ביאת מי טהרה לכל מקום בגופך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בזמן הטבילה צריכה להשגיח עלייך יהודיה כשרה מגיל 12 שנה ומעלה, כדי לוודא שמי הטהרה אכן מכסים את כל גופך בבת אחת יחד עם שערותייך, ושלא נשארת אפילו שערה אחת מחוץ למים. לאחר שטבלת פעם אחת כראוי, הכניסי גופך למים עד לגובה הצוואר, כסי שערותייך וברכי \\\"ברוך אתה השם אלוקינו מלך העולם אשר קידשנו במצוותיו וציוונו על הטבילה\\\", אם המים צלולים ערבבי אותם בידייך כדי שלא תראי את ערוותך. חזרי על הטבילה שוב. החליטי כמה פעמים את טובלת על פי מספר הטבילות שטבלה אמך. הבלנית תאמר כדין טבלה או כשר וכד' כי אז מכריזים ברקיע גם כן כשר, ועל ידי זה זוכים לבנים טובים. ביציאתך מבור הטבילה פגשי תחילה בבלנית, כדי שהדבר הראשון שתפגשי יהיה דבר טהור. כך שכאשר תצאי מהמקווה, אם תפגשי בחיה לא טהורה או בעובד עבודה זרה, לא תצטרכי לשוב ולטבול. במקרה שאין בלנית בנמצא, או שלא עשתה כן, היזהרי לפגוש תחילה בבעלך או חברתך. אחר הטבילה אל תרחצי במקווה. תוכלי לרחוץ בהגיעך לביתך. כשתשובי לביתך לאחר שטבלת כראוי, אמרי לבעלך שטבלת לפני שאת באה איתו במגע.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חישובי ווסתות:\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ימי עונות החשש\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חישובי ווסתות\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "נשים רגילות לראות דם בהפרשי זמן שונים, רגילות זו נקראת בלשון חכמים 'ווסת'.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "חז\\\"ל חששו שאשה תמצא דם בשעת תשמיש, על כן קבעו חישובים שונים על פיהם יש לשער את הזמן בו האישה עשויה לראות דם. זמן הווסת המשוער נקרא 'חשש ווסתה' וחלים בו דינים מיוחדים כדלהלן.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לצורך חישובי הווסתות, נתחשב בתאריך העברי בלבד.\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "מושגים כללים\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "זמן הראיה (והרישום) - נקבע לפי זמן מציאת הדם, אף אם יכול להיות שהיה כבר מקודם, אלא אם כן ברור הדבר שנמצא מלפני כן (מצד כמות או יובש הדם). הדבר משמעותי בעיקר בזמני התפר שבין עונת יום לעונת לילה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "עונה - היום מתחלק לשתי יחידות זמן, שכל אחת נקראת עונה. ההרחקות הנדרשות בזמן זה הן רק בעונה אחת, והיא עונת הראיה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "עונת יום - מנץ החמה עד אחר צאת הכוכבים.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "עונת לילה - משקיעת החמה עד נץ החמה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ווסת קבוע - ראיית דם 3 פעמים בזמן קבוע.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ווסת שאינו קבוע - ראיית דם בלי קביעות מסוימת.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "רישום - על מנת לא לפספס עונות חשש נדרש לרשום את כל הראיות (כתמים ודם לידה לא נכללים בחישובי הווסתות), והחששות המסתעפות מהן בלוח, כולל שעת הראיה (ישנם לוחות לרישום ווסתות המקלים על הרישום).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כל אשה המקבלת ווסת צריכה לחשוש לארבעה חששות עיקריים: \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "עונה בינונית. ווסת החודש. ווסת הפלגה. ווסת הגוף- סימן.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "עונה בינונית\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "עונה בינונית היא היום השלושים מתחילת הראיה. ספרי 30 יום מתחילת הראיה, כולל יום הראיה ויום השלושים. (שיטה קלה לחישוב: יום השלושים תמיד יהיה 4 שבועות ויום אחד נוסף אחרי יום הראיה). בעונה בינונית החשש לעונה אחת- עונת הראיה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "וסת החודש\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "קיים חשש שראיית הדם מושפעת מהתאריך בחודש שבו הייתה הראיה. על כן עונת החשש תחול בחודש הבא, בתאריך בו חלה הראיה. לדוגמא, אם ראית דם ב-ט\\\"ו לחודש - ביום, סמני בלוח את ט\\\"ו לחודש הבא בעונת יום. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "וסת הפלגה\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הפלגה פירושה - הזמן שחלף מהראיה הקודמת עד לראיה הנוכחית. כלומר, כל מספר העונות בהם היית טהורה. בחישוב ההפלגה, יום הראיה נספר הן לראיה הקודמת והן לראיה הנוכחית. שימי לב שחשש עונת הפלגה יכולה להיות רק אחר שתי ראיות. לדוגמא, אם חלה הראיה ב- א' תשרי והראיה הקודמת היתה ב- י\\\"א אלול (20 יום לפני), יום החשש הינו ב- כ' תשרי ובאותה העונה שראית.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ווסת הגוף - סימן\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " ווסת הגוף מאוד שכיח אצל נשים. אשה המרגישה הרגשה מסוימת בגופה לפני קבלת הווסת, כגון פיהוק, גיהוק, התעטשות מיוחדות, צמרמורת, כאב גב, כתם וכל מיני תופעות מיוחדות שיארעו לה לפני קבלת הווסת, נחשב לה הדבר לווסת הגוף וצריכה לחשוש לו. החשש לעונה אחת, והוא תלוי בטווח זמן הראיה מהופעת הסימן, לפי רגילותה. לדוגמא, אם רואה דם באותו היום שמופיע בו הסימן, היא צריכה לחשוש כל אותו היום. ואם היא רואה למחרת אותו סימן אז חוששת רק את יום המחרת. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "וסתות נוספות\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ישנם עוד וסתות אשר אינן שכיחות ואין כאן המקום להאריך בהן (עוד חזון למועד). ננקוט בשמן על מנת שתוכלי לשאול רב מה דינם. וסת הסירוג, וסת הדילוג, וסת השבוע, וסת הקפיצות. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ההנהגה בעונות החשש: \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "פרישה \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הנכם נדרשים לפרוש מתשמיש המטה בזמן הפרישה. חיבוק ונישוק - מותרים. אם הבעל יודע שקירוב כזה עלול להכשילו בדברים אסורים - ירחק מכך. ראוי שלא לישון באותה המיטה בלילה של הפרישה. אין צורך לנהוג בשאר ההרחקות. הפרישה היא לעונה אחת בלבד, עונת יום או עונת לילה. בזמן חשש ווסת קבוע ובעונה בינונית, ראוי לחשוש גם לעונה שלפני עונת החשש. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בדיקה \n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בדקי את עצמך בעד בדיקה (שנבדק באור יום), בתחילת עונת החשש ובסופה. אם יש לך שעה קבועה בה את רואה דם או ווסת הגוף, בדקי רק באותו הזמן. טוב שתניחי באותו המקום מוך דחוק (עד בדיקה) לאחר הבדיקה הראשונה, ותשאירי אותו שם כל משך העונה. במקום מוך דחוק (שיכול לגרום לפצעים), ניתן להשתמש בפד או תחתון לבן צמוד. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם עברה עונת החשש ולא בדקת את עצמך\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בעונה בינונית ובווסת הגוף (וכן בווסת קבוע), הנכם עדיין נדרשים לפרוש, גם אם עבר זמן רב מאז עונת החשש, עד שתבדקי עצמך. על כן בעלך צריך לשאול אותך האם בדקת את עצמך ואת טהורה. בוסת החודש או ההפלגה, הבדיקה אינה מעכבת בדיעבד, לכן אם עברה השקיעה הנכם מותרים אף בלי בדיקה. ומכל מקום ראוי שתבדקי עצמך לפני תשמיש.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אין לשטוף את אותו המקום בימים החשש. בדיעבד אם שטפת, שאלי רב מורה הוראה מה לעשות. תוכלי להתרחץ בבריכה/בים עם טמפון.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "עקירת החשש\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כאשר עבר יום החשש, בדקת עצמך ואת נקיה מדם. נעקר החשש ומתבטל. אמנם כאשר היום לא עבר בנקיות (כי ראית דם עוד קודם לכן) הדבר תלוי בסוג הפרישה:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בעונה בינונית - תמיד יהיה יום השלושים מיום הראיה החדש ואין משמעות לעונה הבינונית של הראיה הקודמת.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בווסת החודש - תצטרכי לחשוש לווסת החודש הקודם וגם לווסת החודש החדש.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "בווסת הפלגה - תחששי להפלגה החדשה ואין משמעות להפלגה הקודמת.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "וסת קבוע ועקירתו\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "הכלל אומר,שאם ישנה מחזוריות מסוימת קבועה של ראיה, נחשב הדבר לקביעת ווסת. הדין הוא שמרגע קביעת הווסת, תחששי תמיד לקביעות הזאת-הקבועה, ולא לחששות שהיו לך עד עכשיו. רק כאשר לא ראית 3 פעמים בתאריך הקבוע, נעקר ממך חשש זה. אך גם אז, ברגע שתראי שוב (אפילו פעם אחת בלבד), לפי הקביעות שקבעת כבר, תחזרי לקביעותך, ותחששי לו תמיד (עד שיעקר שוב וחוזר חלילה). אם קבעת לעצמך קביעות אחרת, היא עוקרת לגמרי את קביעותך הראשונה, וכדי לקבעה מחדש, שוב פעם תידרש את אותה מחזוריות (ראיה המשך 3 פעמים), ולא מספיקה ראיה אחת. גם לאחרי שקבעת ווסת מסוים, אם ראית ראיה שונה, תצטרכי לחשוש גם לראיה הזאת - החדשה, בנוסף לחשש הווסת הקבוע. אלא שהחשש הינו רק לווסת החודש וההפלגה ולא לעונה בינונית.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "המחזוריות היא\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ווסת החודש נקבע לאחר 3 ראיות. לדוגמא, ראתה ב-ט\\\"ו כסלו, ט\\\"ו טבת, ט\\\"ו שבט. ווסת הגוף נקבע כאשר אותו סימן מגיע כהקדמה לראייתה, 3 ראיות ברציפות. ווסת ההפלגה נקבע לאחר 4 ראיות (שהן שלוש הפלגות).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "וסת ההפלגה יכול להעקר בשני אופנים:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם ראית דם בהפלגה שונה מהפלגתך הקבועה 3 פעמים ברציפות. אם לא ראית דם כלל במשך זמן ארוך שהוא משולש מהפלגתך. לדוגמא, אם הפלגתך 20 יום ולא ראית יותר מ-58 ימים, נעקרה ווסתך הקבוע להפלגה (שכיח בהיריון).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "וסת חצי קבוע\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם הנך יודעת בודאות מתי אינך מקבלת ווסת, אחרי שלוש פעמים שהוכח שלא ראית בטווח זמן הנ\\\"ל, אינך צריכה לחשוש כלל לשום חשש. אמנם אחרי פעם אחת שראית בזמן הזה, נעקר ווסת זה, והנך נחשבת כבעלת ווסת שאינו קבוע. לדוגמא, אשה שלא ראתה שלוש פעמים לפני 32 ימים מראייתה הקודמת, אינה צריכה לחשוש לווסת החודש ולעונה בינונית.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": " דיני מעוברת ויולדת\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לאחר שלושת החודשים הראשונים של ההיריון (אך לא לפני כן), שהם 90 יום. ועד לאחר 24 חודשים מהלידה (גם אם אינך מניקה בפועל), את בחזקת 'מסולקת דמים' וכל ימי החשש הקיימים בין אם יש לך חשש ווסת קבוע, ובין אם לא, הם מתבטלים. בנוסף לא שייך שתקבעי ווסת בזמנים הללו (רק מניקה יכולה לקבוע ווסת קבוע למשך זמן ההנקה בלבד ואחרי כן יתבטל). \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "לאחר שיעברו 24 חודשים מהלידה, אם היה לך ווסת קבוע לפני הלידה, תחששי מיד לווסתך הקבוע, עוד לפני שתראי בפועל דם. (חוץ מווסת הפלגה, שתטרכי לחכות לראיה הראשונה שלאחר הלידה).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם בזמן שאת מניקה ומוגדרת 'מסולקת דמים', ראית דם - תחששי לווסת החודש, ווסת הפלגה ועונה בינונית (גם אם בעבר היה לך ווסת קבוע).\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם ילדת בניתוח קיסרי, שאלי רב מורה הוראה מה דינך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "במצב של הפלה ח\\\"ו: במידה וארע הדבר אחרי ארבעים יום מתחילת ההיריון (מהתשמיש הראשון - טבילתך האחרונה), חלים עלייך כל דיני יולדת הנ\\\"ל. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "ישנן מספר מצבים קודם הלידה הגורמים להיפך הטהרה:\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "'ירידת מים'. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.1"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כשהצירים חזקים ותכופים - כל חמש דקות.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.1"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כשהנך מתקשה ללכת וזקוקה לסיוע.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.1"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כאשר את מבקשת לשכב על 'המשבר' - כינוי למיטה עליה משכיבים היולדת בזמן הלידה.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.1"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כאשר משתחרר הפקק הרירי, גם אם אין דם.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.1"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "אם יש לך פתיחה של שתי אצבעות (4 ס\\\"מ) ויותר. \n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          },
+          "bullet": {
+            "listId": "kix.list.1"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "4 מצבים הראשונים מטמאים רק אם תראי דם עמהם, אך גם בלי ראית דם, אתם אסורים בתשמיש המיטה. אם לא ילדת, את מותרת לבעלך רק לאחר שתבדקי עצמך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "במקרה שהרופאים מעוניינים לבצע זירוז, התייעצי עם רב מורה הוראה האם מותר הדבר. כל ההרחקות נוהגות ביולדת. בעלך לא יוכל להיות נוכח בחדר הלידה. הוא יוכל לשוחח אתך מפתח חדר הלידה. בזמן הנקת התינוק, אם בעלך נוכח, הקפידי להיות מכוסה לחלוטין.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "יולדת/מפלת צריכה לברך \\\"ברכת הגומל\\\" בעשרה. תוכלי לברך בבית כנסת בעזרת הנשים, והגברים יענו לברכתך.\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "\n",
+          "bold": false,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": "כל יולדת (גם מפלת), חייבת לעבור את כל תהליך הטהרה (הפסק טהרה, 7 נקיים וטבילה במקווה כשר)\n",
+          "bold": true,
+          "style": {
+            "namedStyleType": "NORMAL_TEXT"
+          }
+        }
+      ]
+    }
+  ]
+}
