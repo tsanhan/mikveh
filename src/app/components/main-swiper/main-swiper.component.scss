@@ -44,12 +44,18 @@ ion-card > .img {
   flex: 1 1 0;
   min-height: 0;
   overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   overscroll-behavior-y: contain;
   padding: 0 1rem 1rem;
   font-family: 'VarelaRound';
   font-size: 1rem;
   color: #111;
   background: var(--app);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   > div + div {
     margin-top: 1rem;
