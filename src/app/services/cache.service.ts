@@ -142,14 +142,6 @@ export class CacheService {
     const approaches = this.approach.approaches$.getValue();
     const key = typeof value === 'string' ? value : value?.name;
 
-    if (key === 'sfarad') {
-      return { ...approaches[ApproachName.SEPHARDI_OVADIA] };
-    }
-
-    if (key === 'ashkenaz') {
-      return { ...approaches[ApproachName.SEPHARDI_MORDECHAI_ELIYAHU] };
-    }
-
     return { ...(approaches[key] ?? approaches[ApproachName.CHABAD]) };
   }
 

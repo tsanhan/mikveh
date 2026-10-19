@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TOPICS = ROOT / 'src/assets/data/topics.json'
 SOURCE_DIR = ROOT / 'content/google-docs'
-APPROACHES = {'chabad': 'chabad', 'ovadia': 'sfarad', 'eliyahu': 'ashkenaz'}
+APPROACHES = {'chabad': 'chabad', 'ovadia': 'sfarad', 'eliyahu': 'sfarad_mordechai_eliyahu'}
 SECTIONS = [
     ('ktamim', None),
     ('harchakot', 'דיני הרחקות:'),

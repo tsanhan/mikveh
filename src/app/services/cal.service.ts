@@ -1084,7 +1084,7 @@ export class CalService {
   //   switch (type) {
   //     case InputEventType.SEE_BLOOD:
   //       switch (approach.name) {
-  //         case ApproachName.ASHKENAZI:
+  //         case ApproachName.SEPHARDI_MORDECHAI_ELIYAHU:
   //         case ApproachName.CHABAD:
   //           followingEventsChabadOnaBenonit = this.buildEventsToHefsek(event, allevents, index);
   //           break;
@@ -1098,7 +1098,7 @@ export class CalService {
   //     case InputEventType.HEFSEK_TAHARA:
   //       switch (approach.name) {
   //         case ApproachName.CHABAD:
-  //         case ApproachName.ASHKENAZI:
+  //         case ApproachName.SEPHARDI_MORDECHAI_ELIYAHU:
   //         case ApproachName.SEPHARDI:
   //           followingEventsChabadOnaBenonit = this.buildEvents7CleanToPrisha(event, allevents, index);
   //           break;
@@ -1167,7 +1167,7 @@ export class CalService {
   //     ]
   //   }
   //     ;
-  //   if (approach.name === ApproachName.ASHKENAZI) rtn.details.push('ראוי לחשוש עונה אחת לפני');
+  //   if (approach.name === ApproachName.SEPHARDI_MORDECHAI_ELIYAHU) rtn.details.push('ראוי לחשוש עונה אחת לפני');
 
   //   return rtn;
   // }
@@ -1180,7 +1180,7 @@ export class CalService {
   //     case ApproachName.CHABAD:
   //       dateBenonit.setDate(dateBenonit.getDate() + 30);
   //       break;
-  //     case ApproachName.ASHKENAZI:
+  //     case ApproachName.SEPHARDI_MORDECHAI_ELIYAHU:
   //     case ApproachName.SEPHARDI:
   //       dateBenonit.setDate(dateBenonit.getDate() + 30);
   //       if (afterSunset) dateBenonit.setDate(dateBenonit.getDate() - 1);
@@ -1197,7 +1197,7 @@ export class CalService {
   //   }
 
   //     ;
-  //   if (approach.name === ApproachName.ASHKENAZI) rtn.details.push('ראוי לחשוש עונה אחת לפני');
+  //   if (approach.name === ApproachName.SEPHARDI_MORDECHAI_ELIYAHU) rtn.details.push('ראוי לחשוש עונה אחת לפני');
 
   //   return rtn;
   // }

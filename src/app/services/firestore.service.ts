@@ -32,11 +32,11 @@ export class FirestoreService {
     // setDoc(h, this.approaches()['chabad']);
     // const s = doc(this.firestore, 'approaches', 'sfarad');
     // setDoc(s, this.approaches()['sfard']);
-    // const a = doc(this.firestore, 'approaches', 'ashkenaz');
-    // setDoc(a, this.approaches()['ashkenaz']);
+    // const eliyahu = doc(this.firestore, 'approaches', 'sfarad_mordechai_eliyahu');
+    // setDoc(eliyahu, this.approaches()['sfarad_mordechai_eliyahu']);
     // const t = doc(this.firestore, 'approaches', 'topics');
     // for (const key in this.approaches()['topics']) {
-    //   const h = doc(this.firestore, 'approaches', 'ashkenaz', 'topics', key);
+    //   const h = doc(this.firestore, 'approaches', 'sfarad_mordechai_eliyahu', 'topics', key);
     //   setDoc(h, {
     //     "title": "הפסק טהרה",
     //     "content": [
