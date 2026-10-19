@@ -70,13 +70,17 @@ def convert_document(source):
 
 
 def split_sections(blocks, name):
+    def heading_text(text):
+        return whitespace(text).strip('():').strip()
+
     positions = [0]
     for _, heading in SECTIONS[1:]:
-        if name == 'eliyahu' and heading == '(הלכות טבילה:)':
-            heading = 'הלכות טבילה:)'
         matches = [i for i in range(positions[-1] + 1, len(blocks))
-                   if blocks[i]['type'] != 'table' and blocks[i]['data'] == heading]
-        assert len(matches) == 1, (name, heading, matches)
+                   if blocks[i]['type'] != 'table'
+                   and heading_text(blocks[i]['data']) == heading_text(heading)]
+        assert matches, (name, heading, 'Section heading not found')
+        # Reviewers may remove heading punctuation. Some chapters repeat their
+        # title below the opening heading; the first occurrence starts the topic.
         positions.append(matches[0])
     positions.append(len(blocks))
     return {topic: blocks[start:end]
