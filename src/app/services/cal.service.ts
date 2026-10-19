@@ -1088,7 +1088,7 @@ export class CalService {
   //         case ApproachName.CHABAD:
   //           followingEventsChabadOnaBenonit = this.buildEventsToHefsek(event, allevents, index);
   //           break;
-  //         case ApproachName.SEPHARDI:
+  //         case ApproachName.SEPHARDI_OVADIA:
   //           followingEventsChabadOnaBenonit = this.buildEventsToHefsek(event, allevents, index, 4);
   //           break;
   //       }
@@ -1099,7 +1099,7 @@ export class CalService {
   //       switch (approach.name) {
   //         case ApproachName.CHABAD:
   //         case ApproachName.SEPHARDI_MORDECHAI_ELIYAHU:
-  //         case ApproachName.SEPHARDI:
+  //         case ApproachName.SEPHARDI_OVADIA:
   //           followingEventsChabadOnaBenonit = this.buildEvents7CleanToPrisha(event, allevents, index);
   //           break;
   //       }
@@ -1181,7 +1181,7 @@ export class CalService {
   //       dateBenonit.setDate(dateBenonit.getDate() + 30);
   //       break;
   //     case ApproachName.SEPHARDI_MORDECHAI_ELIYAHU:
-  //     case ApproachName.SEPHARDI:
+  //     case ApproachName.SEPHARDI_OVADIA:
   //       dateBenonit.setDate(dateBenonit.getDate() + 30);
   //       if (afterSunset) dateBenonit.setDate(dateBenonit.getDate() - 1);
 

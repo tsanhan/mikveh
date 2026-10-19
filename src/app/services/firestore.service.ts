@@ -30,8 +30,8 @@ export class FirestoreService {
     // const itemCollection = collection(this.firestore, 'approaches');
     // const h = doc(this.firestore, 'approaches', 'chabad');
     // setDoc(h, this.approaches()['chabad']);
-    // const s = doc(this.firestore, 'approaches', 'sfarad');
-    // setDoc(s, this.approaches()['sfard']);
+    // const ovadia = doc(this.firestore, 'approaches', 'sfarad_ovadia');
+    // setDoc(ovadia, this.approaches()['sfarad_ovadia']);
     // const eliyahu = doc(this.firestore, 'approaches', 'sfarad_mordechai_eliyahu');
     // setDoc(eliyahu, this.approaches()['sfarad_mordechai_eliyahu']);
     // const t = doc(this.firestore, 'approaches', 'topics');

@@ -95,7 +95,7 @@ python3 scripts/sync_reviewed_topics.py
 
 The importer keeps the source wording, punctuation, list numbers and table markers. It normalizes whitespace for mobile display and skips empty layout paragraphs. It replaces all explanatory content, including shared introduction/stories, so omissions, duplicates and old app-only paragraphs cannot survive an import. Calendar calculations are maintained separately.
 
-Rav Mordechai Eliyahu uses `sfarad_mordechai_eliyahu` for both the approach ID and its content key. Use this same key in the approach definitions, topic data and content importer.
+Each approach uses the same ID and content key: `chabad`, `sfarad_ovadia` (Rav Ovadia Yosef), or `sfarad_mordechai_eliyahu` (Rav Mordechai Eliyahu). Use these same keys in the approach definitions, topic data and content importer.
 
 After importing, build and verify the app, then rebuild the Android APK. A previously generated APK still contains the content from its own build.
 

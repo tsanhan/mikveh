@@ -25,10 +25,10 @@ describe('CacheService approach selection', () => {
     });
   });
 
-  for (const { id, contentKey } of [
-    { id: ApproachName.CHABAD, contentKey: 'chabad' },
-    { id: ApproachName.SEPHARDI_OVADIA, contentKey: 'sfarad' },
-    { id: ApproachName.SEPHARDI_MORDECHAI_ELIYAHU, contentKey: 'sfarad_mordechai_eliyahu' },
+  for (const id of [
+    ApproachName.CHABAD,
+    ApproachName.SEPHARDI_OVADIA,
+    ApproachName.SEPHARDI_MORDECHAI_ELIYAHU,
   ]) {
     it(`selects and persists ${id}, resolving its content for every topic`, fakeAsync(() => {
       const cache = TestBed.inject(CacheService);
@@ -38,11 +38,11 @@ describe('CacheService approach selection', () => {
 
       const selected = TestBed.inject(ApproachService).approach$.getValue();
       expect(selected.name).toBe(id);
-      expect(selected.contentKey).toBe(contentKey);
+      expect(selected.contentKey).toBe(id);
       expect(values.get('approach')).toEqual(selected);
       expect(cache.getApproach(id)).toEqual(selected);
       for (const topic of topics) {
-        expect(Array.isArray((topic.content as Record<string, unknown>)[contentKey])).toBeTrue();
+        expect(Array.isArray((topic.content as Record<string, unknown>)[id])).toBeTrue();
       }
     }));
   }
