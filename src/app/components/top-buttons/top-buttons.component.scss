@@ -34,7 +34,7 @@ ion-fab-list {
     background: #E89F9F;
     font-family: 'Heebo-Regular';
     font-size: 0.6rem;
-    color: #FFFFFF;
+    color: #000000;
     padding: 0 0.5rem;
     width: 5.25rem;
     min-height: 2.25rem;
@@ -43,7 +43,7 @@ ion-fab-list {
 
   }
   ion-fab-button.active::part(native) {
-    color: #000000;
+    color: #FFFFFF;
   }
 
   ion-fab-button:last-child::part(native){
