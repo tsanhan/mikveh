@@ -160,6 +160,15 @@ off on a new installation. The saved preference is preserved on updates.
 Enabling requests the system permissions; disabling cancels pending reminders.
 The browser displays the toggle disabled.
 
+The collapsed **התאמה אישית** section below the master toggle stores separate
+preferences for Hefsek Tahara, seven-clean-day checks, immersion, and concerns.
+All four default to selected, including when upgrading an existing installation.
+Only selected categories contribute to a daily reminder and its navigation
+target. Disabling the last category also disables the master toggle. Enabling
+the master again with no selected categories resets all four to selected.
+Otherwise, switching the master off/on preserves the individual selections.
+Categories can be configured while the master is off without enabling delivery.
+
 Hefsek Tahara, numbered seven-clean-day checks, Mikveh night, and the monthly,
 average, Haflaga and fixed-veset concerns use the same events as the calendar.
 Night reminders say **הערב** and arrive on the morning before the relevant evening.

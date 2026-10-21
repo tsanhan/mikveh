@@ -72,6 +72,18 @@
       (ionChange)="onNotificationsChange($event)">
       קבלת תזכורות מהיומן
     </ion-toggle>
+    <details class="notification-personalization">
+      <summary>התאמה אישית</summary>
+      <div class="reminder-categories">
+        @for (category of notifications.categories; track category.key) {
+          <ion-toggle [checked]="notifications.preferences()[category.key]"
+            [disabled]="!notifications.supported || notifications.busy()"
+            (ionChange)="onReminderCategoryChange(category.key, $event)">
+            {{ category.label }}
+          </ion-toggle>
+        }
+      </div>
+    </details>
     @if (!notifications.supported) {
       <p>התזכורות זמינות באפליקציה המותקנת באנדרואיד ובאייפון.</p>
     }

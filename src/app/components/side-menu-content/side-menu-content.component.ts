@@ -35,6 +35,7 @@ import { CalendarNotificationsService } from '../../services/calendar-notificati
 import type { ToggleCustomEvent } from '@ionic/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CalendarNavigationService } from '../../services/calendar-navigation.service';
+import { CalendarReminderCategory } from '../../utils/calendar-reminders';
 @Component({
     selector: 'app-side-menu-content',
     templateUrl: './side-menu-content.component.html',
@@ -116,6 +117,11 @@ export class SideMenuContentComponent implements OnInit {
     // Ionic changes its own checked value before emitting ionChange. Restore
     // the persisted value if permission was denied and the signal stayed false.
     event.target.checked = this.notifications.enabled();
+  }
+
+  async onReminderCategoryChange(category: CalendarReminderCategory, event: ToggleCustomEvent): Promise<void> {
+    await this.notifications.setCategoryEnabled(category, event.detail.checked);
+    event.target.checked = this.notifications.preferences()[category];
   }
 
   ngOnInit() {

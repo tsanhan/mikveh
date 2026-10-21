@@ -9,8 +9,43 @@ export const REMINDER_CHANNEL = 'calendar-reminders';
 // replenish on launch/resume and whenever the calendar changes.
 export const MAX_PENDING_REMINDERS = 60;
 
+export interface CalendarReminderPreferences {
+  hefsek: boolean;
+  sevenClean: boolean;
+  mikveh: boolean;
+  concerns: boolean;
+}
+
+export type CalendarReminderCategory = keyof CalendarReminderPreferences;
+
+export const DEFAULT_REMINDER_PREFERENCES: Readonly<CalendarReminderPreferences> = {
+  hefsek: true, sevenClean: true, mikveh: true, concerns: true,
+};
+
+export const REMINDER_CATEGORIES: ReadonlyArray<{ key: CalendarReminderCategory; label: string }> = [
+  { key: 'hefsek', label: 'הפסק טהרה' },
+  { key: 'sevenClean', label: 'בדיקות 7 נקיים' },
+  { key: 'mikveh', label: 'טבילה' },
+  { key: 'concerns', label: 'עונות חשש' },
+];
+
+/** Missing preferences keep existing users' notification categories enabled. */
+export function normalizeReminderPreferences(value: unknown): CalendarReminderPreferences {
+  const result = { ...DEFAULT_REMINDER_PREFERENCES };
+  if (value && typeof value === 'object') {
+    const stored = value as Record<string, unknown>;
+    for (const category of Object.keys(result) as CalendarReminderCategory[]) {
+      if (typeof stored[category] === 'boolean') result[category] = stored[category];
+    }
+  }
+  return result;
+}
+
 /** One notification per civil day, containing every action for that day. */
-export function calendarReminders(events: OutputEvent[], now = new Date()): LocalNotificationSchema[] {
+export function calendarReminders(
+  events: OutputEvent[], now = new Date(),
+  preferences: Readonly<CalendarReminderPreferences> = DEFAULT_REMINDER_PREFERENCES,
+): LocalNotificationSchema[] {
   const days = new Map<number, { at: Date; messages: Set<string>; target: OnahRef }>();
   for (const event of events) {
     const segment = event.segments[0];
@@ -20,15 +55,18 @@ export function calendarReminders(events: OutputEvent[], now = new Date()): Loca
     let night = false;
     switch (event.outputEventType) {
       case DayType.CAN_START_CHECK_HEFSEK:
+        if (!preferences.hefsek) continue;
         message = 'היום אפשר לבצע הפסק טהרה לפני השקיעה';
         break;
       case DayType.SEVEN_CLEAN: {
+        if (!preferences.sevenClean) continue;
         const day = hdate.abs() - hebrewDateKeyToHDate(event.CachedInputEventRef.hebrewDate).abs();
         if (day < 1 || day > 7) continue;
         message = `היום יום ${day} ב־7 נקיים ונדרשת בדיקה`;
         break;
       }
       case DayType.MIKVEH_DAY:
+        if (!preferences.mikveh) continue;
         night = true;
         message = 'הערב ליל מקווה';
         break;
@@ -38,6 +76,7 @@ export function calendarReminders(events: OutputEvent[], now = new Date()): Loca
       case DayType.HAFLAGA_DAY:
       case DayType.HAFLAGA_NIGHT:
       case DayType.VESET_KAVUA: {
+        if (!preferences.concerns) continue;
         const label = event.outputEventType === DayType.ONA_BEINONIT ? 'עונה בינונית'
           : event.outputEventType === DayType.VESET_KAVUA ? 'וסת קבוע'
           : [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT].includes(event.outputEventType) ? 'הפלגה'

@@ -6,7 +6,11 @@ import { LocalNotifications, LocalNotificationsPlugin } from '@capacitor/local-n
 import { Storage } from '@ionic/storage-angular';
 import { debounceTime } from 'rxjs';
 import { OutputEvent } from '../interfaces/cal';
-import { calendarReminders, notificationCalendarTarget, REMINDER_CHANNEL, REMINDER_OWNER } from '../utils/calendar-reminders';
+import {
+  calendarReminders, CalendarReminderCategory, DEFAULT_REMINDER_PREFERENCES,
+  normalizeReminderPreferences, notificationCalendarTarget, REMINDER_CATEGORIES,
+  REMINDER_CHANNEL, REMINDER_OWNER,
+} from '../utils/calendar-reminders';
 import { CacheService } from './cache.service';
 import { CalService } from './cal.service';
 import { CalendarNavigationService } from './calendar-navigation.service';
@@ -21,6 +25,7 @@ export const NOTIFICATION_APP = new InjectionToken<AppPlugin>('NotificationApp',
   providedIn: 'root', factory: () => App,
 });
 const ENABLED_KEY = 'calendarNotificationsEnabled';
+const PREFERENCES_KEY = 'calendarNotificationPreferences';
 
 @Injectable({ providedIn: 'root' })
 export class CalendarNotificationsService {
@@ -34,12 +39,15 @@ export class CalendarNotificationsService {
   private readonly navigation = inject(CalendarNavigationService);
   private readonly zone = inject(NgZone);
   readonly supported = this.platform === 'android' || this.platform === 'ios';
+  readonly categories = REMINDER_CATEGORIES;
+  readonly preferences = signal({ ...DEFAULT_REMINDER_PREFERENCES });
   readonly enabled = signal(false);
   readonly busy = signal(true);
   readonly error = signal('');
   private events: OutputEvent[] = [];
   private initialization?: Promise<void>;
   private work: Promise<void> = Promise.resolve();
+  private pendingChanges = 0;
 
   initialize(): Promise<void> {
     return this.initialization ??= this.start().catch(() => {
@@ -59,7 +67,11 @@ export class CalendarNotificationsService {
     this.destroyRef.onDestroy(() => void actionListener.remove());
     // Do not cancel native reminders while the saved calendar is still loading.
     await this.cache.ready;
-    this.enabled.set(await this.storage.get(ENABLED_KEY) === true);
+    this.preferences.set(normalizeReminderPreferences(await this.storage.get(PREFERENCES_KEY)));
+    const savedEnabled = await this.storage.get(ENABLED_KEY) === true;
+    const anySelected = Object.values(this.preferences()).some(Boolean);
+    this.enabled.set(savedEnabled && anySelected);
+    if (savedEnabled && !anySelected) await this.storage.set(ENABLED_KEY, false);
     this.cal.calendarEvents$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(events => {
       this.events = events;
     });
@@ -80,8 +92,7 @@ export class CalendarNotificationsService {
   async setEnabled(enabled: boolean): Promise<void> {
     await this.initialize();
     if (!this.supported) return;
-    this.busy.set(true);
-    await this.enqueue(async () => {
+    await this.changeSettings(async () => {
       this.error.set('');
       if (enabled) {
         const permission = await this.api.requestPermissions();
@@ -93,6 +104,13 @@ export class CalendarNotificationsService {
           return;
         }
       }
+      if (enabled && !Object.values(this.preferences()).some(Boolean)) {
+        // Turning the master back on after disabling every category starts
+        // with all categories, just like the first opt-in.
+        const preferences = { ...DEFAULT_REMINDER_PREFERENCES };
+        await this.storage.set(PREFERENCES_KEY, preferences);
+        this.preferences.set(preferences);
+      }
       await this.storage.set(ENABLED_KEY, enabled);
       this.enabled.set(enabled);
       if (enabled && this.platform === 'android') {
@@ -101,11 +119,35 @@ export class CalendarNotificationsService {
       }
       await this.synchronize();
     });
-    this.busy.set(false);
+  }
+
+  async setCategoryEnabled(category: CalendarReminderCategory, enabled: boolean): Promise<void> {
+    await this.initialize();
+    if (!this.supported) return;
+    await this.changeSettings(async () => {
+      const preferences = { ...this.preferences(), [category]: enabled };
+      const anySelected = Object.values(preferences).some(Boolean);
+      await this.storage.set(PREFERENCES_KEY, preferences);
+      if (!anySelected) await this.storage.set(ENABLED_KEY, false);
+      this.preferences.set(preferences);
+      if (!anySelected) this.enabled.set(false);
+      await this.synchronize();
+    });
   }
 
   async refresh(): Promise<void> {
     if (this.supported) await this.enqueue(() => this.synchronize());
+  }
+
+  private async changeSettings(action: () => Promise<void>): Promise<void> {
+    this.pendingChanges++;
+    this.busy.set(true);
+    try {
+      await this.enqueue(action);
+    } finally {
+      this.pendingChanges--;
+      this.busy.set(this.pendingChanges > 0);
+    }
   }
 
   private enqueue(action: () => Promise<void>): Promise<void> {
@@ -144,7 +186,7 @@ export class CalendarNotificationsService {
         id: REMINDER_CHANNEL, name: 'תזכורות מהיומן', importance: 4, visibility: 0,
       });
     }
-    const notifications = calendarReminders(this.events);
+    const notifications = calendarReminders(this.events, new Date(), this.preferences());
     if (notifications.length) await this.api.schedule({ notifications });
   }
 }

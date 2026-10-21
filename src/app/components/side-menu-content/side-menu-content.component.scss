@@ -29,9 +29,29 @@
   flex-shrink: 0;
   padding: 0.5rem;
 
-  ion-toggle { width: 100%; }
+  // Leave room for Ionic's translated track in the checked state.
+  ion-toggle {
+    width: calc(100% - 1rem);
+    margin-inline-end: 1rem;
+  }
   p { margin: 0.35rem 0 0; font-size: 0.85rem; }
   [role='alert'] { color: var(--ion-color-danger-shade); }
+
+  .notification-personalization {
+    margin-top: 0.5rem;
+
+    summary {
+      cursor: pointer;
+      padding: 0.5rem 0;
+      font-weight: 600;
+    }
+  }
+
+  .reminder-categories {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+  }
 }
 
 .buttons {
