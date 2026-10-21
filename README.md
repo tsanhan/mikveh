@@ -151,6 +151,41 @@ To inspect the device's web view from Chrome, open: `chrome://inspect/#devices`
 
 ---
 
+## Calendar reminders (Android / iOS)
+
+The official `@capacitor/local-notifications` v6 plugin schedules reminders from
+actual calendar events, once per civil day at **09:00 in the device's local time**.
+The **קבלת תזכורות מהיומן** toggle appears only in the **יומן** tab and defaults to
+off on a new installation. The saved preference is preserved on updates.
+Enabling requests the system permissions; disabling cancels pending reminders.
+The browser displays the toggle disabled.
+
+Hefsek Tahara, numbered seven-clean-day checks, Mikveh night, and the monthly,
+average, Haflaga and fixed-veset concerns use the same events as the calendar.
+Night reminders say **הערב** and arrive on the morning before the relevant evening.
+That day's actions are combined into one notification. Passed 09:00 reminders
+are skipped. The nearest 60 daily reminders are queued and refreshed on launch,
+resume, calendar changes, and notification delivery while the app is active.
+Queued reminders can fire while the app is closed; opening the app replenishes
+the queue. System permissions and device restrictions still apply.
+
+Tapping a reminder opens the calendar and a fresh add-event form for its actual
+Hebrew date and day/night onah. A combined reminder opens its first displayed
+action. Opening the form does not save an event. Navigation is buffered through
+cold startup and waits for the menu to finish rendering or transitioning.
+Pending previews from earlier development builds are cancelled on refresh;
+preview payloads are ignored when tapped. The app contains no preview generator
+or notification test controls.
+
+Android uses `SCHEDULE_EXACT_ALARM` and opens its system setting if access is
+missing. For iOS, finish CocoaPods installation and build with Xcode on macOS.
+These are local reminders; no notification server, APNs or FCM setup is needed.
+
+Native launcher icons reuse `resources/icon-only.png`. Android uses its white
+teardrop silhouette as the small notification icon and the original artwork as
+the large icon. Regenerate native icon assets with
+`node scripts/generate_app_icons.cjs`.
+
 ## Running the tests
 
 The halachic-calculation logic in `src/app/services/cal.service.ts` (Hefsek Tahara, the seven nekiim, Mikveh day, the niddah chain, the hashashot of Onah Beinonit / Veset HaChodesh, and the cascade-delete data integrity rules) is covered by unit tests in `src/app/services/cal.service.spec.ts`.

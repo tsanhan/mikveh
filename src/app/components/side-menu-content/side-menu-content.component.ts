@@ -1,8 +1,14 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
+  inject,
+  Injector,
+  DestroyRef,
   OnInit,
   signal,
+  ViewChild,
   WritableSignal,
 } from '@angular/core';
 import {
@@ -14,6 +20,8 @@ import {
   IonFabButton,
   IonImg,
   IonText,
+  IonToggle,
+  MenuController,
 } from '@ionic/angular/standalone';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { bootstrapClock } from '@ng-icons/bootstrap-icons';
@@ -23,12 +31,17 @@ import { CommonModule } from '@angular/common';
 import { DayTimesComponent } from '../day-times/day-times.component';
 import { SearchMikvehComponent } from '../search-mikveh/search-mikveh.component';
 import { CalComponent } from "../cal/cal.component";
+import { CalendarNotificationsService } from '../../services/calendar-notifications.service';
+import type { ToggleCustomEvent } from '@ionic/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CalendarNavigationService } from '../../services/calendar-navigation.service';
 @Component({
     selector: 'app-side-menu-content',
     templateUrl: './side-menu-content.component.html',
     styleUrls: ['./side-menu-content.component.scss'],
     imports: [
         CommonModule,
+        IonToggle,
         IonButton,
         IonIcon,
         DayTimesComponent,
@@ -39,6 +52,13 @@ import { CalComponent } from "../cal/cal.component";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SideMenuContentComponent implements OnInit {
+  readonly notifications = inject(CalendarNotificationsService);
+  private readonly navigation = inject(CalendarNavigationService);
+  private readonly menu = inject(MenuController);
+  private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
+  private openingCalendar = false;
+  @ViewChild('data') private data?: ElementRef<HTMLElement>;
   page: WritableSignal<'time' | 'search' | 'cal'> = signal('time');
 
   countryCode: string = '972';
@@ -51,6 +71,51 @@ export class SideMenuContentComponent implements OnInit {
 
   constructor() {
     addIcons({timeOutline,calendarOutline,searchOutline,logoWhatsapp});
+    this.navigation.requests$.pipe(takeUntilDestroyed()).subscribe(target => {
+      if (!target) return;
+      this.page.set('cal');
+      // Wait until the requested calendar tab has rendered on a cold start.
+      afterNextRender(() => {
+        this.data?.nativeElement.scrollTo({ top: 0 });
+        void this.openCalendar();
+      }, { injector: this.injector });
+    });
+  }
+
+  private async openCalendar(): Promise<void> {
+    if (this.openingCalendar) return;
+    this.openingCalendar = true;
+    try {
+      const menu = await this.menu.get('end');
+      if (!menu) return;
+      // Ionic rejects open() while a previous menu transition is running.
+      // Retry after it settles; opening without animation also avoids a delayed
+      // animation when Android is still bringing the WebView to the foreground.
+      for (let attempt = 0; attempt < 3 && !this.destroyRef.destroyed && this.page() === 'cal'; attempt++) {
+        if (await menu.open(false)) return;
+        await new Promise<void>(resolve => {
+          const done = () => {
+            clearTimeout(timeout);
+            menu.removeEventListener('ionDidClose', done);
+            menu.removeEventListener('ionDidOpen', done);
+            resolve();
+          };
+          const timeout = setTimeout(done, 1000);
+          menu.addEventListener('ionDidClose', done, { once: true });
+          menu.addEventListener('ionDidOpen', done, { once: true });
+        });
+        if (await menu.isOpen()) return;
+      }
+    } finally {
+      this.openingCalendar = false;
+    }
+  }
+
+  async onNotificationsChange(event: ToggleCustomEvent): Promise<void> {
+    await this.notifications.setEnabled(event.detail.checked);
+    // Ionic changes its own checked value before emitting ionChange. Restore
+    // the persisted value if permission was denied and the signal stayed false.
+    event.target.checked = this.notifications.enabled();
   }
 
   ngOnInit() {

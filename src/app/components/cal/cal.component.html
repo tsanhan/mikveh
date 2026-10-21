@@ -17,7 +17,7 @@
       @for (month of dp.state.months; track month) {
       <div>
         <div class="nav height">
-          <div class="text-dark fw-bold ">{{ dp.i18n.getMonthShortName(month.month) }}
+          <div class="text-dark fw-bold ">{{ dp.i18n.getMonthShortName(month.month, month.year) }}
             {{i18n.getYearNumerals(month.year)}}
           </div>
           <div class="btn-group d-flex justify-content-end mb-2 ltr" role="group">

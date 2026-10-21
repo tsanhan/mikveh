@@ -15,6 +15,7 @@ import { HDateToNgbDateStruct, hDateToHebrewDateKey, NgbDateStructToHDate } from
   providedIn: 'root',
 })
 export class CacheService {
+  readonly ready: Promise<void>;
   storage = inject(Storage)
   mikvehStorage = inject(Storage)
   calEventsStorage = inject(Storage)
@@ -70,7 +71,7 @@ export class CacheService {
     this.location$ = this._location$.asObservable();
 
 
-    this.init();
+    this.ready = this.init();
   }
 
   private async init() {

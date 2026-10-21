@@ -8,19 +8,38 @@
 
 .data {
   display: flex;
+  flex: 1;
+  min-height: 0;
   justify-content: center;
-  height: -webkit-fill-available;
-  align-items: stretch;
-  overflow: scroll;
+  align-items: flex-start;
+  overflow: auto;
+}
+
+.calendar-content {
+  width: 100%;
+  min-width: 0;
+
+  app-cal {
+    display: block;
+    overflow: visible;
+  }
+}
+
+.reminders {
+  flex-shrink: 0;
+  padding: 0.5rem;
+
+  ion-toggle { width: 100%; }
+  p { margin: 0.35rem 0 0; font-size: 0.85rem; }
+  [role='alert'] { color: var(--ion-color-danger-shade); }
 }
 
 .buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.25rem;
+  flex-shrink: 0;
   margin: 0 0rem 0.5rem;
-  overflow: hidden;
-  height: 6rem;
 
   & .button {
     display: flex;
@@ -28,7 +47,7 @@
     gap: 0rem;
     align-items: center;
     justify-content: flex-start;
-    flex: 1;
+    min-width: 0;
     // & 
     // .active{
     //   font-weight: bold;
@@ -36,7 +55,19 @@
 
     & div {
       text-align: center;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
+  }
+
+  ion-button {
+    width: 3.5rem;
+    max-width: 100%;
+    margin: 0.25rem 0;
+    --padding-start: 0;
+    --padding-end: 0;
   }
 }
 

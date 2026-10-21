@@ -8,6 +8,10 @@ const config: CapacitorConfig = {
     androidScheme: 'https'
   },
   plugins: {
+    LocalNotifications: {
+      smallIcon: 'ic_stat_mikveh',
+      iconColor: '#d66a84'
+    },
     SplashScreen: {
       launchShowDuration: 0
     }

@@ -1,8 +1,10 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   inject,
+  Injector,
   Signal,
   signal,
   ViewChild,
@@ -19,6 +21,7 @@ import {
   map,
   Observable,
   tap,
+  take,
 } from 'rxjs';
 import { CalService } from 'src/app/services/cal.service';
 import { EventsService } from 'src/app/services/events.service';
@@ -43,6 +46,8 @@ import {
 import { CustomDatepickerI18n } from 'src/app/services/CustomDatepickerI18n.service';
 import { CalAddEventComponent } from '../cal-add-event/cal-add-event.component';
 import { get } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CalendarNavigationService } from '../../services/calendar-navigation.service';
 
 @Component({
   selector: 'app-cal',
@@ -63,6 +68,9 @@ import { get } from 'lodash';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalComponent  {
+  private readonly navigation = inject(CalendarNavigationService);
+  private readonly injector = inject(Injector);
+  private selectedFromNotification = false;
   showEventModal:WritableSignal<boolean> = signal(false);
   selectedHebDateDetails: WritableSignal<string[]> = signal([]);
   selectedNightDetails: WritableSignal<string[]> = signal([]);
@@ -150,7 +158,23 @@ export class CalComponent  {
     this.dayTemplateData = this.dayTemplateData.bind(this);
     firstValueFrom(this.events.hDateNow$).then(hdate => {
       this.nowHDate = hdate;
-      this.selectedHebDate$.next(HDateToNgbDateStruct(hdate));
+      if (!this.selectedFromNotification) this.selectedHebDate$.next(HDateToNgbDateStruct(hdate));
+    });
+    this.navigation.requests$.pipe(takeUntilDestroyed()).subscribe(target => {
+      if (!target) return;
+      this.selectedFromNotification = true;
+      const date = HDateToNgbDateStruct(new HDate(target.hebrewDate.day, target.hebrewDate.month, target.hebrewDate.year));
+      this.showEventModal.set(false);
+      this.visibleMonth = { year: date.year, month: date.month };
+      this.selectedOnah.set(target.onah);
+      this.selectedHebDate$.next(date);
+      this.cal.highlightedInputEvents$.pipe(take(1)).subscribe(events => this.setSelectedDetails(events, date));
+      // Render the closed form first so every tap mounts a fresh editor with
+      // the requested date/onah, including when another day's editor was open.
+      afterNextRender(() => {
+        if (this.selectedHebDate$.value === date) this.showAddEvent();
+      }, { injector: this.injector });
+      this.navigation.consume(target);
     });
   }
 

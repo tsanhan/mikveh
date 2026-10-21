@@ -58,13 +58,29 @@
      -->
   </div>
 
-  <div class="data">
+  <div class="data" #data>
     @switch (page()){ @case ('time') {
     <app-day-times></app-day-times>
     } @case ('search') {
     <app-search-mikveh></app-search-mikveh>
     } @case ('cal') {
+    <div class="calendar-content">
     <app-cal></app-cal>
+    <div class="reminders" dir="rtl">
+    <ion-toggle [checked]="notifications.enabled()"
+      [disabled]="!notifications.supported || notifications.busy()"
+      (ionChange)="onNotificationsChange($event)">
+      קבלת תזכורות מהיומן
+    </ion-toggle>
+    @if (!notifications.supported) {
+      <p>התזכורות זמינות באפליקציה המותקנת באנדרואיד ובאייפון.</p>
+    }
+    @if (notifications.error()) {
+      <p role="alert">{{ notifications.error() }}</p>
+    }
+  </div>
+
+    </div>
     } }
   </div>
 </div>

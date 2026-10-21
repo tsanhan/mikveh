@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CalendarNotificationsService } from './services/calendar-notifications.service';
 import { IonApp, IonRouterOutlet , IonButtons,
   IonContent,
   IonHeader,
@@ -35,6 +36,7 @@ export class AppComponent {
    *
    */
   constructor() {
+    void inject(CalendarNotificationsService).initialize();
     addIcons({ closeOutline, arrowForwardOutline });
 
   }

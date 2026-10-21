@@ -36,9 +36,13 @@ export class CalService {
   //   })
   // );
 
-  highlightedInputEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
+  calendarEvents$ = combineLatest([this.inputEvents$, this.approach.approach$]).pipe(
     map(([inputEvents, approach]: [CachedInputEvent[], Approach]) =>
       this.calculateCalendarEvents(inputEvents, approach)),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  highlightedInputEvents$ = this.calendarEvents$.pipe(
     map((list: OutputEvent[]) => {
       const rtn: CalEventDict = {};
       const aggregateDailyEvents = true;
