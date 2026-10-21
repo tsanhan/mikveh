@@ -70,14 +70,14 @@
     <ion-toggle [checked]="notifications.enabled()"
       [disabled]="!notifications.supported || notifications.busy()"
       (ionChange)="onNotificationsChange($event)">
-      קבלת תזכורות מהיומן
+      <strong>קבלת תזכורות מהיומן</strong>
     </ion-toggle>
     <details class="notification-personalization">
       <summary>התאמה אישית</summary>
       <div class="reminder-categories">
         @for (category of notifications.categories; track category.key) {
-          <ion-toggle [checked]="notifications.preferences()[category.key]"
-            [disabled]="!notifications.supported || notifications.busy()"
+          <ion-toggle [checked]="notifications.enabled() && notifications.preferences()[category.key]"
+            [disabled]="!notifications.supported || notifications.busy() || !notifications.enabled()"
             (ionChange)="onReminderCategoryChange(category.key, $event)">
             {{ category.label }}
           </ion-toggle>

@@ -167,7 +167,8 @@ Only selected categories contribute to a daily reminder and its navigation
 target. Disabling the last category also disables the master toggle. Enabling
 the master again with no selected categories resets all four to selected.
 Otherwise, switching the master off/on preserves the individual selections.
-Categories can be configured while the master is off without enabling delivery.
+While the master is off, every category toggle appears off and is disabled;
+the saved individual selections return when the master is enabled again.
 
 Hefsek Tahara, numbered seven-clean-day checks, Mikveh night, and the monthly,
 average, Haflaga and fixed-veset concerns use the same events as the calendar.

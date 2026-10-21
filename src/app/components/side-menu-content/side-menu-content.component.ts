@@ -121,7 +121,7 @@ export class SideMenuContentComponent implements OnInit {
 
   async onReminderCategoryChange(category: CalendarReminderCategory, event: ToggleCustomEvent): Promise<void> {
     await this.notifications.setCategoryEnabled(category, event.detail.checked);
-    event.target.checked = this.notifications.preferences()[category];
+    event.target.checked = this.notifications.enabled() && this.notifications.preferences()[category];
   }
 
   ngOnInit() {
