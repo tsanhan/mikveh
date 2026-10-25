@@ -89,7 +89,7 @@
         } @else {
           @if (selectedNightDetails().length) {
             <section>
-              <div class="onah-heading">🌙 עונת לילה</div>
+              <div class="onah-heading">🌙 ליל {{ selectedWeekday$ | async }}</div>
               @for (detail of selectedNightDetails(); track detail) {
                 <div class="detail-line">{{ detail }}</div>
               }
@@ -97,7 +97,7 @@
           }
           @if (selectedDayDetails().length) {
             <section>
-              <div class="onah-heading">☀️ עונת יום</div>
+              <div class="onah-heading">☀️ יום {{ selectedWeekday$ | async }}</div>
               @for (detail of selectedDayDetails(); track detail) {
                 <div class="detail-line">{{ detail }}</div>
               }

@@ -1,8 +1,12 @@
 import { HDate, months } from '@hebcal/core';
 
-import { addHebrewDays, addHebrewMonths, HDateToNgbDateStruct, NgbDateStructToHDate, sameHebrewDayInNextMonth } from './date.util';
+import { addHebrewDays, addHebrewMonths, HDateToNgbDateStruct, hebrewWeekdayName, NgbDateStructToHDate, sameHebrewDayInNextMonth } from './date.util';
 
 describe('Hebrew date conversion for ng-bootstrap', () => {
+  it('names a Hebrew Tuesday as שלישי for night and day labels', () => {
+    expect(hebrewWeekdayName(new HDate(new Date(2026, 9, 27, 12)))).toBe('שלישי');
+  });
+
   it('maps Elul to month 12 instead of invalid month 0 in a regular year', () => {
     const elul = new HDate(3, 6, 5786);
 

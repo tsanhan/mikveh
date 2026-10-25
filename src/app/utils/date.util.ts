@@ -40,6 +40,10 @@ export function hebDateToHebrew(hebrewDate: HDate): string {
     return rtn;
 }
 
+export function hebrewWeekdayName(hebrewDate: HDate): string {
+    return days[hebrewDate.getDay()];
+}
+
 /**
  * 
  * @param zmanim HDate object
@@ -52,8 +56,7 @@ export function hebDateToHebrew(hebrewDate: HDate): string {
  * ```
  */
 export function getDayString(zmanim: HDate): string {
-      const day = new HebrewDateEvent(zmanim).getDate().getDay();
-      const dateStr = `יום ${days[day]}, ${hebDateToHebrew(zmanim)}`;
+      const dateStr = `יום ${hebrewWeekdayName(zmanim)}, ${hebDateToHebrew(zmanim)}`;
       return dateStr;
     
 }

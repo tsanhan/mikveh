@@ -32,7 +32,7 @@ import { addIcons } from 'ionicons';
 import { add, chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CachedInputEvent, CalEventDict, DayType, InputEventOna, InputEventType, OutputEvent } from 'src/app/interfaces/cal';
-import { HDateToNgbDateStruct, hDateToHebrewDateKey, hebDateToHebrew, NgbDateStructToHDate } from 'src/app/utils/date.util';
+import { HDateToNgbDateStruct, hDateToHebrewDateKey, hebDateToHebrew, hebrewWeekdayName, NgbDateStructToHDate } from 'src/app/utils/date.util';
 import {
   NgbCalendar,
   NgbCalendarHebrew,
@@ -150,6 +150,10 @@ export class CalComponent  {
       return `${day.toString().padStart(2, '0')}.${month.toString().padStart(2, '0')}.${year}`;
     }
     )
+  );
+
+  selectedWeekday$: Observable<string> = this.selectedDateHDate$.pipe(
+    map((date: HDate) => hebrewWeekdayName(date))
   );
 
 
