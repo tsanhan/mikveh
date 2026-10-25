@@ -152,13 +152,14 @@ export class CalService {
       !sightingStarts.some(event =>
         this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
         this.compareHebrewDates(event.hebrewDate, concern.segments[0].hebrewDate) <= 0));
-    return approach.name === ApproachName.CHABAD
+    const visibleEvents = approach.name === ApproachName.CHABAD
       ? this.filterChabadMonthlyConcernsDuringNiddah(currentConcerns, sortedInputEvents)
       : this.filterMonthlyConcernsAfterInterruption(
         currentConcerns,
         sortedInputEvents,
         concernContinuations,
       );
+    return visibleEvents.map(event => this.withConcernInstructions(event, approach));
   }
 
   private filterChabadMonthlyConcernsDuringNiddah(
@@ -579,7 +580,10 @@ export class CalService {
       date: startBdikotDate,
       outputEventType: DayType.CAN_START_CHECK_HEFSEK,
       details: [
-        `אפשר להתחיל לבדוק הפסק טהרה`,
+        sightingEvent.type === InputEventType.KETEM_TAME &&
+          approach.name === ApproachName.SEPHARDI_OVADIA
+          ? 'המקלה לעשות הפסק טהרה היום לפני השקיעה יש לה על מה לסמוך; המחמירה תמתין ליום הרביעי. טוב לשטוף ולקנח היטב את אותו המקום לפני הבדיקה.'
+          : 'אפשר לבצע הפסק טהרה היום לפני השקיעה',
       ]
     }
 
@@ -587,12 +591,21 @@ export class CalService {
     rtn.push(...mahzorDays);
     rtn.push(startBdikot);
     if (includeHashashot) {
-      if (!suppressOnahBeinonit) {
-        rtn.push(this.calculateOnahBeinonit(sightingEvent, approach));
-      }
       const throughSighting = allEvents.filter(event => this.compareInputEvents(event, sightingEvent) <= 0);
       const concernEvents = this.withoutConcernContinuationSightings(throughSighting, approach);
-      if (!this.hasSephardiSemiFixedPattern(concernEvents, approach, sightingEvent.hebrewDate)) {
+      const semiFixed = this.hasSephardiSemiFixedPattern(
+        concernEvents,
+        approach,
+        sightingEvent.hebrewDate,
+      );
+      if (!suppressOnahBeinonit) {
+        rtn.push(this.calculateOnahBeinonit(
+          sightingEvent,
+          approach,
+          approach.name === ApproachName.SEPHARDI_OVADIA && semiFixed,
+        ));
+      }
+      if (!semiFixed) {
         rtn.push(this.calculateVesetHaChodesh(sightingEvent));
       }
     }
@@ -617,7 +630,8 @@ export class CalService {
     return {
       fixed: pattern,
       semiFixedSephardi,
-      suppressesOnahBeinonit: pattern?.status === 'active' || semiFixedSephardi,
+      suppressesOnahBeinonit: pattern?.status === 'active' ||
+        (semiFixedSephardi && approach.name !== ApproachName.SEPHARDI_OVADIA),
     };
   }
 
@@ -1067,6 +1081,7 @@ export class CalService {
   private calculateOnahBeinonit(
     sightingEvent: CachedInputEvent,
     approach: Approach,
+    recommendedOnly = false,
   ): OutputEvent {
     const targetDate = addHebrewDays(sightingEvent.hebrewDate, 29);
     const targetHDate = hebrewDateKeyToHDate(targetDate);
@@ -1082,8 +1097,32 @@ export class CalService {
       simpleDate: targetHDate.greg(),
       date: HDateToNgbDateStruct(targetHDate),
       outputEventType: DayType.ONA_BEINONIT,
-      details: [isChabad ? 'חשש עונה בינונית' : `חשש עונה בינונית - ${onaLabel}`],
+      details: [isChabad ? 'חשש עונה בינונית' :
+        `חשש עונה בינונית - ${onaLabel}${recommendedOnly ? ' (חומרה)' : ''}`],
+      recommendedOnly,
     };
+  }
+
+  private withConcernInstructions(event: OutputEvent, approach: Approach): OutputEvent {
+    if (![DayType.ONA_BEINONIT, DayType.VESET_HACHODESH_DAY,
+      DayType.VESET_HACHODESH_NIGHT, DayType.HAFLAGA_DAY,
+      DayType.HAFLAGA_NIGHT, DayType.VESET_KAVUA].includes(event.outputEventType as DayType)) {
+      return event;
+    }
+
+    let instruction: string;
+    if (event.recommendedOnly) {
+      instruction = 'המחמירה לפרוש מתשמיש תבוא עליה ברכה. אם בחרת להחמיר, בדקי בסוף העונה; טוב לבדוק גם בתחילתה.';
+    } else if (approach.name === ApproachName.SEPHARDI_OVADIA) {
+      instruction = 'יש לפרוש מתשמיש ולבדוק בסוף העונה; טוב לבדוק גם בתחילתה.';
+    } else if (approach.name === ApproachName.SEPHARDI_MORDECHAI_ELIYAHU) {
+      instruction = 'יש לפרוש מתשמיש ולבדוק בתחילת העונה ובסופה.';
+    } else if (event.outputEventType === DayType.ONA_BEINONIT) {
+      instruction = 'יש לפרוש מתשמיש במשך כל היממה ולבדוק לפני השקיעה.';
+    } else {
+      instruction = 'יש לפרוש מתשמיש ולבדוק משעת הראייה הקודמת ועד סוף העונה.';
+    }
+    return { ...event, details: [...event.details, instruction] };
   }
 
   private calculateVesetHaChodesh(sightingEvent: CachedInputEvent): OutputEvent {

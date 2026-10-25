@@ -38,6 +38,8 @@ export interface CalendarConcern {
   outputEventType: DayType | InputEventType;
   CachedInputEventRef: CachedInputEvent;
   details: string[];
+  /** A displayed reminder that is praiseworthy but not required by the selected approach. */
+  recommendedOnly?: boolean;
 }
 
 export type OutputEvent = CalendarConcern;

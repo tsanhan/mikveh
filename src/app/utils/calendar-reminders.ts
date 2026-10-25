@@ -56,7 +56,7 @@ export function calendarReminders(
     switch (event.outputEventType) {
       case DayType.CAN_START_CHECK_HEFSEK:
         if (!preferences.hefsek) continue;
-        message = 'היום אפשר לבצע הפסק טהרה לפני השקיעה';
+        message = event.details[0] || 'היום אפשר לבצע הפסק טהרה לפני השקיעה';
         break;
       case DayType.SEVEN_CLEAN: {
         if (!preferences.sevenClean) continue;
@@ -86,6 +86,8 @@ export function calendarReminders(
         night = fullDay || segment.onah === InputEventOna.NIGHT;
         message = fullDay ? `מהערב עונת חשש — ${label} (לילה ויום)`
           : `${night ? 'הערב' : 'היום'} עונת חשש — ${label} (${night ? 'לילה' : 'יום'})`;
+        const guidance = event.details.slice(1).join(' ');
+        if (guidance) message += `: ${guidance}`;
         break;
       }
       default:

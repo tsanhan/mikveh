@@ -6,6 +6,7 @@ import { CalService } from './cal.service';
 import { CacheService } from './cache.service';
 import { ApproachService } from './approach.service';
 import { Approach, ApproachName } from '../interfaces/approaches';
+import { calendarReminders } from '../utils/calendar-reminders';
 import {
   CachedInputEvent,
   CalEventDict,
@@ -157,9 +158,9 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
             expect(concerns[0].segments).toEqual([{
               hebrewDate: addHebrewDays(second.hebrewDate, 31), onah: ona,
             }]);
-            expect(concerns[0].details).toEqual([
+            expect(concerns[0].details).toContain(
               `חשש וסת הפלגה - ${ona === InputEventOna.DAY ? 'יום' : 'לילה'} (32 ימים)`,
-            ]);
+            );
           });
         }
       }
@@ -194,6 +195,24 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       });
     }
   });
+
+  for (const [selectedApproach, instruction] of [
+    [APPROACH_CHABAD, 'יש לפרוש מתשמיש ולבדוק משעת הראייה הקודמת ועד סוף העונה.'],
+    [APPROACH_SEPHARDI_OVADIA, 'יש לפרוש מתשמיש ולבדוק בסוף העונה; טוב לבדוק גם בתחילתה.'],
+    [APPROACH_SEPHARDI_MORDECHAI_ELIYAHU, 'יש לפרוש מתשמיש ולבדוק בתחילת העונה ובסופה.'],
+  ] as const) {
+    it(`${selectedApproach.name}: includes practical instructions in calendar details and concern notifications`, async () => {
+      approach.approach$.next(selectedApproach);
+      cache.setEvents([makeEvent('2026-10-01', InputEventType.VESET)]);
+      const monthly = (await firstValueFrom(cal.calendarEvents$)).find(event =>
+        [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
+          .includes(event.outputEventType as DayType))!;
+      expect(monthly.details).toContain(instruction);
+      const now = new Date(monthly.simpleDate);
+      now.setDate(now.getDate() - 2);
+      expect(calendarReminders([monthly], now)[0].body).toContain(instruction);
+    });
+  }
 
   describe('Chabad monthly concerns during niddah', () => {
     const source = (ona: InputEventOna) => makeHebrewEvent(
@@ -986,7 +1005,12 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
 
       const start = all.find(e => e.outputEventType === DayType.CAN_START_CHECK_HEFSEK)!;
       expect(dayDiff(ketem.simpleDate, start.simpleDate)).toBe(0);
-      expect(start.details).toEqual(['אפשר להתחיל לבדוק הפסק טהרה']);
+      expect(start.details).toEqual([
+        'המקלה לעשות הפסק טהרה היום לפני השקיעה יש לה על מה לסמוך; המחמירה תמתין ליום הרביעי. טוב לשטוף ולקנח היטב את אותו המקום לפני הבדיקה.',
+      ]);
+      const reminderNow = new Date(start.simpleDate);
+      reminderNow.setDate(reminderNow.getDate() - 1);
+      expect(calendarReminders([start], reminderNow)[0].body).toBe(start.details[0]);
 
       expect(all.some(e => e.outputEventType === DayType.ONA_BEINONIT)).toBe(false);
       expect(all.some(e =>
@@ -1089,9 +1113,9 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
           expect(concerns.every(e => e.sourceEventId === thirdHefsek.id)).toBeTrue();
           expect(concerns.some(e => e.id === oldConcerns[0].id)).toBeFalse();
           expect(concerns.find(e => e.outputEventType === DayType.HAFLAGA_DAY)?.details)
-            .toEqual(['חשש וסת הפלגה - יום (82 עונות)']);
+            .toContain('חשש וסת הפלגה - יום (82 עונות)');
           const shorter = concerns.find(e => e.outputEventType === DayType.HAFLAGA_NIGHT)!;
-          expect(shorter?.details).toEqual([`חשש וסת הפלגה - לילה (${shorterInterval} עונות)`]);
+          expect(shorter?.details).toContain(`חשש וסת הפלגה - לילה (${shorterInterval} עונות)`);
           expect(shorter?.segments).toEqual([{
             hebrewDate: addHebrewDays(thirdHefsek.hebrewDate, (shorterInterval + 1) / 2),
             onah: InputEventOna.NIGHT,
@@ -2115,26 +2139,37 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     for (const sephardi of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
       for (const type of [InputEventType.VESET, InputEventType.BDIKA_TMEA]) {
         for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
-          it(`${sephardi.name}/${type}/${ona}: suppresses both concerns only after three long intervals`, async () => {
+          it(`${sephardi.name}/${type}/${ona}: handles concerns after three long intervals`, async () => {
             approach.approach$.next(sephardi);
             const sightings = intervalSightings([0, 31, 63, 97], type, ona);
             for (let count = 1; count <= sightings.length; count++) {
               const recorded = sightings.slice(0, count);
               const latest = recorded[count - 1];
               const established = count === 4;
+              const recommendedAverage = established && sephardi.name === ApproachName.SEPHARDI_OVADIA;
               const state = cal.calculateVesetPatternState(recorded, sephardi, latest.hebrewDate);
               expect(state.semiFixedSephardi).toBe(established);
-              expect(state.suppressesOnahBeinonit).toBe(established);
+              expect(state.suppressesOnahBeinonit)
+                .toBe(established && sephardi.name !== ApproachName.SEPHARDI_OVADIA);
               // Reverse insertion order to exercise chronological sorting.
               cache.setEvents([...recorded].reverse());
               const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
               const latestConcerns = output.filter(event => event.sourceEventId === latest.id);
               expect(latestConcerns.some(event => event.outputEventType === DayType.ONA_BEINONIT))
-                .toBe(!established);
+                .toBe(!established || recommendedAverage);
               expect(latestConcerns.some(event => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
                 .includes(event.outputEventType as DayType))).toBe(!established);
               expect(latestConcerns.some(event => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT]
                 .includes(event.outputEventType as DayType))).toBe(count > 1);
+              if (recommendedAverage) {
+                const average = latestConcerns.find(event => event.outputEventType === DayType.ONA_BEINONIT)!;
+                expect(average.recommendedOnly).toBeTrue();
+                expect(average.details).toContain('המחמירה לפרוש מתשמיש תבוא עליה ברכה. אם בחרת להחמיר, בדקי בסוף העונה; טוב לבדוק גם בתחילתה.');
+                const reminderNow = new Date(average.simpleDate);
+                reminderNow.setDate(reminderNow.getDate() - 2);
+                expect(calendarReminders([average], reminderNow)[0].body)
+                  .toContain('המחמירה לפרוש מתשמיש תבוא עליה ברכה');
+              }
               if (established) {
                 // Establishing the pattern must not erase historical concerns.
                 for (const previous of recorded.slice(0, -1)) {
@@ -2150,7 +2185,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
         }
       }
 
-      it(`${sephardi.name}: one short interval restores both concerns and three new long intervals are required`, async () => {
+      it(`${sephardi.name}: one short interval restores the regular concerns and three new long intervals are required`, async () => {
         approach.approach$.next(sephardi);
         const sightings = intervalSightings([0, 31, 63, 97, 127, 158, 190, 224]);
         for (let count = 4; count <= sightings.length; count++) {
@@ -2163,7 +2198,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
           const latestConcerns = flatten(await firstValueFrom(cal.highlightedInputEvents$))
             .filter(event => event.sourceEventId === latest.id);
           expect(latestConcerns.some(event => event.outputEventType === DayType.ONA_BEINONIT))
-            .toBe(!established);
+            .toBe(!established || sephardi.name === ApproachName.SEPHARDI_OVADIA);
           expect(latestConcerns.some(event => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
             .includes(event.outputEventType as DayType))).toBe(!established);
         }
