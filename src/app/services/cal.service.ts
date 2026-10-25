@@ -76,6 +76,9 @@ export class CalService {
     const list: OutputEvent[] = [];
     // split by veset
     const sortedInputEvents = [...inputEvents].sort((a, b) => this.compareInputEvents(a, b));
+    const chabadContinuations = approach.name === ApproachName.CHABAD
+      ? this.chabadContinuationSightingIds(sortedInputEvents)
+      : new Set<string>();
     // Sighting events that have already been absorbed into an earlier
     // niddah chain – don't generate a second Hefsek for them.
     const handled = new Set<CachedInputEvent>();
@@ -84,11 +87,13 @@ export class CalService {
       switch (event.type) {
         case InputEventType.VESET: {
           const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-          const hashashotForVeset: OutputEvent[] = this.getNidaDaysHashashotForVeset(
+          const createsNewConcerns = !chabadContinuations.has(event.id);
+          const hashashotForVeset: OutputEvent[] = this.getNidaDaysForSighting(
             event,
             chainLast,
             approach,
-            this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
+            createsNewConcerns,
+            createsNewConcerns && this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
             sortedInputEvents,
           );
           list.push(...hashashotForVeset);
@@ -96,12 +101,13 @@ export class CalService {
         }
         case InputEventType.BDIKA_TMEA: {
           const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
+          const createsNewConcerns = !chabadContinuations.has(event.id);
           const hashashotForBdika: OutputEvent[] = this.getNidaDaysForSighting(
             event,
             chainLast,
             approach,
-            true,
-            this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
+            createsNewConcerns,
+            createsNewConcerns && this.suppressesOnahBeinonitAt(event, sortedInputEvents, approach),
             sortedInputEvents,
           );
           list.push(...hashashotForBdika);
@@ -142,7 +148,8 @@ export class CalService {
     const sightingStarts = list
       .filter(event => event.outputEventType === InputEventType.VESET ||
         event.outputEventType === InputEventType.BDIKA_TMEA)
-      .map(event => event.CachedInputEventRef);
+      .map(event => event.CachedInputEventRef)
+      .filter(event => !chabadContinuations.has(event.id));
     const currentConcerns = list.filter(concern => concern.outputEventType !== DayType.ONA_BEINONIT ||
       !sightingStarts.some(event =>
         this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
@@ -599,7 +606,10 @@ export class CalService {
     asOf?: HebrewDateKey,
   ): VesetPatternState {
     const evaluationDate = asOf ?? this.defaultPatternEvaluationDate(events);
-    const { pattern } = this.deriveFixedVeset(events, evaluationDate, false);
+    const patternEvents = approach.name === ApproachName.CHABAD
+      ? this.withoutChabadContinuationSightings(events)
+      : events;
+    const { pattern } = this.deriveFixedVeset(patternEvents, evaluationDate, false);
     const semiFixedSephardi = this.hasSephardiSemiFixedPattern(events, approach, evaluationDate);
     return {
       fixed: pattern,
@@ -610,11 +620,14 @@ export class CalService {
 
   getFixedVesetConcerns(
     events: CachedInputEvent[],
-    _approach: Approach,
+    approach: Approach,
     asOf?: HebrewDateKey,
   ): OutputEvent[] {
+    const patternEvents = approach.name === ApproachName.CHABAD
+      ? this.withoutChabadContinuationSightings(events)
+      : events;
     return this.deriveFixedVeset(
-      events,
+      patternEvents,
       asOf ?? this.defaultPatternEvaluationDate(events),
       true,
     ).concerns;
@@ -854,15 +867,18 @@ export class CalService {
   }
 
   private getHaflagaHashashot(events: CachedInputEvent[], approach: Approach): OutputEvent[] {
+    const intervalEvents = approach.name === ApproachName.CHABAD
+      ? this.withoutChabadContinuationSightings(events)
+      : events;
     const { lastFixedSighting } = this.deriveFixedVeset(
-      events, this.defaultPatternEvaluationDate(events), false,
+      intervalEvents, this.defaultPatternEvaluationDate(events), false,
     );
     // Establishing or returning to the fixed veset cancels accumulated
     // haflagot. Keep that boundary even if later deviations make it dormant;
     // only intervals starting with this sighting can create new concerns.
     const sinceFixedSighting = lastFixedSighting
-      ? events.slice(events.indexOf(lastFixedSighting))
-      : events;
+      ? intervalEvents.slice(intervalEvents.indexOf(lastFixedSighting))
+      : intervalEvents;
     return approach.name === ApproachName.CHABAD
       ? this.getChabadHaflagaHashashot(sinceFixedSighting)
       : this.getSephardiHaflagaHashashot(sinceFixedSighting);
@@ -979,6 +995,32 @@ export class CalService {
   private createsHashashot(event: CachedInputEvent): boolean {
     return event.type === InputEventType.VESET ||
       event.type === InputEventType.BDIKA_TMEA;
+  }
+
+  /**
+   * In the Chabad method, another hashash-generating sighting during the first
+   * seven calendar days of a sighting belongs to that original sighting for
+   * concern calculations. Day 1 is the original date, so a new concern cycle
+   * begins only at an offset of seven days (day 8), independently of Hefsek.
+   */
+  private chabadContinuationSightingIds(events: CachedInputEvent[]): Set<string> {
+    const continuations = new Set<string>();
+    let concernAnchor: CachedInputEvent | undefined;
+    for (const event of [...events].sort((a, b) => this.compareInputEvents(a, b))) {
+      if (!this.createsHashashot(event)) continue;
+      if (concernAnchor &&
+          this.compareHebrewDates(event.hebrewDate, concernAnchor.hebrewDate) < 7) {
+        continuations.add(event.id);
+        continue;
+      }
+      concernAnchor = event;
+    }
+    return continuations;
+  }
+
+  private withoutChabadContinuationSightings(events: CachedInputEvent[]): CachedInputEvent[] {
+    const continuations = this.chabadContinuationSightingIds(events);
+    return events.filter(event => !continuations.has(event.id));
   }
 
   private onaLabel(ona: InputEventOna): string {

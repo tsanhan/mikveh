@@ -1426,6 +1426,66 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     // After the first seven days from the original sighting, a new sighting
     // replaces the average onah but preserves both monthly concerns.
     for (const type of [InputEventType.VESET, InputEventType.BDIKA_TMEA]) {
+      for (const scenario of [
+        { hefsekDate: '2025-01-05', sightingDate: '2025-01-06', label: 'day 6 after a day-5 Hefsek' },
+        { hefsekDate: '2025-01-06', sightingDate: '2025-01-07', label: 'day 7 after a delayed Hefsek' },
+      ]) {
+        it(`Chabad/${type}: ${scenario.label} restarts nekiim without changing concerns`, async () => {
+          approach.approach$.next(APPROACH_CHABAD);
+          const original = makeEvent('2025-01-01', InputEventType.VESET);
+          const hefsek = makeEvent(scenario.hefsekDate, InputEventType.HEFSEK_TAHARA);
+          const continuation = makeEvent(scenario.sightingDate, type, InputEventOna.NIGHT);
+          const replacement = makeEvent(scenario.sightingDate, InputEventType.HEFSEK_TAHARA);
+          cache.setEvents([original, hefsek, continuation, replacement]);
+
+          const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+          expect(output.filter(event => event.outputEventType === DayType.ONA_BEINONIT)
+            .map(event => event.sourceEventId)).toEqual([original.id]);
+          expect(output.filter(event => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
+            .includes(event.outputEventType as DayType)).map(event => event.sourceEventId)).toEqual([original.id]);
+          expect(output.some(event => event.sourceEventId === continuation.id &&
+            [DayType.ONA_BEINONIT, DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT,
+              DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT].includes(event.outputEventType as DayType))).toBeFalse();
+          expect(output.filter(event => event.sourceEventId === replacement.id &&
+            event.outputEventType === DayType.SEVEN_CLEAN).length).toBe(7);
+        });
+      }
+    }
+
+    it('Chabad: a ketem in the first seven days restarts nekiim without changing concerns', async () => {
+      approach.approach$.next(APPROACH_CHABAD);
+      const original = makeEvent('2025-01-01', InputEventType.VESET);
+      const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+      const ketem = makeEvent('2025-01-07', InputEventType.KETEM_TAME);
+      const replacement = makeEvent('2025-01-07', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([original, hefsek, ketem, replacement]);
+
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(output.filter(event => event.outputEventType === DayType.ONA_BEINONIT)
+        .map(event => event.sourceEventId)).toEqual([original.id]);
+      expect(output.filter(event => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
+        .includes(event.outputEventType as DayType)).map(event => event.sourceEventId)).toEqual([original.id]);
+      expect(output.filter(event => event.sourceEventId === replacement.id &&
+        event.outputEventType === DayType.SEVEN_CLEAN).length).toBe(7);
+    });
+
+    it('Chabad: day 8 creates new concerns even when the first Hefsek was delayed', async () => {
+      approach.approach$.next(APPROACH_CHABAD);
+      const original = makeEvent('2025-01-01', InputEventType.VESET);
+      const delayedHefsek = makeEvent('2025-01-06', InputEventType.HEFSEK_TAHARA);
+      const sighting = makeEvent('2025-01-08', InputEventType.BDIKA_TMEA, InputEventOna.NIGHT);
+      const replacement = makeEvent('2025-01-08', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([original, delayedHefsek, sighting, replacement]);
+
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(output.filter(event => event.outputEventType === DayType.ONA_BEINONIT)
+        .map(event => event.sourceEventId)).toEqual([sighting.id]);
+      expect(output.filter(event => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
+        .includes(event.outputEventType as DayType)).map(event => event.sourceEventId))
+        .toEqual([original.id, sighting.id]);
+    });
+
+    for (const type of [InputEventType.VESET, InputEventType.BDIKA_TMEA]) {
       for (const date of ['2025-01-08', '2025-01-12']) {
         for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
           it(`Chabad/${type}/${date}/${ona}: restores both monthly concerns after a replacement count completes`, async () => {
