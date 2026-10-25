@@ -76,9 +76,7 @@ export class CalService {
     const list: OutputEvent[] = [];
     // split by veset
     const sortedInputEvents = [...inputEvents].sort((a, b) => this.compareInputEvents(a, b));
-    const chabadContinuations = approach.name === ApproachName.CHABAD
-      ? this.chabadContinuationSightingIds(sortedInputEvents)
-      : new Set<string>();
+    const concernContinuations = this.concernContinuationSightingIds(sortedInputEvents, approach);
     // Sighting events that have already been absorbed into an earlier
     // niddah chain – don't generate a second Hefsek for them.
     const handled = new Set<CachedInputEvent>();
@@ -87,7 +85,7 @@ export class CalService {
       switch (event.type) {
         case InputEventType.VESET: {
           const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-          const createsNewConcerns = !chabadContinuations.has(event.id);
+          const createsNewConcerns = !concernContinuations.has(event.id);
           const hashashotForVeset: OutputEvent[] = this.getNidaDaysForSighting(
             event,
             chainLast,
@@ -101,7 +99,7 @@ export class CalService {
         }
         case InputEventType.BDIKA_TMEA: {
           const chainLast = this.extendChain(event, sortedInputEvents, approach, handled);
-          const createsNewConcerns = !chabadContinuations.has(event.id);
+          const createsNewConcerns = !concernContinuations.has(event.id);
           const hashashotForBdika: OutputEvent[] = this.getNidaDaysForSighting(
             event,
             chainLast,
@@ -149,14 +147,18 @@ export class CalService {
       .filter(event => event.outputEventType === InputEventType.VESET ||
         event.outputEventType === InputEventType.BDIKA_TMEA)
       .map(event => event.CachedInputEventRef)
-      .filter(event => !chabadContinuations.has(event.id));
+      .filter(event => !concernContinuations.has(event.id));
     const currentConcerns = list.filter(concern => concern.outputEventType !== DayType.ONA_BEINONIT ||
       !sightingStarts.some(event =>
         this.compareInputEvents(event, concern.CachedInputEventRef) > 0 &&
         this.compareHebrewDates(event.hebrewDate, concern.segments[0].hebrewDate) <= 0));
     return approach.name === ApproachName.CHABAD
       ? this.filterChabadMonthlyConcernsDuringNiddah(currentConcerns, sortedInputEvents)
-      : this.filterMonthlyConcernsAfterInterruption(currentConcerns, sortedInputEvents);
+      : this.filterMonthlyConcernsAfterInterruption(
+        currentConcerns,
+        sortedInputEvents,
+        concernContinuations,
+      );
   }
 
   private filterChabadMonthlyConcernsDuringNiddah(
@@ -201,13 +203,15 @@ export class CalService {
   private filterMonthlyConcernsAfterInterruption(
     concerns: OutputEvent[],
     sortedEvents: CachedInputEvent[],
+    concernContinuations: Set<string>,
   ): OutputEvent[] {
     const restarts = this.cleanCountRestarts(sortedEvents);
     const cycles = new Map<string, string>();
     // Use generated sighting starts, so events absorbed into a continuous
     // bleeding chain do not split that chain's cycle or replace its concerns.
     const starts = concerns.filter(event => this.isSightingEvent(event.CachedInputEventRef) &&
-      event.outputEventType === event.CachedInputEventRef.type)
+      event.outputEventType === event.CachedInputEventRef.type &&
+      !concernContinuations.has(event.CachedInputEventRef.id))
       .map(event => event.CachedInputEventRef);
     let cycle = '';
     for (const event of starts) {
@@ -587,7 +591,8 @@ export class CalService {
         rtn.push(this.calculateOnahBeinonit(sightingEvent, approach));
       }
       const throughSighting = allEvents.filter(event => this.compareInputEvents(event, sightingEvent) <= 0);
-      if (!this.hasSephardiSemiFixedPattern(throughSighting, approach, sightingEvent.hebrewDate)) {
+      const concernEvents = this.withoutConcernContinuationSightings(throughSighting, approach);
+      if (!this.hasSephardiSemiFixedPattern(concernEvents, approach, sightingEvent.hebrewDate)) {
         rtn.push(this.calculateVesetHaChodesh(sightingEvent));
       }
     }
@@ -605,12 +610,10 @@ export class CalService {
     approach: Approach,
     asOf?: HebrewDateKey,
   ): VesetPatternState {
-    const evaluationDate = asOf ?? this.defaultPatternEvaluationDate(events);
-    const patternEvents = approach.name === ApproachName.CHABAD
-      ? this.withoutChabadContinuationSightings(events)
-      : events;
+    const patternEvents = this.withoutConcernContinuationSightings(events, approach);
+    const evaluationDate = asOf ?? this.defaultPatternEvaluationDate(patternEvents);
     const { pattern } = this.deriveFixedVeset(patternEvents, evaluationDate, false);
-    const semiFixedSephardi = this.hasSephardiSemiFixedPattern(events, approach, evaluationDate);
+    const semiFixedSephardi = this.hasSephardiSemiFixedPattern(patternEvents, approach, evaluationDate);
     return {
       fixed: pattern,
       semiFixedSephardi,
@@ -623,12 +626,10 @@ export class CalService {
     approach: Approach,
     asOf?: HebrewDateKey,
   ): OutputEvent[] {
-    const patternEvents = approach.name === ApproachName.CHABAD
-      ? this.withoutChabadContinuationSightings(events)
-      : events;
+    const patternEvents = this.withoutConcernContinuationSightings(events, approach);
     return this.deriveFixedVeset(
       patternEvents,
-      asOf ?? this.defaultPatternEvaluationDate(events),
+      asOf ?? this.defaultPatternEvaluationDate(patternEvents),
       true,
     ).concerns;
   }
@@ -867,11 +868,9 @@ export class CalService {
   }
 
   private getHaflagaHashashot(events: CachedInputEvent[], approach: Approach): OutputEvent[] {
-    const intervalEvents = approach.name === ApproachName.CHABAD
-      ? this.withoutChabadContinuationSightings(events)
-      : events;
+    const intervalEvents = this.withoutConcernContinuationSightings(events, approach);
     const { lastFixedSighting } = this.deriveFixedVeset(
-      intervalEvents, this.defaultPatternEvaluationDate(events), false,
+      intervalEvents, this.defaultPatternEvaluationDate(intervalEvents), false,
     );
     // Establishing or returning to the fixed veset cancels accumulated
     // haflagot. Keep that boundary even if later deviations make it dormant;
@@ -1018,8 +1017,28 @@ export class CalService {
     return continuations;
   }
 
-  private withoutChabadContinuationSightings(events: CachedInputEvent[]): CachedInputEvent[] {
-    const continuations = this.chabadContinuationSightingIds(events);
+  private concernContinuationSightingIds(
+    events: CachedInputEvent[],
+    approach: Approach,
+  ): Set<string> {
+    if (approach.name === ApproachName.CHABAD) {
+      return this.chabadContinuationSightingIds(events);
+    }
+
+    // For both Sephardi approaches, an impure examination interrupts the
+    // clean count but does not establish any new concerns. Veset sightings
+    // during the count keep their existing concern behavior.
+    const restarts = this.cleanCountRestarts(events);
+    return new Set(events
+      .filter(event => event.type === InputEventType.BDIKA_TMEA && restarts.has(event.id))
+      .map(event => event.id));
+  }
+
+  private withoutConcernContinuationSightings(
+    events: CachedInputEvent[],
+    approach: Approach,
+  ): CachedInputEvent[] {
+    const continuations = this.concernContinuationSightingIds(events, approach);
     return events.filter(event => !continuations.has(event.id));
   }
 

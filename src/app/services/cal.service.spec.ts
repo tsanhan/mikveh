@@ -1542,12 +1542,13 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
               .includes(e.outputEventType as DayType))).toBeFalse();
           }
           const beinonit = output.filter(e => e.outputEventType === DayType.ONA_BEINONIT);
+          const concernSource = selectedApproach.name === ApproachName.CHABAD ? bdika : veset;
           expect(beinonit.length).toBe(1);
-          expect(beinonit[0].sourceEventId).toBe(bdika.id);
-          expect(beinonit[0].segments[0].hebrewDate).toEqual(addHebrewDays(bdika.hebrewDate, 29));
+          expect(beinonit[0].sourceEventId).toBe(concernSource.id);
+          expect(beinonit[0].segments[0].hebrewDate).toEqual(addHebrewDays(concernSource.hebrewDate, 29));
           expect(output.filter(e => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
             .includes(e.outputEventType as DayType)).map(e => e.sourceEventId))
-            .toEqual([bdika.id]);
+            .toEqual([concernSource.id]);
 
           // Insert the same-day Hefsek before the Bdika to exercise canonical ordering.
           cache.setEvents([newHefsek, bdika, firstHefsek, veset]);
@@ -1561,7 +1562,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
           expect(cal.canAddHefsekTahara(bdika.simpleDate)).toBeFalse();
           expect(output.filter(e => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
             .includes(e.outputEventType as DayType)).map(e => e.sourceEventId))
-            .toEqual(selectedApproach.name === ApproachName.CHABAD ? [veset.id, bdika.id] : [bdika.id]);
+            .toEqual(selectedApproach.name === ApproachName.CHABAD ? [veset.id, bdika.id] : [veset.id]);
           if (selectedApproach.name === ApproachName.CHABAD) {
             expect(output.some(e => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT]
               .includes(e.outputEventType as DayType))).toBeFalse();
@@ -1574,22 +1575,26 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       for (const type of [InputEventType.VESET, InputEventType.BDIKA_TMEA]) {
         for (const date of ['2025-01-06', '2025-01-12']) {
           for (const ona of [InputEventOna.DAY, InputEventOna.NIGHT]) {
-            it(`${selectedApproach.name}/${type}/${date}/${ona}: replaces both concerns without a short haflaga in an interrupted count`, async () => {
+            it(`${selectedApproach.name}/${type}/${date}/${ona}: handles concerns correctly in an interrupted count`, async () => {
               approach.approach$.next(selectedApproach);
               const original = makeEvent('2025-01-01', InputEventType.VESET);
               const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
               const sighting = makeEvent(date, type, ona);
               const replacement = makeEvent(date, InputEventType.HEFSEK_TAHARA);
+              const concernSource = type === InputEventType.BDIKA_TMEA ? original : sighting;
               for (const events of [[sighting, hefsek, original], [replacement, sighting, hefsek, original]]) {
                 cache.setEvents(events);
                 const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
                 const average = output.filter(e => e.outputEventType === DayType.ONA_BEINONIT);
-                expect(average.map(e => e.sourceEventId)).toEqual([sighting.id]);
-                expect(average[0].segments).toEqual([{ hebrewDate: addHebrewDays(sighting.hebrewDate, 29), onah: ona }]);
+                expect(average.map(e => e.sourceEventId)).toEqual([concernSource.id]);
+                expect(average[0].segments).toEqual([{
+                  hebrewDate: addHebrewDays(concernSource.hebrewDate, 29),
+                  onah: concernSource.ona,
+                }]);
                 const monthly = output.filter(e => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
                   .includes(e.outputEventType as DayType));
-                expect(monthly.map(e => e.sourceEventId)).toEqual([sighting.id]);
-                expect(monthly[0].segments[0].onah).toBe(ona);
+                expect(monthly.map(e => e.sourceEventId)).toEqual([concernSource.id]);
+                expect(monthly[0].segments[0].onah).toBe(concernSource.ona);
                 expect(output.some(e => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT]
                   .includes(e.outputEventType as DayType))).toBeFalse();
               }
@@ -1615,9 +1620,10 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
           .filter(e => [DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT].includes(e.outputEventType as DayType));
 
         cache.setEvents([hefsek, original, prior]);
-        expect((await haflagot()).length).toBe(1);
+        const originalHaflaga = await haflagot();
+        expect(originalHaflaga.length).toBe(1);
         cal.addEvent(interruption);
-        expect(await haflagot()).toEqual([]);
+        expect(await haflagot()).toEqual(originalHaflaga);
         cal.addEvent(laterInterruption);
         expect(await haflagot()).toEqual([]);
         cal.addEvent(replacement);
@@ -1654,7 +1660,38 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
         expect(concerns[0].details).toContain('חשש וסת הפלגה - יום (13 ימים)');
       });
 
-      it(`${selectedApproach.name}: repeated interruptions replace only the current cycle's monthly concerns`, async () => {
+      it(`${selectedApproach.name}: a Bdika after seven completed clean days creates new concerns`, async () => {
+        approach.approach$.next(selectedApproach);
+        const original = makeEvent('2025-01-01', InputEventType.VESET);
+        const hefsek = makeEvent('2025-01-05', InputEventType.HEFSEK_TAHARA);
+        const bdika = makeEvent('2025-01-13', InputEventType.BDIKA_TMEA, InputEventOna.NIGHT);
+        cache.setEvents([original, hefsek, bdika]);
+
+        const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+        expect(output.filter(event => event.outputEventType === DayType.ONA_BEINONIT)
+          .map(event => event.sourceEventId)).toEqual([bdika.id]);
+        expect(output.filter(event => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
+          .includes(event.outputEventType as DayType)).map(event => event.sourceEventId))
+          .toEqual([original.id, bdika.id]);
+      });
+
+      it(`${selectedApproach.name}: an interrupting Bdika preserves a semi-fixed Veset state`, () => {
+        approach.approach$.next(selectedApproach);
+        const sightings = [
+          makeEvent('2024-09-01', InputEventType.VESET),
+          makeEvent('2024-10-03', InputEventType.VESET),
+          makeEvent('2024-11-04', InputEventType.VESET),
+          makeEvent('2024-12-06', InputEventType.VESET),
+        ];
+        const hefsek = makeEvent('2024-12-10', InputEventType.HEFSEK_TAHARA);
+        const bdika = makeEvent('2024-12-12', InputEventType.BDIKA_TMEA);
+
+        expect(cal.calculateVesetPatternState(
+          [...sightings, hefsek, bdika], selectedApproach, bdika.hebrewDate,
+        ).semiFixedSephardi).toBeTrue();
+      });
+
+      it(`${selectedApproach.name}: a Veset interruption replaces concerns while a Bdika preserves them`, async () => {
         approach.approach$.next(selectedApproach);
         const prior = makeEvent('2024-12-20', InputEventType.VESET);
         const priorHefsek = makeEvent('2024-12-24', InputEventType.HEFSEK_TAHARA);
@@ -1665,13 +1702,13 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
         const replacement = makeEvent('2025-01-08', InputEventType.HEFSEK_TAHARA);
         const second = makeEvent('2025-01-11', InputEventType.VESET, InputEventOna.NIGHT);
         cache.setEvents([second, replacement, first, hefsek, continuation, original, priorHefsek, prior]);
-        for (const latest of [second, first]) {
+        for (const [eventToRemove, concernSource] of [[second, second], [first, original]]) {
           const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
           expect(output.filter(e => e.outputEventType === DayType.ONA_BEINONIT)
-            .map(e => e.sourceEventId)).toEqual([latest.id]);
+            .map(e => e.sourceEventId)).toEqual([concernSource.id]);
           expect(output.filter(e => [DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
-            .includes(e.outputEventType as DayType)).map(e => e.sourceEventId)).toEqual([prior.id, latest.id]);
-          cal.removeEvent(latest);
+            .includes(e.outputEventType as DayType)).map(e => e.sourceEventId)).toEqual([prior.id, concernSource.id]);
+          cal.removeEvent(eventToRemove);
         }
       });
 
