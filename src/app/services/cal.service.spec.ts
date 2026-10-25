@@ -1038,7 +1038,7 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
       const start = all.find(e => e.outputEventType === DayType.CAN_START_CHECK_HEFSEK)!;
       expect(dayDiff(ketem.simpleDate, start.simpleDate)).toBe(0);
       expect(start.details).toEqual([
-        'המקלה לעשות הפסק טהרה היום לפני השקיעה יש לה על מה לסמוך; המחמירה תמתין ליום הרביעי. טוב לשטוף ולקנח היטב את אותו המקום לפני הבדיקה.',
+        'המקלה לעשות הפסק טהרה היום לפני השקיעה יש לה על מה לסמוך. טוב לשטוף ולקנח היטב את אותו המקום לפני הבדיקה. המחמירה תמתין ליום הרביעי.',
       ]);
       const reminderNow = new Date(start.simpleDate);
       reminderNow.setDate(reminderNow.getDate() - 1);
