@@ -136,6 +136,37 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     cal = TestBed.inject(CalService);
   });
 
+  describe('notification event stream', () => {
+    it('uses the same unique events as the displayed calendar', async () => {
+      cache.setEvents([
+        makeEvent('2026-10-01', InputEventType.VESET),
+        makeEvent('2026-10-05', InputEventType.HEFSEK_TAHARA),
+      ]);
+      const raw = await firstValueFrom(cal.calendarEvents$);
+      const rendered = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      expect(new Set(raw.map(e => e.id))).toEqual(new Set(rendered.map(e => e.id)));
+      const reminders = calendarReminders(raw, new Date(2026, 9, 1));
+      expect(reminders.filter(n => n.body.includes('ב־7 נקיים')).length).toBe(7);
+      // Night of Hebrew day 8 begins on the evening of civil day 7.
+      const mikveh = reminders.find(n => n.body.includes('ליל מקווה'))!;
+      expect(mikveh.schedule!.at).toEqual(new Date(2026, 9, 12, 9));
+    });
+
+    it('removes the former mikveh reminder when a sighting interrupts seven clean days', async () => {
+      const hefsek = makeEvent('2026-10-05', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([hefsek]);
+      const emitted: OutputEvent[][] = [];
+      const subscription = cal.calendarEvents$.subscribe(events => emitted.push(events));
+      expect(calendarReminders(emitted[0], new Date(2026, 9, 1)).some(n => n.body.includes('ליל מקווה'))).toBeTrue();
+      cache.setEvents([hefsek, makeEvent('2026-10-09', InputEventType.BDIKA_TMEA)]);
+      expect(calendarReminders(emitted[1], new Date(2026, 9, 1)).some(n => n.body.includes('ליל מקווה'))).toBeFalse();
+      cache.setEvents([]);
+      expect(emitted[2]).toEqual([]);
+      subscription.unsubscribe();
+    });
+
+  });
+
   describe('calendar days across daylight-saving transitions', () => {
     const transitions = [
       { name: 'spring', start: new Date(2026, 2, 25), first: new Date(2026, 2, 1), second: new Date(2026, 3, 1) },
