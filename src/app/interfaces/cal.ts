@@ -72,7 +72,7 @@ export enum DayType {
   VESET_KAVUA = 'vesetKavua',
 }
 
-export type FixedVesetKind = 'monthly-date' | 'dilug';
+export type FixedVesetKind = 'monthly-date' | 'dilug' | 'haflaga';
 export type FixedVesetStatus = 'active' | 'dormant';
 
 /** Derived fixed-veset state. Dormant patterns are retained for restoration. */
@@ -80,8 +80,13 @@ export interface FixedVesetPattern {
   kind: FixedVesetKind;
   status: FixedVesetStatus;
   ona: InputEventOna;
-  /** Zero for a fixed date; the monthly day-number change for dilug. */
+  /** The monthly day-number change for dilug; zero for other fixed patterns. */
   dayStep: number;
+  /** Present for a fixed haflaga; counted in onot for Chabad and days otherwise. */
+  interval?: number;
+  intervalUnit?: 'onot' | 'days';
+  /** Chabad treats two equal haflagot as fixed only lechumra. */
+  establishment?: 'chumra' | 'full';
   nextExpected: HebrewDateKey;
   /** Consecutive recorded sightings that did not match this fixed pattern. */
   consecutiveMisses: number;
@@ -92,6 +97,7 @@ export interface VesetPatternState {
   fixed: FixedVesetPattern | null;
   semiFixedSephardi: boolean;
   suppressesOnahBeinonit: boolean;
+  suppressesVesetHaChodesh: boolean;
 }
 
 export enum InputEventOna {

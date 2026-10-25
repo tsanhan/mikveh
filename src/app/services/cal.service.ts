@@ -593,7 +593,7 @@ export class CalService {
     if (includeHashashot) {
       const throughSighting = allEvents.filter(event => this.compareInputEvents(event, sightingEvent) <= 0);
       const concernEvents = this.withoutConcernContinuationSightings(throughSighting, approach);
-      const semiFixed = this.hasSephardiSemiFixedPattern(
+      const patternState = this.calculateVesetPatternState(
         concernEvents,
         approach,
         sightingEvent.hebrewDate,
@@ -602,10 +602,12 @@ export class CalService {
         rtn.push(this.calculateOnahBeinonit(
           sightingEvent,
           approach,
-          approach.name === ApproachName.SEPHARDI_OVADIA && semiFixed,
+          approach.name === ApproachName.SEPHARDI_OVADIA &&
+            patternState.semiFixedSephardi &&
+            patternState.fixed?.kind !== 'haflaga',
         ));
       }
-      if (!semiFixed) {
+      if (!patternState.suppressesVesetHaChodesh) {
         rtn.push(this.calculateVesetHaChodesh(sightingEvent));
       }
     }
@@ -625,13 +627,30 @@ export class CalService {
   ): VesetPatternState {
     const patternEvents = this.withoutConcernContinuationSightings(events, approach);
     const evaluationDate = asOf ?? this.defaultPatternEvaluationDate(patternEvents);
-    const { pattern } = this.deriveFixedVeset(patternEvents, evaluationDate, false);
+    const haflaga = this.deriveFixedHaflaga(patternEvents, approach, false, evaluationDate);
+    const monthly = this.deriveFixedVeset(patternEvents, evaluationDate, false);
+    const activeHaflaga = haflaga.pattern?.status === 'active' ? haflaga.pattern : null;
+    const pattern = activeHaflaga ?? monthly.pattern;
     const semiFixedSephardi = this.hasSephardiSemiFixedPattern(patternEvents, approach, evaluationDate);
+    const sightings = patternEvents
+      .filter(event => this.createsHashashot(event))
+      .filter(event => this.compareHebrewDates(event.hebrewDate, evaluationDate) <= 0)
+      .sort((a, b) => this.compareInputEvents(a, b));
+    const lastSighting = sightings[sightings.length - 1];
+    const fullHaflaga = activeHaflaga?.establishment === 'full';
+    const latestMatchesHaflaga = !!lastSighting &&
+      haflaga.lastFixedSighting?.id === lastSighting.id;
+    const latestMatchesMonthly = !!lastSighting &&
+      monthly.lastFixedSighting?.id === lastSighting.id;
     return {
       fixed: pattern,
       semiFixedSephardi,
-      suppressesOnahBeinonit: pattern?.status === 'active' ||
+      suppressesOnahBeinonit: !!fullHaflaga ||
+        (!activeHaflaga && monthly.pattern?.status === 'active') ||
         (semiFixedSephardi && approach.name !== ApproachName.SEPHARDI_OVADIA),
+      suppressesVesetHaChodesh: (!!fullHaflaga && latestMatchesHaflaga) ||
+        (!activeHaflaga && monthly.pattern?.status === 'active' && latestMatchesMonthly) ||
+        semiFixedSephardi,
     };
   }
 
@@ -641,9 +660,14 @@ export class CalService {
     asOf?: HebrewDateKey,
   ): OutputEvent[] {
     const patternEvents = this.withoutConcernContinuationSightings(events, approach);
+    const evaluationDate = asOf ?? this.defaultPatternEvaluationDate(patternEvents);
+    // Without an explicit historical snapshot, include a later recorded
+    // Hefsek: the next fixed Chabad haflaga is anchored from that Hefsek.
+    const haflaga = this.deriveFixedHaflaga(patternEvents, approach, true, asOf);
+    if (haflaga.pattern?.status === 'active') return haflaga.concerns;
     return this.deriveFixedVeset(
       patternEvents,
-      asOf ?? this.defaultPatternEvaluationDate(patternEvents),
+      evaluationDate,
       true,
     ).concerns;
   }
@@ -670,7 +694,7 @@ export class CalService {
     approach: Approach,
   ): boolean {
     const throughSighting = allEvents.filter(event =>
-      this.createsHashashot(event) && this.compareInputEvents(event, sighting) <= 0,
+      this.compareInputEvents(event, sighting) <= 0,
     );
     return this.calculateVesetPatternState(
       throughSighting,
@@ -877,15 +901,179 @@ export class CalService {
     };
   }
 
+  private deriveFixedHaflaga(
+    events: CachedInputEvent[],
+    approach: Approach,
+    includeConcerns: boolean,
+    asOf?: HebrewDateKey,
+  ): {
+    pattern: FixedVesetPattern | null;
+    concerns: OutputEvent[];
+    lastFixedSighting?: CachedInputEvent;
+  } {
+    const sorted = events
+      .filter(event => !asOf || this.compareHebrewDates(event.hebrewDate, asOf) <= 0)
+      .sort((a, b) => this.compareInputEvents(a, b));
+    const measurements: Array<{
+      interval: number;
+      end: CachedInputEvent;
+      ona: InputEventOna;
+    }> = [];
+    let pendingHefsek: CachedInputEvent | undefined;
+    let latestSighting: CachedInputEvent | undefined;
+
+    if (approach.name === ApproachName.CHABAD) {
+      let hasSighting = false;
+      for (const event of sorted) {
+        if (event.type === InputEventType.HEFSEK_TAHARA) {
+          pendingHefsek = hasSighting ? event : undefined;
+          continue;
+        }
+        if (!this.createsHashashot(event)) continue;
+        latestSighting = event;
+        if (pendingHefsek) {
+          measurements.push({
+            interval: this.chabadHaflagaIntervalOnot(pendingHefsek, event),
+            end: event,
+            ona: event.ona,
+          });
+        }
+        hasSighting = true;
+        pendingHefsek = undefined;
+      }
+    } else {
+      const sightings = sorted.filter(event => this.createsHashashot(event));
+      latestSighting = sightings[sightings.length - 1];
+      const restarts = this.cleanCountRestarts(sorted);
+      for (let index = 1; index < sightings.length; index++) {
+        const end = sightings[index];
+        if (restarts.has(end.id)) continue;
+        measurements.push({
+          interval: this.compareHebrewDates(end.hebrewDate, sightings[index - 1].hebrewDate) + 1,
+          end,
+          ona: end.ona,
+        });
+      }
+    }
+
+    let pattern: FixedVesetPattern | null = null;
+    let lastFixedSighting: CachedInputEvent | undefined;
+    let establishedAt = -1;
+    const sameMeasurement = (
+      left: { interval: number; ona: InputEventOna },
+      right: { interval: number; ona: InputEventOna },
+    ) => left.interval === right.interval &&
+      (approach.name === ApproachName.CHABAD || left.ona === right.ona);
+    const makePattern = (index: number, establishment: 'chumra' | 'full'): FixedVesetPattern => ({
+      kind: 'haflaga',
+      status: 'active',
+      ona: measurements[index].ona,
+      dayStep: 0,
+      interval: measurements[index].interval,
+      intervalUnit: approach.name === ApproachName.CHABAD ? 'onot' : 'days',
+      establishment,
+      // A Chabad target is contingent on the next Hefsek. Until it exists,
+      // retain the establishing sighting as the state cursor.
+      nextExpected: { ...measurements[index].end.hebrewDate },
+      consecutiveMisses: 0,
+      establishedByEventId: measurements[index].end.id,
+    });
+
+    for (let index = 0; index < measurements.length; index++) {
+      const measurement = measurements[index];
+      if (pattern && index > establishedAt) {
+        const matches = measurement.interval === pattern.interval &&
+          (approach.name === ApproachName.CHABAD || measurement.ona === pattern.ona);
+        if (pattern.establishment === 'chumra') {
+          if (matches) {
+            pattern.establishment = 'full';
+            pattern.establishedByEventId = measurement.end.id;
+            pattern.consecutiveMisses = 0;
+            establishedAt = index;
+            lastFixedSighting = measurement.end;
+          } else {
+            pattern = null;
+            lastFixedSighting = undefined;
+          }
+        } else if (pattern.status === 'active') {
+          if (matches) {
+            pattern.consecutiveMisses = 0;
+            lastFixedSighting = measurement.end;
+          } else {
+            pattern.consecutiveMisses++;
+            if (pattern.consecutiveMisses === 3) pattern.status = 'dormant';
+          }
+        } else if (matches) {
+          pattern.status = 'active';
+          pattern.consecutiveMisses = 0;
+          lastFixedSighting = measurement.end;
+        }
+      }
+
+      const lastThree = measurements.slice(Math.max(0, index - 2), index + 1);
+      if (lastThree.length === 3 &&
+          sameMeasurement(lastThree[0], lastThree[1]) &&
+          sameMeasurement(lastThree[1], lastThree[2]) &&
+          (!pattern || pattern.status === 'dormant' ||
+            pattern.interval !== measurement.interval || pattern.ona !== measurement.ona)) {
+        pattern = makePattern(index, 'full');
+        establishedAt = index;
+        lastFixedSighting = measurement.end;
+      } else if (!pattern && approach.name === ApproachName.CHABAD && index >= 1 &&
+          sameMeasurement(measurements[index - 1], measurement)) {
+        pattern = makePattern(index, 'chumra');
+        establishedAt = index;
+        lastFixedSighting = measurement.end;
+      }
+    }
+
+    const concerns: OutputEvent[] = [];
+    if (pattern?.status === 'active' && includeConcerns && latestSighting) {
+      let source: CachedInputEvent | undefined;
+      let target: HebrewDateKey | undefined;
+      let ona = pattern.ona;
+      if (approach.name === ApproachName.CHABAD && pendingHefsek && pattern.interval) {
+        source = pendingHefsek;
+        ona = pattern.interval % 2 === 0 ? InputEventOna.DAY : InputEventOna.NIGHT;
+        target = addHebrewDays(pendingHefsek.hebrewDate, Math.ceil(pattern.interval / 2));
+      } else if (approach.name !== ApproachName.CHABAD && pattern.interval) {
+        source = latestSighting;
+        target = addHebrewDays(latestSighting.hebrewDate, pattern.interval - 1);
+      }
+      if (source && target) {
+        pattern.nextExpected = { ...target };
+        const unit = pattern.intervalUnit === 'onot' ? 'עונות' : 'ימים';
+        const qualifier = pattern.establishment === 'chumra' ? ' (לחומרא)' : '';
+        const hdate = hebrewDateKeyToHDate(target);
+        concerns.push({
+          id: this.concernId(DayType.VESET_KAVUA, source, hdate),
+          sourceEventId: source.id,
+          segments: [this.onahRef(target, ona)],
+          CachedInputEventRef: { ...source },
+          simpleDate: hdate.greg(),
+          date: HDateToNgbDateStruct(hdate),
+          outputEventType: DayType.VESET_KAVUA,
+          details: [`חשש וסת הפלגה קבוע${qualifier} - ${this.onaLabel(ona)} (${pattern.interval} ${unit})`],
+        });
+      }
+    }
+
+    return { pattern, concerns, lastFixedSighting };
+  }
+
   private compareHebrewDates(a: HebrewDateKey, b: HebrewDateKey): number {
     return hebrewDateKeyToHDate(a).abs() - hebrewDateKeyToHDate(b).abs();
   }
 
   private getHaflagaHashashot(events: CachedInputEvent[], approach: Approach): OutputEvent[] {
     const intervalEvents = this.withoutConcernContinuationSightings(events, approach);
-    const { lastFixedSighting } = this.deriveFixedVeset(
+    const fixedHaflaga = this.deriveFixedHaflaga(intervalEvents, approach, false);
+    const monthly = this.deriveFixedVeset(
       intervalEvents, this.defaultPatternEvaluationDate(intervalEvents), false,
     );
+    const lastFixedSighting = fixedHaflaga.pattern
+      ? fixedHaflaga.lastFixedSighting
+      : monthly.lastFixedSighting;
     // Establishing or returning to the fixed veset cancels accumulated
     // haflagot. Keep that boundary even if later deviations make it dormant;
     // only intervals starting with this sighting can create new concerns.

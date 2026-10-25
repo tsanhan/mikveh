@@ -11,6 +11,7 @@ import {
   CachedInputEvent,
   CalEventDict,
   DayType,
+  HebrewDateKey,
   InputEventOna,
   InputEventType,
   OutputEvent,
@@ -1845,6 +1846,107 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
         ona,
       ));
     };
+
+    const chabadFixedHaflaga = (sightingCount: number) => {
+      const start = { year: 5787, month: months.TISHREI, day: 1 };
+      const events: CachedInputEvent[] = [];
+      let sightingDate: HebrewDateKey = start;
+      for (let index = 0; index < sightingCount; index++) {
+        const sighting = makeHebrewEvent(
+          hebrewDateKeyToHDate(sightingDate), InputEventType.VESET, InputEventOna.DAY,
+        );
+        events.push(sighting);
+        const hefsekDate = addHebrewDays(sightingDate, 4);
+        events.push(makeHebrewEvent(
+          hebrewDateKeyToHDate(hefsekDate), InputEventType.HEFSEK_TAHARA,
+        ));
+        // Daytime on the 16th day after the Hefsek is exactly 32 onot.
+        sightingDate = addHebrewDays(hefsekDate, 16);
+      }
+      return events;
+    };
+
+    it('Chabad establishes 32-onah haflaga lechumra after three sightings without removing other concerns', async () => {
+      approach.approach$.next(APPROACH_CHABAD);
+      const events = chabadFixedHaflaga(3);
+      const sightings = events.filter(event => event.type === InputEventType.VESET);
+      const latest = sightings[sightings.length - 1];
+      const latestHefsek = events[events.length - 1];
+      const state = cal.calculateVesetPatternState(events, APPROACH_CHABAD, latestHefsek.hebrewDate);
+      expect(state.fixed).toEqual(jasmine.objectContaining({
+        kind: 'haflaga', interval: 32, intervalUnit: 'onot', establishment: 'chumra',
+      }));
+      expect(state.suppressesOnahBeinonit).toBeFalse();
+      expect(state.suppressesVesetHaChodesh).toBeFalse();
+
+      cache.setEvents(events);
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const fixed = output.find(event => event.outputEventType === DayType.VESET_KAVUA)!;
+      expect(fixed).toBeTruthy();
+      expect(fixed.details[0]).toContain('חשש וסת הפלגה קבוע (לחומרא)');
+      expect(fixed.details[0]).toContain('(32 עונות)');
+      expect(fixed.details[0]).not.toContain('דילוג');
+      expect(dayDiff(latestHefsek.simpleDate, fixed.simpleDate)).toBe(16);
+      expect(output.some(event => event.sourceEventId === latest.id &&
+        event.outputEventType === DayType.ONA_BEINONIT)).toBeTrue();
+      expect(output.some(event => event.sourceEventId === latest.id &&
+        event.outputEventType === DayType.VESET_HACHODESH_DAY)).toBeTrue();
+    });
+
+    it('Chabad fully establishes 32-onah haflaga after four sightings and leaves only its fixed concern', async () => {
+      approach.approach$.next(APPROACH_CHABAD);
+      const events = chabadFixedHaflaga(4);
+      const sightings = events.filter(event => event.type === InputEventType.VESET);
+      const latest = sightings[sightings.length - 1];
+      const latestHefsek = events[events.length - 1];
+      const state = cal.calculateVesetPatternState(events, APPROACH_CHABAD, latestHefsek.hebrewDate);
+      expect(state.fixed).toEqual(jasmine.objectContaining({
+        kind: 'haflaga', interval: 32, intervalUnit: 'onot', establishment: 'full',
+      }));
+      expect(state.suppressesOnahBeinonit).toBeTrue();
+      expect(state.suppressesVesetHaChodesh).toBeTrue();
+
+      cache.setEvents(events);
+      const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+      const fixed = output.filter(event => event.outputEventType === DayType.VESET_KAVUA);
+      expect(fixed.length).toBe(1);
+      expect(fixed[0].details[0]).toContain('חשש וסת הפלגה קבוע - יום (32 עונות)');
+      expect(fixed[0].details[0]).not.toContain('דילוג');
+      expect(dayDiff(latestHefsek.simpleDate, fixed[0].simpleDate)).toBe(16);
+      expect(output.some(event => event.sourceEventId === latest.id &&
+        [DayType.ONA_BEINONIT, DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
+          .includes(event.outputEventType as DayType))).toBeFalse();
+    });
+
+    for (const sephardi of [APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU]) {
+      it(`${sephardi.name}: establishes a fixed 32-day haflaga on the fourth sighting without losing a day`, async () => {
+        approach.approach$.next(sephardi);
+        const start = { year: 5787, month: months.TISHREI, day: 1 };
+        const sightings = [0, 31, 62, 93].map(offset => makeHebrewEvent(
+          hebrewDateKeyToHDate(addHebrewDays(start, offset)),
+          InputEventType.VESET,
+          InputEventOna.DAY,
+        ));
+        const latest = sightings[sightings.length - 1];
+        const state = cal.calculateVesetPatternState(sightings, sephardi, latest.hebrewDate);
+        expect(state.fixed).toEqual(jasmine.objectContaining({
+          kind: 'haflaga', interval: 32, intervalUnit: 'days', establishment: 'full',
+        }));
+        expect(state.suppressesOnahBeinonit).toBeTrue();
+        expect(state.suppressesVesetHaChodesh).toBeTrue();
+
+        cache.setEvents(sightings);
+        const output = flatten(await firstValueFrom(cal.highlightedInputEvents$));
+        const fixed = output.filter(event => event.outputEventType === DayType.VESET_KAVUA);
+        expect(fixed.length).toBe(1);
+        expect(fixed[0].details[0]).toContain('חשש וסת הפלגה קבוע - יום (32 ימים)');
+        expect(fixed[0].details[0]).not.toContain('דילוג');
+        expect(dayDiff(latest.simpleDate, fixed[0].simpleDate)).toBe(31);
+        expect(output.some(event => event.sourceEventId === latest.id &&
+          [DayType.ONA_BEINONIT, DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT]
+            .includes(event.outputEventType as DayType))).toBeFalse();
+      });
+    }
 
     it('establishes a same-date fixed veset only after three consecutive occurrences', () => {
       const [first, second, third] = monthlySightings([1, 1, 1]);
