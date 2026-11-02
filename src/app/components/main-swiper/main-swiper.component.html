@@ -2,7 +2,7 @@
 <swiper-container
   #swiper
   class="mySwiper" dir="rtl" thumbs-swiper=".mySwiper2" space-between="10">
-  @for(topic of topics$ | async; track topic; let idx = $index) {
+  @for(topic of topics$ | async; track topic.id; let idx = $index) {
   
     <swiper-slide>
     <ion-card >
@@ -70,9 +70,6 @@
                   </table>
                 </div>
               }
-              @default {
-                {{contentObj.data}}
-              }
             }
 
           </div>
@@ -80,6 +77,13 @@
           }
         }
       </div>
+      @if (ads$ | async; as ads) {
+        @if (ads.length) {
+          <div class="advertisements" aria-label="פרסומות">
+            @for (ad of ads; track ad.id) { <img [src]="ad.image" alt="פרסומת" loading="lazy" /> }
+          </div>
+        }
+      }
     </ion-card>
   </swiper-slide>
   }

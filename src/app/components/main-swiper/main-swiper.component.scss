@@ -120,3 +120,21 @@ ion-card > .img {
     line-height: 1.2;
   }
 }
+
+.advertisements {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 1rem;
+  scroll-snap-type: x mandatory;
+  img {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    aspect-ratio: 6 / 1;
+    object-fit: cover;
+    scroll-snap-align: start;
+  }
+}

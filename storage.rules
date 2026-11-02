@@ -1,0 +1,33 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAppAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.auth.token.email in [
+          'rubinshai@gmail.com',
+          'shai.rubin@xorcom.com',
+          '770ganani@gmail.com',
+          'tsanhan@gmail.com',
+          'adraha.hatanim@gmail.com',
+          'hassidut.gilo@gmail.com'
+        ];
+    }
+    match /published/content/{file} {
+      allow get: if file.matches('[a-zA-Z0-9_-]+[.]json');
+      allow create: if isAppAdmin() && file.matches('[a-zA-Z0-9_-]+[.]json')
+        && request.resource.size > 0 && request.resource.size <= 2 * 1024 * 1024
+        && request.resource.contentType == 'application/json';
+      allow update, delete: if false;
+    }
+    match /published/media/{file} {
+      allow get: if file.matches('[a-f0-9]{64}[.]jpg');
+      allow create: if isAppAdmin() && file.matches('[a-f0-9]{64}[.]jpg')
+        && request.resource.size > 0 && request.resource.size <= 512 * 1024
+        && request.resource.contentType == 'image/jpeg';
+      allow update, delete: if false;
+    }
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}

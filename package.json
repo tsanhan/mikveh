@@ -9,7 +9,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "admin:start": "ng serve admin --host 127.0.0.1 --port 8200",
+    "admin:build": "ng build admin"
   },
   "private": true,
   "dependencies": {

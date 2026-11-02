@@ -1,0 +1,39 @@
+<main>
+  <header>
+    <p class="brand">מקווה</p>
+    <h1>ניהול האפליקציה</h1>
+    <p>גישה למנהלי האפליקציה בלבד</p>
+  </header>
+  <section aria-label="כניסה לניהול">
+    @switch (auth.state()) {
+      @case ('loading') {
+        <p role="status">בודק הרשאות…</p>
+      }
+      @case ('allowed') {
+        <div class="account-bar">
+          <p class="account" dir="ltr">{{ auth.email() }}</p>
+          <button type="button" class="secondary small" [disabled]="auth.busy()" (click)="auth.signOut()">יציאה</button>
+        </div>
+        <app-content-editor />
+      }
+      @case ('denied') {
+        <h2>אין הרשאת ניהול לחשבון זה</h2>
+        <p class="account" dir="ltr">{{ auth.email() }}</p>
+        <p>יש להתחבר עם חשבון מנהל מורשה.</p>
+      }
+      @case ('signedOut') {
+        <h2>כניסה למערכת</h2>
+        <p>התחברו עם חשבון Google שהוגדר כמנהל.</p>
+      }
+    }
+    @if (auth.error()) { <p role="alert">{{ auth.error() }}</p> }
+    @if (auth.state() === 'signedOut' || auth.state() === 'error') {
+      <button type="button" [disabled]="auth.busy()" (click)="auth.signIn()">
+        {{ auth.busy() ? 'מתחבר…' : 'כניסה עם Google' }}
+      </button>
+    }
+    @if (auth.email() && auth.state() !== 'allowed') {
+      <button type="button" class="secondary" [disabled]="auth.busy()" (click)="auth.signOut()">יציאה מהחשבון</button>
+    }
+  </section>
+</main>

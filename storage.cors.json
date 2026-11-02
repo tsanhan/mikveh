@@ -1,0 +1,25 @@
+[
+  {
+    "origin": [
+      "https://mikveh4u.web.app",
+      "https://mikveh4u.firebaseapp.com",
+      "https://localhost",
+      "capacitor://localhost",
+      "http://localhost:8100",
+      "http://127.0.0.1:8100",
+      "http://localhost:4200",
+      "http://127.0.0.1:4200",
+      "http://localhost:8200",
+      "http://127.0.0.1:8200"
+    ],
+    "method": [
+      "GET"
+    ],
+    "responseHeader": [
+      "Content-Type",
+      "Content-Length",
+      "ETag"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]

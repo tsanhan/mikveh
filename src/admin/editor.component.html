@@ -1,0 +1,80 @@
+<div class="editor">
+  <p>ערכו ולחצו על „שמירת השינויים” כדי לעדכן את האפליקציה.</p>
+  @if (error()) { <p role="alert">{{ error() }}</p> }
+  @if (message()) { <p role="status">{{ message() }}</p> }
+  @if (busy()) { <p role="status">מבצע פעולה…</p> }
+  @if (conflict() || (!bundle && !busy())) {
+    <button class="secondary" [disabled]="busy()" (click)="reload()">טעינת התוכן העדכני</button>
+  }
+  @if (bundle) {
+    <fieldset [disabled]="busy()">
+      <nav class="actions" aria-label="סוג תוכן">
+        <button [class.secondary]="tab !== 'content'" (click)="tab = 'content'">תכנים</button>
+        <button [class.secondary]="tab !== 'ads'" (click)="tab = 'ads'">פרסומות</button>
+      </nav>
+      @if (tab === 'content') {
+        <div class="selectors">
+          <label>נושא<select [(ngModel)]="topicIndex">
+            @for (item of bundle.topics; track item.id; let index = $index) { <option [ngValue]="index">{{ item.title }}</option> }
+          </select></label>
+          @if (!shared) { <label>שיטה<select [(ngModel)]="approach">
+            @for (item of approaches; track item.id) { <option [value]="item.id">{{ item.title }}</option> }
+          </select></label> }
+        </div>
+        @if (shared) { <p class="note">התוכן בנושא הזה משותף לכל השיטות.</p> }
+        <label>כותרת<input [(ngModel)]="topic.title" (ngModelChange)="change()" /></label>
+        <label>כותרת משנה<input [(ngModel)]="topic.subtitle" (ngModelChange)="change()" /></label>
+        @for (block of blocks; track block; let index = $index) {
+          <article class="block">
+            <div class="block-heading">
+              <strong>פסקה {{ index + 1 }} · {{ block.type === 'table' ? 'טבלה' : block.type === 'img' ? 'תמונה' : block.type === 'bold' ? 'טקסט מודגש' : block.type === 'headline' ? 'כותרת' : 'טקסט' }}</strong>
+              <details><summary>אפשרויות</summary><div class="actions">
+                <button class="secondary small" [disabled]="index === 0" (click)="move(blocks, index, -1)">למעלה</button>
+                <button class="secondary small" [disabled]="index === blocks.length - 1" (click)="move(blocks, index, 1)">למטה</button>
+                <button class="secondary small" [disabled]="blocks.length <= 1" (click)="remove(blocks, index)">הסרה</button>
+              </div></details>
+            </div>
+            @if (block.onlyApproaches?.length) { <p class="note">פסקה זו מוצגת רק לשיטות שהוגדרו עבורה בקובץ המקור.</p> }
+            @switch (block.type) {
+              @case ('table') {
+                <div class="table-scroll"><table>
+                  @for (row of block.data; track $index; let rowIndex = $index) { <tr>
+                    @for (cell of row; track $index; let columnIndex = $index) {
+                      <td><textarea [attr.aria-label]="'פסקה ' + (index + 1) + ', שורה ' + (rowIndex + 1) + ', עמודה ' + (columnIndex + 1)" [(ngModel)]="row[columnIndex]" (ngModelChange)="change()"></textarea></td>
+                    }
+                  </tr> }
+                </table></div>
+              }
+              @case ('img') { <img class="preview" [src]="image(block.data)" alt="תמונה בתוכן" /> }
+              @default { <textarea rows="5" [attr.aria-label]="'תוכן פסקה ' + (index + 1)" [(ngModel)]="block.data" (ngModelChange)="change()"></textarea> }
+            }
+          </article>
+        }
+        <div class="actions">
+          <button class="secondary" (click)="add('text')">הוספת פסקה</button>
+          <label class="upload">הוספת תמונה<input type="file" accept="image/jpeg,image/png,image/webp" (change)="upload($event, false)" /></label>
+        </div>
+      } @else {
+        <h3>פרסומות מתמונות בלבד</h3>
+        <p>התמונות הפעילות יוצגו בתחתית עמוד התוכן לפי הסדר. ניתן להוסיף עד 10 תמונות.</p>
+        @for (ad of bundle.ads; track ad.id; let index = $index) {
+          <article class="block">
+            <img class="preview" [src]="image(ad.image)" [alt]="'פרסומת ' + (index + 1)" />
+            <label class="checkbox"><input type="checkbox" [(ngModel)]="ad.enabled" (ngModelChange)="change()" /> פעילה</label>
+            <div class="actions">
+              <button class="secondary small" [disabled]="index === 0" (click)="move(bundle.ads!, index, -1)">למעלה</button>
+              <button class="secondary small" [disabled]="index === bundle.ads!.length - 1" (click)="move(bundle.ads!, index, 1)">למטה</button>
+              <button class="secondary small" (click)="remove(bundle.ads!, index)">הסרת פרסומת</button>
+            </div>
+          </article>
+        }
+        @if (bundle.ads!.length < 10) { <label class="upload">הוספת פרסומת<input type="file" accept="image/jpeg,image/png,image/webp" (change)="upload($event, true)" /></label> }
+      }
+      <p class="note">תמונות יוקטנו אוטומטית ויוצגו באפליקציה לאחר שמירת השינויים. יש להעלות רק תמונות המיועדות לפרסום.</p>
+      <div class="publish-bar actions">
+        <button [disabled]="!dirty || conflict()" (click)="publish()">{{ busy() ? 'שומר…' : 'שמירת השינויים' }}</button>
+        @if (dirty) { <span>יש שינויים שעדיין לא נשמרו לאפליקציה</span> }
+      </div>
+    </fieldset>
+  }
+</div>

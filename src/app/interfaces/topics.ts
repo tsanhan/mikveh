@@ -1,6 +1,7 @@
 export interface Topic {
   id: string;
   title: string;
+  shortTitle?: string;
   src: string;
   content: Content;
   subtitle: string;

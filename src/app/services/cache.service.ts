@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Storage, } from '@ionic/storage-angular';
 import locations from '../../assets/data/locations.json';
-import topicsJson from '../../assets/data/topics.json';
+import { ContentSyncService } from './content-sync.service';
 import { Location } from '../interfaces/locations';
 import { IMikveh } from '../interfaces/mikveh.interface';
 import { BehaviorSubject, map, Observable, shareReplay, tap } from 'rxjs';
@@ -48,8 +48,7 @@ export class CacheService {
   //#endregion
 
   //#region Topics
-  private _topics$ = new BehaviorSubject<any[]>(Array.from(topicsJson));
-  public topics$ = this._topics$.asObservable();
+  public topics$ = inject(ContentSyncService).topics$;
   //#endregion
 
 
@@ -65,7 +64,6 @@ export class CacheService {
   //#endregion
 
   constructor() {
-    console.log(this._topics$.getValue());
     this.locations$ = new BehaviorSubject(locations);
     this._location$ = new BehaviorSubject<Location>(this.locations$.getValue()['Jerusalem']);
     this.location$ = this._location$.asObservable();

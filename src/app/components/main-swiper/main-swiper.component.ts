@@ -17,6 +17,7 @@ import {
   document,
   globe,
 } from 'ionicons/icons';
+import { ContentSyncService } from 'src/app/services/content-sync.service';
 import { CacheService } from 'src/app/services/cache.service';
 import { withLatestFrom } from 'rxjs';
 import { ApproachService } from 'src/app/services/approach.service';
@@ -39,6 +40,7 @@ export class MainSwiperComponent implements AfterViewInit {
   @ViewChild('swiper') swiperRef!: ElementRef;
 
   topics$ = this.cache.topics$;
+  ads$ = inject(ContentSyncService).ads$;
   selectedApproach$ = this.approach.approach$;
 
   constructor( ) {

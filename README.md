@@ -84,7 +84,26 @@ Main pieces of code:
 
 The [Google Docs review folder](https://drive.google.com/drive/folders/1IgZlGHdgqoOng1TFGq9wnfzl1t40WoB8) is the source of truth for the app's explanatory content. The rabbi edits these documents first; update the app from those edits. Do not change the review documents to match older app text.
 
-The five documents cover Chabad, Rav Ovadia Yosef, Rav Mordechai Eliyahu, the introduction and stories. Their latest imported snapshots are in `content/google-docs/`, including document URLs and revision IDs. These are local snapshots, not a live connection to Drive. Refresh all five from the connected Google Docs reader before importing a new review. Preserve paragraph text, paragraph-wide bold flags, named styles, native list definitions and bullets, and every table row/cell in the snapshot structure. A paragraph is marked bold when all its nonempty text runs are bold in the source.
+The five documents cover Chabad, Rav Ovadia Yosef, Rav Mordechai Eliyahu, the introduction and stories. Their latest imported snapshots are in `content/google-docs/`, including document URLs and revision IDs. These are local snapshots, not a live connection to Drive. Refresh all five from the final approved documents before importing a new review: use the connected Google Docs reader for native Docs, or convert finalized Word files into the same snapshot format. Do not substitute older Drive copies for the proofread files. Preserve paragraph text, paragraph-wide bold flags, named styles, native list definitions and bullets, and every table row/cell in the snapshot structure. A paragraph is marked bold when all its nonempty text runs are bold in the source.
+
+The existing content is complete. Batzion Shlomi (בת ציון שלומי) is professionally
+proofreading the same five documents and will deliver all five finalized files
+together. Phase D uses the current JSON in the meantime. Import the final approved
+set together when it arrives; do not replace it with isolated interim attachments.
+
+For an import intended for the admin publishing workflow, export a separate candidate:
+
+```bash
+python3 scripts/sync_reviewed_topics.py --output /tmp/reviewed-topics-candidate.json
+```
+
+This refuses to overwrite an existing file, leaves the bundled JSON untouched,
+and never writes to Firebase. The `--write` option below updates the bundled
+fallback only. It must never double as a production publishing command.
+Once admin editing is available, compare each import candidate with the current
+published content and review differences before explicitly publishing. Do not
+automatically publish imports or replace admin drafts. If the published revision
+changes during review, recheck the differences before publishing.
 
 Import the refreshed snapshots and check for differences with:
 
@@ -98,6 +117,194 @@ The importer keeps the source wording, punctuation, list numbers and table marke
 Each approach uses the same ID and content key: `chabad`, `sfarad_ovadia` (Rav Ovadia Yosef), or `sfarad_mordechai_eliyahu` (Rav Mordechai Eliyahu). Use these same keys in the approach definitions, topic data and content importer.
 
 After importing, build and verify the app, then rebuild the Android APK. A previously generated APK still contains the content from its own build.
+
+## Phase D — content synchronization (first increment)
+
+`ContentSyncService` supplies the existing `CacheService.topics$` stream. It exposes
+the bundled JSON immediately, restores the last valid downloaded bundle from Ionic
+Storage, then checks for cloud updates in the background. Calendar initialization
+does not wait for the network. No personal calendar data is uploaded.
+
+Cloud checks are **enabled in both environment files** (`contentSyncEnabled: true`).
+Production content activation was approved and completed on November 2, 2026:
+`appContent/current` points to `published/content/initial-0edd2429c759.json`, containing
+the existing complete JSON content without editorial changes. The 325,259-byte
+bundle has SHA-256 `0edd2429c759f426d2aeb35bb2a38d7c2b185e90979834937a6e20255bbf4cc9`.
+No Hosting deployment or mobile release was performed; the local app connects to
+the real Firebase project. Existing installed builds still need an app update to
+acquire this synchronization mechanism.
+
+`firestore.rules` grants public single-document reads only at `appContent/current`;
+existing mikveh rules are preserved. `storage.rules` grants public single-object
+downloads only for `published/content/*.json`. Client writes and content/file
+listing stay denied. These rules were explicitly approved and published through
+the Firebase console using `rubinshai@gmail.com`.
+
+The bucket is in `US-CENTRAL1`. Its initially empty CORS configuration was updated
+through an approved Cloud Shell session using `storage.cors.json` (GET only from
+the Hosting, Capacitor and local development origins listed there). This is an
+administration tool; no backend server or Function was added. Future CORS updates
+must inspect the live configuration first and preserve any unrelated entries.
+
+The read-only cloud contract is:
+
+```text
+Firestore: appContent/current
+{
+  "schemaVersion": 1,
+  "content": {
+    "version": "revision-1",
+    "path": "published/content/revision-1.json",
+    "sha256": "<lowercase SHA-256 of the exact uploaded JSON bytes>"
+  }
+}
+
+Storage: published/content/revision-1.json
+{ "schemaVersion": 1, "topics": [ ...existing topics.json format... ] }
+```
+
+Upload an immutable bundle first; update the manifest only after upload succeeds.
+Paths must stay within `published/content/` and use a filename containing only
+letters, numbers, hyphens or underscores followed by `.json`. A rollback points to
+an older bundle; clients compare hashes rather than increasing version numbers.
+The admin build contains the publisher described below; the mobile app only reads.
+
+When enabled, startup, foreground and connectivity events trigger a single document
+check, at most once per hour across launches (including failed attempts).
+`ContentSyncService.refresh(true)` bypasses that interval for an explicit retry;
+concurrent requests share the same work. There is no polling or realtime listener.
+An unchanged SHA-256 skips the bundle download. Manifest and download waits are
+bounded to 15 seconds each; the underlying Firebase SDK request may finish later,
+but its late result cannot activate content after a timeout.
+
+Downloads are limited to 2 MiB and checked for SHA-256, supported schema, the existing
+10 topic IDs in their current order, all three approach keys, known block types and
+rectangular tables. The order stays fixed while category/header images still use
+positional bundled paths. One complete cache record is persisted before its content
+is displayed. Invalid, missing, denied or interrupted updates and failed cache
+writes preserve the previous content. A corrupt cache falls back to bundled JSON.
+Cache keys are separate from calendar/user settings and are never written by the importer.
+
+Content images and image-only advertisements use immutable
+`published/media/<SHA-256>.jpg` paths. New media is downloaded once, checked for
+size/JPEG signature/hash, and persisted with the complete bundle before activation.
+The same image is reused across blocks, ads and later text revisions. View models
+resolve the stored paths to local data URLs; the canonical JSON remains unchanged.
+A failed image download preserves the entire previous release. Images are bounded
+to 512 KiB each and at most 12 distinct images (6 MiB binary) per release.
+Existing category/header artwork remains bundled and positional. Offline loading
+of the web app shell (PWA) remains outside this increment.
+
+Live verification covered public manifest reads through the Firebase SDK, exact
+bundle bytes/hash, an actual browser download/cache save, and an unchanged-content
+check without another bundle download. Updates happen automatically on startup and
+resume (at most once an hour); the end-user interface has no update button or
+technical sync status. Automated tests cover offline/corrupt/
+interrupted updates with a fake cloud source and local storage. Android/iOS native
+offline/relaunch verification remains required before a mobile release.
+
+## Phase D — admin sign-in (second increment)
+
+The admin site is a separate Angular build in the same workspace, using the existing
+Firebase project and dependencies. It does not load the mobile app, calendar or
+location services. Start it with `npm run admin:start` and open
+`http://localhost:8200` (use `localhost`, which is an authorized Firebase Auth domain).
+`npm run admin:build` builds the production site into `www-admin/browser`.
+It has not yet been deployed to Hosting.
+
+Google sign-in was enabled in Firebase using the existing public project name
+`project-136996094637` and existing support email. Only these six explicitly
+approved application admins are accepted:
+
+- `rubinshai@gmail.com`
+- `shai.rubin@xorcom.com`
+- `770ganani@gmail.com`
+- `tsanhan@gmail.com`
+- `adraha.hatanim@gmail.com`
+- `hassidut.gilo@gmail.com`
+
+Both `admin-access.ts` and the deployed `isAppAdmin()` Firestore rule require an
+exact allowlisted email, a verified address and the `google.com` sign-in provider.
+Keep these lists and `storage.rules` aligned when changing admins. These are application permissions;
+this does not grant Google Cloud IAM or Firebase console project access.
+
+The site opens its authenticated screen only after a successful server read of
+`appAdmin/access` with `{ "enabled": true }`. That document is readable only by the
+approved admins and cannot be written from a client. A missing/disabled document,
+failed network check, unauthorized login or logout leaves the screen locked.
+Firebase console administrators can change the availability document.
+
+The editor is instantiated only after authorization. Other Google accounts may
+authenticate with Firebase but receive no application admin access. The currently
+deployed rules still prohibit content writes. The local `firestore.rules` and
+`storage.rules` now also contain proposed publishing permissions; these new write
+permissions have NOT yet been deployed. Do not deploy them without the user's
+explicit approval of this additional access.
+
+Validation: 17 focused auth tests cover all six accounts, unauthorized/unverified/
+non-Google identities, server denial, offline failure and stale account/logout
+results. Firebase Rules Playground also verified all six admins are allowed and
+anonymous, non-admin and unverified requests are denied.
+
+
+## Phase D — simple editor, media and publishing
+
+The admin interface has two tabs: content and advertisements. The normal workflow
+is select a topic/approach, edit, and click **שמירת השינויים**. That single action
+publishes the whole content bundle; there is no draft/publish workflow to learn.
+Introduction and stories are shared across approaches and therefore hide the
+approach selector and synchronize edits to all three copies. Other topic text is
+edited per approach. Topic IDs and ordering stay fixed to preserve navigation.
+Existing paragraph formatting and table structure are retained. Paragraph reorder
+and removal are hidden under a small options disclosure. Ads support images only,
+visibility, ordering and removal, with no targeting, links, analytics or server.
+The app shows active images in a full-width, horizontally scrollable strip under
+content, above topic navigation. The banner slot uses a 6:1 ratio and crops from the
+center; prepare wide artwork with important text away from the edges.
+
+Edits are remembered automatically in this browser under the signed-in admin's
+email and restored on the next visit. This is an internal recovery mechanism,
+not another user-facing step. Saving publishes only after the user presses the
+save button. If the server version changes meanwhile, saving is blocked and the
+local text is preserved for manual reconciliation. The editor never silently
+replaces a newer publication. Clearing browser data removes temporary recovery.
+
+The publisher verifies the baseline hash, uploads a new uniquely named JSON bundle,
+then uses a Firestore transaction to compare the baseline again and update only
+`appContent/current`. A failed upload does not move the pointer; a conflicting
+transaction leaves the uploaded bundle inactive. SHA-256 comparison skips unchanged
+publishes. Rollback remains possible by selecting an earlier immutable release.
+Advertisements live in an optional `ads` array in the same bundle to keep this MVP
+small; editing them may redownload the small JSON bundle, but unchanged images are
+reused. No dependencies or infrastructure were added.
+
+Uploaded JPG/PNG/WebP images are decoded, reduced to at most 1200 pixels on the long
+side, flattened on white and re-encoded as JPEG before upload. The original file is
+not stored. SVG/HTML and files above 10 MiB are rejected. Uploaded files are public
+by path, including before the save button is pressed; only upload publishable
+artwork. Removing an image removes its reference, not the immutable stored object.
+Cloud cleanup/retention is a manual owner task for this MVP.
+
+Proposed rules (pending approval/deployment): verified Google sign-ins from the six
+admins may create size/type/path-restricted JSON and JPEG objects and update the
+validated publication manifest. Existing published objects cannot be overwritten
+or deleted through the client. Public callers can get published JSON/JPEG by path;
+listing and every unrelated Storage path remain denied. Existing Mikveh rules and
+`appAdmin/access` writes remain unchanged. Firebase bucket CORS GET now also permits
+the admin preview origins `http://localhost:8200` and `http://127.0.0.1:8200` under
+the previously approved local read configuration. No Hosting deployment was made.
+
+The Google Docs importer still produces a separate candidate and never calls this
+publisher. When the final five proofread documents arrive, compare the candidate
+against the current published bundle and reconcile admin changes before publishing
+them together. There is intentionally no one-click import-overwrite button.
+
+Validation: focused browser unit tests cover authorization, publication ordering,
+upload failure, conflicting publication, unchanged content, actual image resizing,
+media reuse/offline restoration, failed image activation, automatic edit recovery
+and the simplified editor. Admin production build and main development build pass.
+Real authenticated upload/publish and native offline tests remain pending; do not
+claim end-to-end production publishing until the new rules are approved and tested.
 
 ---
 

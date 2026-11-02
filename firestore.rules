@@ -1,6 +1,38 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isAppAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.auth.token.email in [
+          'rubinshai@gmail.com',
+          'shai.rubin@xorcom.com',
+          '770ganani@gmail.com',
+          'tsanhan@gmail.com',
+          'adraha.hatanim@gmail.com',
+          'hassidut.gilo@gmail.com'
+        ];
+    }
+    match /appAdmin/access {
+      allow get: if isAppAdmin();
+      allow write: if false;
+    }
+    match /appContent/current {
+      allow get: if true;
+      allow create, update: if isAppAdmin()
+        && request.resource.data.keys().hasOnly(['schemaVersion', 'content'])
+        && request.resource.data.schemaVersion == 1
+        && request.resource.data.content.keys().hasOnly(['version', 'path', 'sha256'])
+        && request.resource.data.content.version is string
+        && request.resource.data.content.version.size() > 0
+        && request.resource.data.content.version.size() <= 128
+        && request.resource.data.content.path is string
+        && request.resource.data.content.path.matches('published/content/[a-zA-Z0-9_-]+[.]json')
+        && request.resource.data.content.sha256 is string
+        && request.resource.data.content.sha256.matches('[a-f0-9]{64}');
+      allow delete: if false;
+    }
     match /mikvehs/{document=**} {
       allow read: if true;
       // write if the email of the authorized person's email is in the list: [tsanhan@gmail.com]

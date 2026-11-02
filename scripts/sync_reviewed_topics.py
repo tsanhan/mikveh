@@ -90,7 +90,9 @@ def split_sections(blocks, name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source-dir', type=Path, default=SOURCE_DIR)
-    parser.add_argument('--write', action='store_true', help='Apply the source documents to topics.json')
+    output = parser.add_mutually_exclusive_group()
+    output.add_argument('--write', action='store_true', help='Update bundled fallback only; never publishes to Firebase')
+    output.add_argument('--output', type=Path, help='Export an import candidate to a new file for review; does not publish')
     args = parser.parse_args()
     topics = json.loads(TOPICS.read_text())
     by_id = {topic['id']: topic for topic in topics}
@@ -114,15 +116,24 @@ def main():
                 expected[(topic, key)] = blocks
     mismatches = [(topic, key) for (topic, key), blocks in expected.items()
                   if by_id[topic]['content'][key] != blocks]
-    if args.write:
+    if args.write or args.output:
         for (topic, key), blocks in expected.items():
             by_id[topic]['content'][key] = blocks
-        TOPICS.write_text(json.dumps(topics, ensure_ascii=False, indent=2) + '\n')
+        serialized = json.dumps(topics, ensure_ascii=False, indent=2) + '\n'
+        if args.output:
+            # Never overwrite an existing export or the bundled fallback implicitly.
+            with args.output.open('x') as candidate:
+                candidate.write(serialized)
+            print(f'Import candidate: {args.output}; {len(mismatches)} changed topic/approach sections: {mismatches}')
+            print('Bundled and Firebase content are unchanged. Review against the current published revision before publishing.')
+        else:
+            TOPICS.write_text(serialized)
     elif mismatches:
         raise SystemExit('Content differs from review sources: ' + repr(mismatches))
     for name, summary in summaries.items():
-        print(f"{name}: {summary['paragraphs']} paragraphs; table rows {summary['table_rows']}; exact content match")
-    print(f'{len(expected)} topic/approach sections verified (whitespace normalization only).')
+        print(f"{name}: {summary['paragraphs']} paragraphs; table rows {summary['table_rows']}")
+    print(f'{len(expected)} topic/approach sections converted' if args.output else
+          f'{len(expected)} topic/approach sections verified (whitespace normalization only).')
 
 
 if __name__ == '__main__':

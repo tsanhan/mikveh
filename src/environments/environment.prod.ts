@@ -1,4 +1,5 @@
 export const environment = {
+  contentSyncEnabled: true,
   production: true,
   firebase: {
     apiKey: 'AIzaSyDGPOUk4AVLY5hoCM0TVI1ZRAsf9Iy2nMw',

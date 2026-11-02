@@ -5,6 +5,7 @@ import { CacheService } from './cache.service';
 import { ApproachService } from './approach.service';
 import { ApproachName } from '../interfaces/approaches';
 import topics from '../../assets/data/topics.json';
+import { CONTENT_SYNC_ENABLED } from './content-source';
 
 describe('CacheService approach selection', () => {
   let values: Map<string, unknown>;
@@ -21,7 +22,8 @@ describe('CacheService approach selection', () => {
       return value;
     });
     TestBed.configureTestingModule({
-      providers: [CacheService, ApproachService, { provide: Storage, useValue: storage }],
+      providers: [CacheService, ApproachService, { provide: Storage, useValue: storage },
+        { provide: CONTENT_SYNC_ENABLED, useValue: false }],
     });
   });
 
