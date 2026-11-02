@@ -127,7 +127,7 @@ does not wait for the network. No personal calendar data is uploaded.
 
 Cloud checks are **enabled in both environment files** (`contentSyncEnabled: true`).
 Production content activation was approved and completed on November 2, 2026:
-`appContent/current` points to `published/content/initial-0edd2429c759.json`, containing
+`appContent/current` was initially seeded from `published/content/initial-0edd2429c759.json`, containing
 the existing complete JSON content without editorial changes. The 325,259-byte
 bundle has SHA-256 `0edd2429c759f426d2aeb35bb2a38d7c2b185e90979834937a6e20255bbf4cc9`.
 No Hosting deployment or mobile release was performed; the local app connects to
@@ -210,7 +210,9 @@ Firebase project and dependencies. It does not load the mobile app, calendar or
 location services. Start it with `npm run admin:start` and open
 `http://localhost:8200` (use `localhost`, which is an authorized Firebase Auth domain).
 `npm run admin:build` builds the production site into `www-admin/browser`.
-It has not yet been deployed to Hosting.
+The admin interface was deployed on November 2, 2026 at
+https://mikveh4u.web.app/admin/. Build it with its `/admin/` base path (the
+`admin:build` script includes this flag); local `admin:start` still uses `/`.
 
 Google sign-in was enabled in Firebase using the existing public project name
 `project-136996094637` and existing support email. Only these six explicitly
@@ -235,11 +237,10 @@ failed network check, unauthorized login or logout leaves the screen locked.
 Firebase console administrators can change the availability document.
 
 The editor is instantiated only after authorization. Other Google accounts may
-authenticate with Firebase but receive no application admin access. The currently
-deployed rules still prohibit content writes. The local `firestore.rules` and
-`storage.rules` now also contain proposed publishing permissions; these new write
-permissions have NOT yet been deployed. Do not deploy them without the user's
-explicit approval of this additional access.
+authenticate with Firebase but receive no application admin access. The user authorized deployment of the admin and its publishing permissions on
+November 2, 2026. The deployed Firestore and Storage rules now grant the six verified
+Google admins validated publication writes and immutable content/media creation.
+Further access changes require authorization.
 
 Validation: 17 focused auth tests cover all six accounts, unauthorized/unverified/
 non-Google identities, server denial, offline failure and stale account/logout
@@ -285,14 +286,24 @@ by path, including before the save button is pressed; only upload publishable
 artwork. Removing an image removes its reference, not the immutable stored object.
 Cloud cleanup/retention is a manual owner task for this MVP.
 
-Proposed rules (pending approval/deployment): verified Google sign-ins from the six
+Deployed rules: verified Google sign-ins from the six
 admins may create size/type/path-restricted JSON and JPEG objects and update the
 validated publication manifest. Existing published objects cannot be overwritten
 or deleted through the client. Public callers can get published JSON/JPEG by path;
 listing and every unrelated Storage path remain denied. Existing Mikveh rules and
 `appAdmin/access` writes remain unchanged. Firebase bucket CORS GET now also permits
 the admin preview origins `http://localhost:8200` and `http://127.0.0.1:8200` under
-the previously approved local read configuration. No Hosting deployment was made.
+the approved local read configuration. Hosting version `82293e409aecb997` added
+only the `/admin/` build and its rewrite to the existing `mikveh4u` site, preserving
+all 103 existing app files and the previous Hosting configuration. This release
+used the Hosting REST API to reuse existing file hashes; the previous app itself
+was not rebuilt or redeployed. Rollback is available from Hosting release history.
+
+The repository Hosting public directory is now the actual `www/browser` output.
+Before any future full-site Hosting deploy, build the app and admin and copy
+`www-admin/browser` into `www/browser/admin`; a plain app build alone will omit the
+admin site. Never deploy the outer `www` directory. Deploying admin files does not
+update installed mobile applications.
 
 The Google Docs importer still produces a separate candidate and never calls this
 publisher. When the final five proofread documents arrive, compare the candidate
@@ -303,8 +314,13 @@ Validation: focused browser unit tests cover authorization, publication ordering
 upload failure, conflicting publication, unchanged content, actual image resizing,
 media reuse/offline restoration, failed image activation, automatic edit recovery
 and the simplified editor. Admin production build and main development build pass.
-Real authenticated upload/publish and native offline tests remain pending; do not
-claim end-to-end production publishing until the new rules are approved and tested.
+Live hosted verification on November 2, 2026 also covered Google admin login,
+server authorization, loading the published bundle, uploading an existing bundled
+image, removing its content reference before publication, and saving successfully.
+The verification publication preserves all original topic text and has no images
+or ads in its content. The uploaded existing artwork remains as an immutable,
+unreferenced media object for potential reuse. Native offline/relaunch testing
+remains pending; browser unit coverage is not native device verification.
 
 ---
 
