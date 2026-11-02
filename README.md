@@ -318,7 +318,12 @@ Live hosted verification on November 2, 2026 also covered Google admin login,
 server authorization, loading the published bundle, uploading an existing bundled
 image, removing its content reference before publication, and saving successfully.
 The verification publication preserves all original topic text and has no images
-or ads in its content. The uploaded existing artwork remains as an immutable,
+or ads in its content. A further end-to-end test temporarily changed the About
+subtitle through the hosted admin, verified its automatic appearance in the normal
+local app connected to real Firebase, and verified it survived reloading from the
+cache. The original subtitle was then republished and the whole published topic
+array was checked against the original bundled JSON. The uploaded existing
+artwork remains as an immutable,
 unreferenced media object for potential reuse. Native offline/relaunch testing
 remains pending; browser unit coverage is not native device verification.
 
