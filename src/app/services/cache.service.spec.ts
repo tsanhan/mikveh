@@ -27,6 +27,32 @@ describe('CacheService approach selection', () => {
     });
   });
 
+  for (const [legacy, expected] of [
+    ['sfarad', ApproachName.SEPHARDI_OVADIA],
+    ['ashkenaz', ApproachName.SEPHARDI_MORDECHAI_ELIYAHU],
+  ]) {
+    for (const saved of [legacy, { name: legacy, nameHeb: 'old label', svg: '' }]) {
+      it(`migrates saved ${JSON.stringify(saved)} to ${expected} and preserves it on reload`, async () => {
+        values.set('approach', saved);
+        const cache = TestBed.inject(CacheService);
+        await cache.ready;
+        const selected = TestBed.inject(ApproachService).approach$.getValue();
+        expect(selected.name).toBe(expected);
+        expect(selected.contentKey).toBe(expected);
+        expect(values.get('approach')).toEqual(selected);
+        expect(cache.getApproach(legacy)).toEqual(selected);
+        for (const topic of topics) {
+          expect(Array.isArray((topic.content as Record<string, unknown>)[selected.contentKey!])).toBeTrue();
+        }
+        TestBed.resetTestingModule();
+        TestBed.configureTestingModule({providers: [CacheService, ApproachService,
+          { provide: Storage, useValue: storage }, { provide: CONTENT_SYNC_ENABLED, useValue: false }]});
+        await TestBed.inject(CacheService).ready;
+        expect(TestBed.inject(ApproachService).approach$.getValue()).toEqual(selected);
+      });
+    }
+  }
+
   for (const id of [
     ApproachName.CHABAD,
     ApproachName.SEPHARDI_OVADIA,

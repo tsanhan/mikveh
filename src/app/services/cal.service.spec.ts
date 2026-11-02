@@ -136,6 +136,96 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     cal = TestBed.inject(CalService);
   });
 
+  describe('review regressions: historical Hefsek and fixed concerns', () => {
+    const approaches = [APPROACH_CHABAD, APPROACH_SEPHARDI_OVADIA, APPROACH_SEPHARDI_MORDECHAI_ELIYAHU];
+    for (const selectedApproach of approaches) {
+      for (const type of [InputEventType.VESET, InputEventType.KETEM_TAME, InputEventType.BDIKA_TMEA]) {
+        it(`${selectedApproach.name}/${type}: revalidates a saved Hefsek after a historical sighting`, async () => {
+          approach.approach$.next(selectedApproach);
+          const original = makeEvent('2026-10-01', InputEventType.VESET);
+          const oldHefsek = makeEvent('2026-10-05', InputEventType.HEFSEK_TAHARA);
+          const backfilled = makeEvent('2026-10-04', type);
+          cache.setEvents([original, oldHefsek]);
+          cal.addEvent(backfilled);
+          const output = await firstValueFrom(cal.calendarEvents$);
+          // Rav Ovadia's ketem does not shorten the original wait and does
+          // not invalidate an otherwise eligible Hefsek on October 5.
+          const stillEligible = selectedApproach.name === ApproachName.SEPHARDI_OVADIA &&
+            type === InputEventType.KETEM_TAME;
+          const immersion = output.filter(e => e.outputEventType === DayType.MIKVEH_DAY);
+          expect(immersion.length).toBe(stillEligible ? 1 : 0);
+          expect(output.filter(e => e.outputEventType === DayType.SEVEN_CLEAN).length)
+            .toBe(stillEligible ? 7 : 0);
+          expect(cache.getInputEvents()).toContain(oldHefsek);
+          if (stillEligible) return;
+          expect(output.find(e => e.sourceEventId === oldHefsek.id)?.details.join(' ')).toContain('אינו תקף');
+          const reminders = calendarReminders(output, new Date('2026-10-01T00:00:00'));
+          expect(reminders.some(n => /ליל מקווה|ב־7 נקיים/.test(n.body ?? ''))).toBeFalse();
+          const corrected = makeEvent('2026-10-08', InputEventType.HEFSEK_TAHARA);
+          expect(cal.canAddHefsekTahara(corrected.simpleDate)).toBeTrue();
+          expect(cal.validateNewInputEvent(corrected)).toBeNull();
+          cal.addEvent(corrected);
+          const repaired = await firstValueFrom(cal.calendarEvents$);
+          expect(repaired.filter(e => e.outputEventType === DayType.MIKVEH_DAY)
+            .map(e => e.sourceEventId)).toEqual([corrected.id]);
+          // Reopening the persisted inputs has the same result as live editing.
+          cache.setEvents([...cache.getInputEvents()].reverse());
+          expect(await firstValueFrom(cal.calendarEvents$)).toEqual(repaired);
+        });
+      }
+
+      it(`${selectedApproach.name}: allows backfilling a Hefsek in an earlier cycle only once`, () => {
+        approach.approach$.next(selectedApproach);
+        cache.setEvents([makeEvent('2026-09-01', InputEventType.VESET),
+          makeEvent('2026-10-01', InputEventType.VESET),
+          makeEvent('2026-10-05', InputEventType.HEFSEK_TAHARA)]);
+        const historical = makeEvent('2026-09-05', InputEventType.HEFSEK_TAHARA);
+        expect(cal.canAddHefsekTahara(historical.simpleDate)).toBeTrue();
+        expect(cal.validateNewInputEvent(historical)).toBeNull();
+        cal.addEvent(historical);
+        expect(cal.canAddHefsekTahara(historical.simpleDate)).toBeFalse();
+        expect(cal.validateNewInputEvent(makeEvent('2026-09-06', InputEventType.HEFSEK_TAHARA)))
+          .toContain('כבר נוסף הפסק');
+      });
+
+      for (const onah of [InputEventOna.DAY, InputEventOna.NIGHT]) {
+        it(`${selectedApproach.name}/${onah}: records a pure check on a displayed fixed concern`, async () => {
+          approach.approach$.next(selectedApproach);
+          const sightings = [months.TISHREI, months.CHESHVAN, months.KISLEV].map(month =>
+            makeHebrewEvent(new HDate(1, month, 5787), InputEventType.VESET, onah));
+          cache.setEvents(sightings);
+          const baseline = await firstValueFrom(cal.calendarEvents$);
+          const fixed = baseline.find(e => e.outputEventType === DayType.VESET_KAVUA)!;
+          expect(fixed).toBeDefined();
+          const target = fixed.segments[0];
+          expect(cal.pureCheckOnot(target.hebrewDate)).toEqual([onah]);
+          const check = makeHebrewEvent(hebrewDateKeyToHDate(target.hebrewDate), InputEventType.BDIKA_TEHORA, onah);
+          expect(cal.validateNewInputEvent(check)).toBeNull();
+          expect(cal.validateNewInputEvent({...check,
+            ona: onah === InputEventOna.DAY ? InputEventOna.NIGHT : InputEventOna.DAY})).not.toBeNull();
+          cal.addEvent(check);
+          const recorded = await firstValueFrom(cal.calendarEvents$);
+          expect(recorded.filter(e => e.outputEventType !== InputEventType.BDIKA_TEHORA)).toEqual(baseline);
+          expect(recorded.some(e => e.sourceEventId === check.id && e.outputEventType === InputEventType.BDIKA_TEHORA)).toBeTrue();
+          cal.removeEvent(check);
+          expect(await firstValueFrom(cal.calendarEvents$)).toEqual(baseline);
+        });
+      }
+    }
+
+    it('restores the saved count after removing the historical sighting that invalidated it', async () => {
+      const original = makeEvent('2026-10-01', InputEventType.VESET);
+      const hefsek = makeEvent('2026-10-05', InputEventType.HEFSEK_TAHARA);
+      cache.setEvents([original, hefsek]);
+      const baseline = await firstValueFrom(cal.calendarEvents$);
+      const backfilled = makeEvent('2026-10-04', InputEventType.VESET);
+      cal.addEvent(backfilled);
+      expect((await firstValueFrom(cal.calendarEvents$)).some(e => e.outputEventType === DayType.MIKVEH_DAY)).toBeFalse();
+      cal.removeEvent(backfilled);
+      expect(await firstValueFrom(cal.calendarEvents$)).toEqual(baseline);
+    });
+  });
+
   describe('notification event stream', () => {
     it('uses the same unique events as the displayed calendar', async () => {
       cache.setEvents([
@@ -153,12 +243,13 @@ describe('CalService – hashashot / hefsek tahara / 7 nekiim', () => {
     });
 
     it('removes the former mikveh reminder when a sighting interrupts seven clean days', async () => {
+      const sighting = makeEvent('2026-10-01', InputEventType.VESET);
       const hefsek = makeEvent('2026-10-05', InputEventType.HEFSEK_TAHARA);
-      cache.setEvents([hefsek]);
+      cache.setEvents([sighting, hefsek]);
       const emitted: OutputEvent[][] = [];
       const subscription = cal.calendarEvents$.subscribe(events => emitted.push(events));
       expect(calendarReminders(emitted[0], new Date(2026, 9, 1)).some(n => n.body.includes('ליל מקווה'))).toBeTrue();
-      cache.setEvents([hefsek, makeEvent('2026-10-09', InputEventType.BDIKA_TMEA)]);
+      cache.setEvents([sighting, hefsek, makeEvent('2026-10-09', InputEventType.BDIKA_TMEA)]);
       expect(calendarReminders(emitted[1], new Date(2026, 9, 1)).some(n => n.body.includes('ליל מקווה'))).toBeFalse();
       cache.setEvents([]);
       expect(emitted[2]).toEqual([]);

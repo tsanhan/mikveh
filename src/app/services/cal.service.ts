@@ -75,7 +75,20 @@ export class CalService {
   private calculateCalendarEvents(inputEvents: CachedInputEvent[], approach: Approach): OutputEvent[] {
     const list: OutputEvent[] = [];
     // split by veset
-    const sortedInputEvents = [...inputEvents].sort((a, b) => this.compareInputEvents(a, b));
+    const sortedInputEvents = this.eligibleHefsekInputs(inputEvents, approach);
+    for (const event of inputEvents) {
+      if (event.type !== InputEventType.HEFSEK_TAHARA || sortedInputEvents.includes(event)) continue;
+      // Preserve the recorded input so it can be inspected/removed, but never
+      // derive clean days, immersion or haflagot from an ineligible Hefsek.
+      list.push({
+        id: this.concernId(event.type, event, hebrewDateKeyToHDate(event.hebrewDate)),
+        sourceEventId: event.id,
+        segments: [this.onahRef(event.hebrewDate, event.ona)],
+        CachedInputEventRef: { ...event }, simpleDate: event.simpleDate, date: event.date,
+        outputEventType: event.type,
+        details: ['הפסק הטהרה שנרשם אינו תקף לפי האירועים והשיטה הנוכחיים. יש למחוק אותו ולהוסיף הפסק בתאריך מתאים.'],
+      });
+    }
     const concernContinuations = this.concernContinuationSightingIds(sortedInputEvents, approach);
     // Sighting events that have already been absorbed into an earlier
     // niddah chain – don't generate a second Hefsek for them.
@@ -259,20 +272,21 @@ export class CalService {
 
   canAddHefsekTahara(date: Date): boolean {
     const approach = this.approach.approach$.getValue();
+    const events = this.eligibleHefsekInputs(this.cache.getInputEvents(), approach);
     const t = this.startOfDayMs(date);
-    const latestSighting = this.latestSightingOnOrBefore(t);
+    const latestSighting = this.latestSightingOnOrBefore(t, events);
     if (!latestSighting) return false;
-    if (this.hasHefsekOnOrAfter(latestSighting)) return false;
+    if (this.hasHefsekOnOrAfter(latestSighting, events)) return false;
 
     return this.compareHebrewDates(hDateToHebrewDateKey(new HDate(date)), latestSighting.hebrewDate) >=
-      this.minHefsekDiff(latestSighting, approach);
+      this.minHefsekDiff(latestSighting, approach, events);
   }
 
   /** Uses the same final concerns as the calendar, including replaced/suppressed concerns. */
   pureCheckOnot(hebrewDate: HebrewDateKey): InputEventOna[] {
     const concernTypes: Array<DayType | InputEventType> = [
       DayType.VESET_HACHODESH_DAY, DayType.VESET_HACHODESH_NIGHT,
-      DayType.ONA_BEINONIT, DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT,
+      DayType.ONA_BEINONIT, DayType.HAFLAGA_DAY, DayType.HAFLAGA_NIGHT, DayType.VESET_KAVUA,
     ];
     const approach = this.approach.approach$.getValue();
     const concerns = this.calculateCalendarEvents(this.cache.getInputEvents(), approach);
@@ -300,7 +314,7 @@ export class CalService {
     if (event.type === InputEventType.BDIKA_TEHORA) {
       return this.pureCheckOnot(event.hebrewDate).includes(event.ona)
         ? null
-        : 'ניתן לסמן בדיקה טהורה רק בעונת חשש של וסת החודש, עונה בינונית או וסת הפלגה';
+        : 'ניתן לסמן בדיקה טהורה רק בעונת חשש של וסת החודש, עונה בינונית, וסת הפלגה או וסת קבוע';
     }
     if (event.type !== InputEventType.HEFSEK_TAHARA) return null;
     if (event.ona !== InputEventOna.DAY) {
@@ -308,21 +322,22 @@ export class CalService {
     }
 
     const approach = this.approach.approach$.getValue();
+    const events = this.eligibleHefsekInputs(this.cache.getInputEvents(), approach);
     const newDate = this.startOfDayMs(event.simpleDate);
 
-    const lastVesetOrKetem = this.latestSightingOnOrBefore(newDate);
+    const lastVesetOrKetem = this.latestSightingOnOrBefore(newDate, events);
 
     if (!lastVesetOrKetem) {
       return 'לא ניתן להוסיף הפסק טהרה ללא וסת, כתם טמא או בדיקה טמאה קודם';
     }
 
-    if (this.hasHefsekOnOrAfter(lastVesetOrKetem)) {
+    if (this.hasHefsekOnOrAfter(lastVesetOrKetem, events)) {
       return 'כבר נוסף הפסק טהרה לאחר הווסת/הכתם/הבדיקה האחרונים';
     }
 
     const minNidaDays = nidaDaysForInputEvent(lastVesetOrKetem, approach);
     const diffDays = this.compareHebrewDates(event.hebrewDate, lastVesetOrKetem.hebrewDate);
-    const minDiff = this.minHefsekDiff(lastVesetOrKetem, approach);
+    const minDiff = this.minHefsekDiff(lastVesetOrKetem, approach, events);
     if (diffDays < minDiff) {
       const missing = minDiff - diffDays;
       if (minNidaDays === 1) {
@@ -333,21 +348,40 @@ export class CalService {
     return null;
   }
 
-  private latestSightingOnOrBefore(dateMs: number): CachedInputEvent | undefined {
-    return this.cache.getInputEvents()
+  private latestSightingOnOrBefore(dateMs: number, events: CachedInputEvent[]): CachedInputEvent | undefined {
+    return events
       .filter((e: CachedInputEvent) =>
         this.isSightingEvent(e) &&
         this.startOfDayMs(e.simpleDate) <= dateMs)
       .sort((a: CachedInputEvent, b: CachedInputEvent) =>
-        this.startOfDayMs(b.simpleDate) - this.startOfDayMs(a.simpleDate))[0];
+        this.compareInputEvents(b, a))[0];
   }
 
-  private hasHefsekOnOrAfter(sighting: CachedInputEvent): boolean {
-    const sightingDate = this.startOfDayMs(sighting.simpleDate);
-    return this.cache.getInputEvents().some((event: CachedInputEvent) =>
+  private hasHefsekOnOrAfter(sighting: CachedInputEvent, events: CachedInputEvent[]): boolean {
+    const nextSighting = events.filter(event => this.isSightingEvent(event) &&
+      this.compareInputEvents(event, sighting) > 0)
+      .sort((a, b) => this.compareInputEvents(a, b))[0];
+    return events.some((event: CachedInputEvent) =>
       event.type === InputEventType.HEFSEK_TAHARA &&
-      this.startOfDayMs(event.simpleDate) >= sightingDate,
+      this.compareInputEvents(event, sighting) >= 0 &&
+      (!nextSighting || this.compareInputEvents(event, nextSighting) < 0),
     );
+  }
+
+  /** Revalidate in chronological order after edits or approach changes. Invalid
+   * checks stay in storage, but cannot establish a count or a later restart. */
+  private eligibleHefsekInputs(events: CachedInputEvent[], approach: Approach): CachedInputEvent[] {
+    const accepted: CachedInputEvent[] = [];
+    let latestSighting: CachedInputEvent | undefined;
+    for (const event of [...events].sort((a, b) => this.compareInputEvents(a, b))) {
+      if (this.isSightingEvent(event)) latestSighting = event;
+      if (event.type === InputEventType.HEFSEK_TAHARA &&
+          (!latestSighting || event.ona !== InputEventOna.DAY ||
+          this.compareHebrewDates(event.hebrewDate, latestSighting.hebrewDate) <
+            this.minHefsekDiff(latestSighting, approach, accepted))) continue;
+      accepted.push(event);
+    }
+    return accepted;
   }
 
   private startOfDayMs(date: Date): number {

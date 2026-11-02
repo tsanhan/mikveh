@@ -140,8 +140,10 @@ export class CacheService {
   private normalizeApproach(value: string | Approach): Approach {
     const approaches = this.approach.approaches$.getValue();
     const key = typeof value === 'string' ? value : value?.name;
+    const normalizedKey = key === 'sfarad' ? ApproachName.SEPHARDI_OVADIA
+      : key === 'ashkenaz' ? ApproachName.SEPHARDI_MORDECHAI_ELIYAHU : key;
 
-    return { ...(approaches[key] ?? approaches[ApproachName.CHABAD]) };
+    return { ...(approaches[normalizedKey] ?? approaches[ApproachName.CHABAD]) };
   }
 
   public setDarkMode(darkMode: boolean) {
