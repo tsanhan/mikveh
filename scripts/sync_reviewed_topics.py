@@ -57,10 +57,14 @@ def convert_document(source):
             if bullet:
                 level = bullet.get('nestingLevel', 0)
                 definition = tab['lists'][bullet['listId']]['listProperties']['nestingLevels'][level]
-                assert level == 0 and definition['glyphType'] == 'DECIMAL', 'Unsupported native list style'
-                counter = counters.get(bullet['listId'], definition.get('startNumber', 1))
-                counters[bullet['listId']] = counter + 1
-                text = definition['glyphFormat'].replace('%0', str(counter)) + ' ' + text
+                assert level == 0, 'Nested lists need explicit support'
+                if definition['glyphType'] == 'DECIMAL':
+                    counter = counters.get(bullet['listId'], definition.get('startNumber', 1))
+                    counters[bullet['listId']] = counter + 1
+                    text = definition['glyphFormat'].replace('%0', str(counter)) + ' ' + text
+                else:
+                    assert definition['glyphType'] == 'BULLET', 'Unsupported native list style'
+                    text = definition['glyphFormat'] + ' ' + text
             named_style = item.get('style', {}).get('namedStyleType', '')
             kind = ('headline' if named_style.startswith('HEADING_')
                     else 'bold' if item.get('bold')
@@ -71,7 +75,7 @@ def convert_document(source):
 
 def split_sections(blocks, name):
     def heading_text(text):
-        return whitespace(text).strip('():').strip()
+        return whitespace(text).strip('():').strip().replace('ווסתות', 'וסתות')
 
     positions = [0]
     for _, heading in SECTIONS[1:]:

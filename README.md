@@ -82,14 +82,19 @@ Main pieces of code:
 
 ## Reviewed Hebrew content
 
-The [Google Docs review folder](https://drive.google.com/drive/folders/1IgZlGHdgqoOng1TFGq9wnfzl1t40WoB8) is the source of truth for the app's explanatory content. The rabbi edits these documents first; update the app from those edits. Do not change the review documents to match older app text.
+The latest approved source is Batzion Shlomi's combined final Word attachment, received on November 18, 2026: `docs/content-review-2026-11-18/batzion-final.docx`. It contains all five reviewed parts (stories, introduction and the three approaches). The [Google Docs review folder](https://drive.google.com/drive/folders/1IgZlGHdgqoOng1TFGq9wnfzl1t40WoB8) contains the earlier review documents. Do not replace final proofread wording with older Drive copies or change review documents to match older app text.
 
 The five documents cover Chabad, Rav Ovadia Yosef, Rav Mordechai Eliyahu, the introduction and stories. Their latest imported snapshots are in `content/google-docs/`, including document URLs and revision IDs. These are local snapshots, not a live connection to Drive. Refresh all five from the final approved documents before importing a new review: use the connected Google Docs reader for native Docs, or convert finalized Word files into the same snapshot format. Do not substitute older Drive copies for the proofread files. Preserve paragraph text, paragraph-wide bold flags, named styles, native list definitions and bullets, and every table row/cell in the snapshot structure. A paragraph is marked bold when all its nonempty text runs are bold in the source.
 
-The existing content is complete. Batzion Shlomi (בת ציון שלומי) is professionally
-proofreading the same five documents and will deliver all five finalized files
-together. Phase D uses the current JSON in the meantime. Import the final approved
-set together when it arrives; do not replace it with isolated interim attachments.
+On November 19, 2026, all five parts of the final combined attachment were imported together and published to Firebase at the user's request. The six tables retain all 198 rows and their three-column order. Source metadata and the publication/verification record are in `docs/content-review-2026-11-18/report.json`. The previous live topic array matched the bundled JSON exactly; there were no additional admin edits to reconcile. Topic metadata and ads were preserved.
+
+To reproduce the snapshots from this combined final attachment:
+
+```bash
+python3 scripts/extract_reviewed_docx.py docs/content-review-2026-11-18/batzion-final.docx --output-dir content/google-docs
+```
+
+The extractor keeps paragraph text/bold, native decimal numbering, bullet markers and every table cell. It skips empty layout paragraphs, the opening `בס"ד` and document separator lines. It rejects unresolved tracked changes, merged/nested tables and missing final document boundaries. The five-part layout and source email metadata describe this approved delivery.
 
 For an import intended for the admin publishing workflow, export a separate candidate:
 
@@ -305,10 +310,11 @@ Before any future full-site Hosting deploy, build the app and admin and copy
 admin site. Never deploy the outer `www` directory. Deploying admin files does not
 update installed mobile applications.
 
-The Google Docs importer still produces a separate candidate and never calls this
-publisher. When the final five proofread documents arrive, compare the candidate
-against the current published bundle and reconcile admin changes before publishing
-them together. There is intentionally no one-click import-overwrite button.
+The content importer still produces a separate candidate and never calls this
+publisher. Future imports must be compared against the current published bundle
+and reconciled with admin changes before explicit publication. The November 19
+proofread publication is recorded above. There is intentionally no one-click
+import-overwrite button.
 
 Validation: focused browser unit tests cover authorization, publication ordering,
 upload failure, conflicting publication, unchanged content, actual image resizing,

@@ -1,0 +1,85 @@
+{
+  "source": {
+    "email": "https://mail.google.com/mail/u/?authuser=shai.rubin%40xorcom.com#all/1a1eed0ef940883d",
+    "received": "2026-11-18T15:19:54+02:00",
+    "attachment": "ע.מרים דיני טהרה(4).docx",
+    "local_file": "batzion-final.docx",
+    "sha256": "1744aff22b06902ede113af5eed02a0c79ac38d2d213d6d2d8a1ea877828bde4",
+    "parts": [
+      "stories",
+      "intro",
+      "chabad",
+      "ovadia",
+      "eliyahu"
+    ],
+    "preserved_source_blocks": 913,
+    "normalization": "Whitespace only; native list markers materialized; empty layout paragraphs, opening בס\"ד and = separator lines omitted."
+  },
+  "publication": {
+    "date": "2026-11-19",
+    "project": "mikveh-bo",
+    "version": "batzion-20261118-6dc7f321-2545-4c3a-a640-fb83fffe500e",
+    "path": "published/content/batzion-20261118-6dc7f321-2545-4c3a-a640-fb83fffe500e.json",
+    "sha256": "a7a367d21807360b4f92187d7545fe5c5c470e3a105c714c62bdd97e61a6af19",
+    "previous": {
+      "name": "projects/mikveh-bo/databases/(default)/documents/appContent/current",
+      "fields": {
+        "content": {
+          "mapValue": {
+            "fields": {
+              "path": {
+                "stringValue": "published/content/1793612326371-9ab6e23c-4c5c-43af-ab7f-440c72207501.json"
+              },
+              "version": {
+                "stringValue": "1793612326371-9ab6e23c-4c5c-43af-ab7f-440c72207501"
+              },
+              "sha256": {
+                "stringValue": "2ef2e1e925bbcde36a3dfbd55c7d2e0a03451b78a6f7f00357b7ec3644d741b7"
+              }
+            }
+          }
+        },
+        "schemaVersion": {
+          "integerValue": "1"
+        }
+      },
+      "createTime": "2026-11-02T07:52:27.761417Z",
+      "updateTime": "2026-11-02T09:38:49.340198Z"
+    },
+    "previous_topics_matched_bundled": true,
+    "ads_preserved": true,
+    "conflict_check": "Baseline hash checked before upload and again in Firestore transaction"
+  },
+  "verification": {
+    "source_paragraphs_and_cells_independently_verified": true,
+    "topic_approach_sections": 30,
+    "table_rows": {
+      "chabad": [
+        46,
+        27
+      ],
+      "sfarad_ovadia": [
+        38,
+        21
+      ],
+      "sfarad_mordechai_eliyahu": [
+        40,
+        26
+      ]
+    },
+    "browser_dom": "Every paragraph and table cell matched bundled JSON across all 10 topics and 3 approaches after publication, using a fresh browser origin to avoid the existing hourly cache throttle.",
+    "visual_checks": "RTL headers, wrapping and scrolling to the final table row checked.",
+    "browser_width_px": 689,
+    "content_tests_passed": 31,
+    "production_build": "passed with existing size/CommonJS warnings",
+    "public_download_sha256_verified": true
+  },
+  "apk": {
+    "path": "releases/mikveh-batzion-2026-11-19.apk",
+    "variant": "debug",
+    "sha256": "a6d04779d7a6ad082374436683d9e3d03059639099a760d482a02a7c127ab2b0",
+    "bytes": 15787171,
+    "embedded_topics_equal_published": true,
+    "native_device_install_tested": false
+  }
+}
